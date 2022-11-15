@@ -1,45 +1,61 @@
 package ClavarChat;
 
-import ClavarChat.Controllers.Managers.*;
-import ClavarChat.Models.Events.*;
-
-import java.io.IOException;
+import ClavarChat.Controllers.Managers.EventManager;
+import ClavarChat.Controllers.Managers.Listenner;
+import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.Events.Enums.EVENT_TYPE;
+import ClavarChat.Models.Events.Event;
+import ClavarChat.Models.Events.PaquetEvent;
+import ClavarChat.Models.Paquets.Paquet;
+import ClavarChat.Utils.Loggin.Loggin;
 
 public class ClavarChatAPI implements Listenner
 {
     private EventManager eventManager;
     private NetworkManager networkManager;
-    private NetworkThreadManager networkThreadManager;
 
-    public ClavarChatAPI() throws IOException
+    public ClavarChatAPI()
     {
-        this.eventManager = new EventManager();
-        this.networkThreadManager = new NetworkThreadManager(this.eventManager);
-        this.networkManager = new NetworkManager(4000, 5000, this.eventManager, this.networkThreadManager);
+        this.eventManager = EventManager.getInstance();
+        this.networkManager = new NetworkManager();
 
-        this.initEvent();
-    }
-
-    private void initEvent()
-    {
-        this.eventManager.addEventType(EVENT_TYPE.NETWORK_EVENT);
-        this.eventManager.addEventType(EVENT_TYPE.MESSAGE_EVENT);
-        this.eventManager.addEventType(EVENT_TYPE.THREAD_EVENT);
-
-        this.eventManager.addListenner(EVENT_TYPE.MESSAGE_EVENT, this);
-        this.eventManager.addListenner(EVENT_TYPE.NETWORK_EVENT, this.networkManager);
-        this.eventManager.addListenner(EVENT_TYPE.THREAD_EVENT, this.networkManager);
-        this.eventManager.addListenner(EVENT_TYPE.THREAD_EVENT, this.networkThreadManager);
-    }
-
-    public void login()
-    {
-        System.out.println("login");
+        this.eventManager.addEvent(EVENT_TYPE.PAQUET_EVENT);
+        this.eventManager.addListenner(this, EVENT_TYPE.PAQUET_EVENT);
     }
 
     @Override
     public void onEvent(Event event)
     {
-        System.out.println("onEvent API : " + event.type);
+        Loggin.Print("ClavarChatAPI Event --> " + event.type);
+
+        switch (event.type)
+        {
+            case PAQUET_EVENT:
+                onPaquetEvent((PaquetEvent)event);
+                break;
+        }
+    }
+
+    private void onPaquetEvent(PaquetEvent paquetEvent)
+    {
+        Loggin.Print("CalvarChatAPI PaquetType --> " + paquetEvent.data.type);
+
+        switch (paquetEvent.data.type)
+        {
+            case PAQUET_LOGIN:
+                this.onLoginPaquet(paquetEvent.data);
+                break;
+            case PAQUET_LOGOUT:
+                break;
+            case PAQUET_DISCOVER:
+                break;
+            case PAQUET_USER_INFORMATION:
+                break;
+        }
+    }
+
+    private void onLoginPaquet(Paquet paquet)
+    {
+        Loggin.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.user.ip);
     }
 }
