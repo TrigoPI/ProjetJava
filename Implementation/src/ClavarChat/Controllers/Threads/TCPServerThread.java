@@ -13,7 +13,6 @@ public class TCPServerThread extends NetworkThread
     {
         super();
         this.createServer(port);
-        this.start();
     }
 
     @Override

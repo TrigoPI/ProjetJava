@@ -1,8 +1,8 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Listenner;
 
 import ClavarChat.Models.Events.Event;
 
-public interface Listenner
+public interface Listener
 {
     public void onEvent(Event event);
 }

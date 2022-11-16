@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Managers;
 
+import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Utils.Loggin.Loggin;
@@ -11,18 +12,18 @@ public class EventManager
 {
     private static EventManager instance = null;
 
-    private HashMap<EVENT_TYPE, ArrayList<Listenner>> listennersMap;
+    private HashMap<EVENT_TYPE, ArrayList<Listener>> listennersMap;
 
     private EventManager()
     {
-        this.listennersMap = new HashMap<EVENT_TYPE, ArrayList<Listenner>>();
+        this.listennersMap = new HashMap<EVENT_TYPE, ArrayList<Listener>>();
     }
 
     public void addEvent(EVENT_TYPE eventType)
     {
         if (!this.listennersMap.containsKey(eventType))
         {
-            this.listennersMap.put(eventType, new ArrayList<Listenner>());
+            this.listennersMap.put(eventType, new ArrayList<Listener>());
         }
         else
         {
@@ -30,7 +31,7 @@ public class EventManager
         }
     }
 
-    public void addListenner(Listenner listenner, EVENT_TYPE eventType)
+    public void addListenner(Listener listener, EVENT_TYPE eventType)
     {
         if (!this.listennersMap.containsKey(eventType))
         {
@@ -38,7 +39,7 @@ public class EventManager
         }
         else
         {
-            this.listennersMap.get(eventType).add(listenner);
+            this.listennersMap.get(eventType).add(listener);
         }
     }
 
@@ -50,11 +51,11 @@ public class EventManager
         }
         else
         {
-            ArrayList<Listenner> listenners = this.listennersMap.get(event.type);
+            ArrayList<Listener> listeners = this.listennersMap.get(event.type);
 
-            for (int i = 0; i < listenners.size(); i++)
+            for (int i = 0; i < listeners.size(); i++)
             {
-                listenners.get(i).onEvent(event);
+                listeners.get(i).onEvent(event);
             }
         }
     }

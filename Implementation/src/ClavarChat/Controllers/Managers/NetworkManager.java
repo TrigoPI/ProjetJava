@@ -1,5 +1,7 @@
 package ClavarChat.Controllers.Managers;
 
+import ClavarChat.Controllers.Listenner.Listener;
+import ClavarChat.Controllers.Threads.TCPServerThread;
 import ClavarChat.Models.Events.DataEvent;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
@@ -7,15 +9,13 @@ import ClavarChat.Models.Events.NetworkEvent;
 import ClavarChat.Models.Events.PaquetEvent;
 import ClavarChat.Utils.Loggin.Loggin;
 
-public class NetworkManager implements Listenner
+public class NetworkManager implements Listener
 {
     private EventManager eventManager;
-    private NetworkThreadManager networkThreadManager;
 
     public NetworkManager()
     {
         this.eventManager = EventManager.getInstance();
-        this.networkThreadManager = new NetworkThreadManager();
 
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_EVENT);

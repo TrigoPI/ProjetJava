@@ -9,7 +9,6 @@ public class TCPINSocketThread extends TCPMessaginThread
     public TCPINSocketThread(Socket socket)
     {
         super(socket);
-        this.start();
     }
 
     @Override

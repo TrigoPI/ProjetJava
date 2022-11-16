@@ -1,7 +1,7 @@
 package ClavarChat;
 
 import ClavarChat.Controllers.Managers.EventManager;
-import ClavarChat.Controllers.Managers.Listenner;
+import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
@@ -9,7 +9,7 @@ import ClavarChat.Models.Events.PaquetEvent;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Loggin.Loggin;
 
-public class ClavarChatAPI implements Listenner
+public class ClavarChatAPI implements Listener
 {
     private EventManager eventManager;
     private NetworkManager networkManager;

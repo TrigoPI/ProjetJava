@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Controllers.Managers.EventManager;
 
-abstract class NetworkThread extends Thread
+public abstract class NetworkThread extends Thread
 {
     protected EventManager eventManager;
 
@@ -12,5 +12,10 @@ abstract class NetworkThread extends Thread
         this.eventManager = EventManager.getInstance();
     }
 
-    abstract void close();
+    public String getIdString()
+    {
+        return "" + this.getId();
+    }
+
+    abstract public void close();
 }
