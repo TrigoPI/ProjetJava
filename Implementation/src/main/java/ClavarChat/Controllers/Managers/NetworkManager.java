@@ -80,6 +80,7 @@ public class NetworkManager implements Listener
                 this.onConnectionSuccessEvent((ConnectionSuccessEvent)event);
                 break;
             case NETWORK_EVENT_END_CONNECTION:
+                Log.Print("NetworkEvent --> " + event.networkEventType);
                 break;
             case NETWORK_EVENT_NEW_CONNECTION:
                 this.onNewConnectionEvent((NewConnectionEvent)event);

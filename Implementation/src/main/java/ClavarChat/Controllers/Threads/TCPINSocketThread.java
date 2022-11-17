@@ -23,9 +23,12 @@ public class TCPINSocketThread extends TCPMessaginThread
         Log.Info("TCP_IN RUN : " + this.getLocalIP() + ":" + this.localPort + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
         try
         {
-            InputStream in = socket.getInputStream();
-            ObjectInputStream iin = new ObjectInputStream(in);
-            this.receive((Paquet)iin.readObject());
+            while (this.socket.isConnected())
+            {
+                InputStream in = socket.getInputStream();
+                ObjectInputStream iin = new ObjectInputStream(in);
+                this.receive((Paquet)iin.readObject());
+            }
         }
         catch (IOException | ClassNotFoundException e)
         {

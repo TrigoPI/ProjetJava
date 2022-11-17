@@ -1,6 +1,7 @@
 package ClavarChat.Models.Events;
 
 import ClavarChat.Models.Events.Enums.NETWORK_EVENT_TYPE;
+
 import java.net.Socket;
 
 public class NewConnectionEvent extends NetworkEvent

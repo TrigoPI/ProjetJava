@@ -32,7 +32,6 @@ public class NetworkThreadManager implements Listener
         TCPOUTSocketThread thread = new TCPOUTSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
         Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
-        thread.start();
         return thread;
     }
 
@@ -42,6 +41,7 @@ public class NetworkThreadManager implements Listener
         {
             TCPOUTSocketThread thread = new TCPOUTSocketThread(ip, port);
             this.threads.put(thread.getIdString(), thread);
+            Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
             return thread;
         }
         catch (UnknownHostException e)
@@ -56,6 +56,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPINSocketThread thread = new TCPINSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
+        Log.Print("New TCP_IN thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 
@@ -63,6 +64,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPServerThread thread = new TCPServerThread(port);
         this.threads.put(thread.getIdString(), thread);
+        Log.Print("New TCP Server thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 

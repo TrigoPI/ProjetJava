@@ -11,7 +11,7 @@ public class Application
     {
         NetworkManager networkManager = new NetworkManager(4000, 5000);
 
-        //networkManager.startTCPServer();
+        networkManager.startTCPServer();
         networkManager.sendTCP(new Paquet(new UserData("alexis", "0000", "192.168.1.2"), PAQUET_TYPE.PAQUET_LOGIN));
     }
 }

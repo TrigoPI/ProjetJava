@@ -37,7 +37,6 @@ public class TCPServerThread extends NetworkThread
         try
         {
             Log.Info("TCP Server start on : " + this.localIP + ":" + this.localPort);
-
             Socket socket = serverSocket.accept();
             this.eventManager.notiy(new NewConnectionEvent(socket));
         }
