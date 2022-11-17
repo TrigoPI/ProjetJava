@@ -97,7 +97,10 @@ public class NetworkManager implements Listener
     {
         Log.Print("Creating new IN socket with " + event.ip + ":" + event.port);
         TCPINSocketThread in = this.networkThreadManager.createTCPINSocketThread(event.socket);
+
         this.clients.get(event.ip).setIn(in);
+
+        in.start();
     }
 
     private void onNewConnectionEvent(NewConnectionEvent event)
@@ -109,6 +112,9 @@ public class NetworkManager implements Listener
         TCPOUTSocketThread out = this.networkThreadManager.createTCPOUTSocketThread(event.socket);
 
         this.clients.put(event.ip, new ClientHandler(in, out));
+
+        in.start();
+        out.start();
     }
 
     private void createOutSocket(String ip)
@@ -116,7 +122,9 @@ public class NetworkManager implements Listener
         Log.Print("Creating new OUT socket with " + ip + ":" + this.TCPPort);
         TCPOUTSocketThread out = this.networkThreadManager.TCPOUTSocketThread(ip, 4000);
         ClientHandler client = new ClientHandler();
+
         this.clients.put(ip, client);
+
         client.setOut(out);
         out.start();
     }

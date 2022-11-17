@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
+import ClavarChat.Models.Events.ConnectionSuccessEvent;
 import ClavarChat.Models.Events.NewConnectionEvent;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
@@ -40,7 +41,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
             this.connect();
             this.localIP = this.socket.getLocalAddress();
             this.localPort = this.socket.getLocalPort();
-            this.eventManager.notiy(new NewConnectionEvent(this.socket));
+            this.eventManager.notiy(new ConnectionSuccessEvent(this.socket));
         }
 
         Log.Info("TCP_OUT RUN : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
