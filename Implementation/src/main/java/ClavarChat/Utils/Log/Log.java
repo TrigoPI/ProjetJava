@@ -1,9 +1,9 @@
-package ClavarChat.Utils.Loggin;
+package ClavarChat.Utils.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Loggin
+public class Log
 {
     private static void format(String color, String a)
     {
@@ -14,21 +14,21 @@ public class Loggin
 
     public static void Print(String a)
     {
-        Loggin.format(ConsoleColors.WHITE, a);
+        Log.format(ConsoleColors.WHITE, a);
     }
 
     public static void Info(String a)
     {
-        Loggin.format(ConsoleColors.GREEN, a);
+        Log.format(ConsoleColors.GREEN, a);
     }
 
     public static void Warning(String a)
     {
-        Loggin.format(ConsoleColors.YELLOW, a);
+        Log.format(ConsoleColors.YELLOW, a);
     }
 
     public static void Error(String a)
     {
-        Loggin.format(ConsoleColors.RED, a);
+        Log.format(ConsoleColors.RED, a);
     }
 }

@@ -7,11 +7,13 @@ public class ConnectionSuccessEvent extends NetworkEvent
 {
     public Socket socket;
     public String ip;
+    public int port;
 
     public ConnectionSuccessEvent(Socket socket)
     {
         super(NETWORK_EVENT_TYPE.NETWORK_EVENT_CONNECTION_SUCCESS);
         this.ip = socket.getInetAddress().toString().split("/")[1];
+        this.port = socket.getPort();
         this.socket = socket;
     }
 }

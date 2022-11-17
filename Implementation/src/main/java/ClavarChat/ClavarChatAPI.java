@@ -2,22 +2,19 @@ package ClavarChat;
 
 import ClavarChat.Controllers.Managers.EventManager;
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.PaquetEvent;
 import ClavarChat.Models.Paquets.Paquet;
-import ClavarChat.Utils.Loggin.Loggin;
+import ClavarChat.Utils.Log.Log;
 
 public class ClavarChatAPI implements Listener
 {
     private EventManager eventManager;
-    private NetworkManager networkManager;
 
     public ClavarChatAPI()
     {
         this.eventManager = EventManager.getInstance();
-        this.networkManager = new NetworkManager();
 
         this.eventManager.addEvent(EVENT_TYPE.PAQUET_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.PAQUET_EVENT);
@@ -26,7 +23,7 @@ public class ClavarChatAPI implements Listener
     @Override
     public void onEvent(Event event)
     {
-        Loggin.Print("ClavarChatAPI Event --> " + event.type);
+        Log.Print("ClavarChatAPI Event --> " + event.type);
 
         switch (event.type)
         {
@@ -38,7 +35,7 @@ public class ClavarChatAPI implements Listener
 
     private void onPaquetEvent(PaquetEvent paquetEvent)
     {
-        Loggin.Print("CalvarChatAPI PaquetType --> " + paquetEvent.data.type);
+        Log.Print("CalvarChatAPI PaquetType --> " + paquetEvent.data.type);
 
         switch (paquetEvent.data.type)
         {
@@ -56,6 +53,6 @@ public class ClavarChatAPI implements Listener
 
     private void onLoginPaquet(Paquet paquet)
     {
-        Loggin.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.user.ip);
+        Log.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.user.ip);
     }
 }

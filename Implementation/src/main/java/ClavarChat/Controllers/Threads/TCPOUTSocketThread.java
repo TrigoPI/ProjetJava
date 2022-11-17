@@ -1,15 +1,14 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.ConnectionSuccessEvent;
+import ClavarChat.Models.Events.NewConnectionEvent;
 import ClavarChat.Models.Paquets.Paquet;
-import ClavarChat.Utils.Loggin.Loggin;
+import ClavarChat.Utils.Log.Log;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TCPOUTSocketThread extends TCPMessaginThread
@@ -39,10 +38,12 @@ public class TCPOUTSocketThread extends TCPMessaginThread
         if (!this.socket.isConnected())
         {
             this.connect();
-            this.eventManager.notiy(new ConnectionSuccessEvent(this.socket));
+            this.localIP = this.socket.getLocalAddress();
+            this.localPort = this.socket.getLocalPort();
+            this.eventManager.notiy(new NewConnectionEvent(this.socket));
         }
 
-        Loggin.Info("TCP_OUT on : " + this.socket.getLocalAddress() + ":" + this.socket.getLocalPort() + " --> " + this.ip + ":" + this.port);
+        Log.Info("TCP_OUT RUN : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
 
         try
         {
@@ -52,7 +53,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
             {
                 if (!this.datas.isEmpty())
                 {
-                    Loggin.Print("Send : " + this.socket.getLocalAddress() + ":" + this.socket.getLocalPort() + " --> " + this.ip + ":" + this.port);
+                    Log.Info("Send Data : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
                     out.writeObject(this.datas.pop());
                 }
             }
@@ -67,7 +68,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
     {
         try
         {
-            this.socket.connect(new InetSocketAddress(this.ip, this.port));
+            this.socket.connect(new InetSocketAddress(this.distantIP, this.distantPort));
         }
         catch (IOException e)
         {

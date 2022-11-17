@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Models.Events.DataEvent;
 import ClavarChat.Models.Paquets.Paquet;
-import ClavarChat.Utils.Loggin.Loggin;
+import ClavarChat.Utils.Log.Log;
 
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class TCPINSocketThread extends TCPMessaginThread
     @Override
     public void run()
     {
-        Loggin.Info("TCP_IN on : " + this.socket.getLocalAddress() + ":" + this.socket.getLocalPort() + " --> " + this.ip + ":" + this.port);
+        Log.Info("TCP_IN RUN : " + this.getLocalIP() + ":" + this.localPort + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
         try
         {
             InputStream in = socket.getInputStream();
@@ -35,7 +35,7 @@ public class TCPINSocketThread extends TCPMessaginThread
 
     public void receive(Paquet paquet)
     {
-        Loggin.Print("Receive : " + this.socket.getLocalAddress() + ":" + this.socket.getLocalPort() + " --> " + this.ip + ":" + this.port);
+        Log.Print("Receive Data : " + this.getLocalIP() + ":" + this.localPort + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
         this.eventManager.notiy(new DataEvent(paquet));
     }
 }

@@ -7,7 +7,7 @@ import ClavarChat.Controllers.Threads.TCPOUTSocketThread;
 import ClavarChat.Controllers.Threads.TCPServerThread;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
-import ClavarChat.Utils.Loggin.Loggin;
+import ClavarChat.Utils.Log.Log;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -31,7 +31,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPOUTSocketThread thread = new TCPOUTSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
-        Loggin.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
         thread.start();
         return thread;
     }
@@ -42,8 +42,6 @@ public class NetworkThreadManager implements Listener
         {
             TCPOUTSocketThread thread = new TCPOUTSocketThread(ip, port);
             this.threads.put(thread.getIdString(), thread);
-            Loggin.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
-            thread.start();
             return thread;
         }
         catch (UnknownHostException e)
@@ -58,8 +56,6 @@ public class NetworkThreadManager implements Listener
     {
         TCPINSocketThread thread = new TCPINSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
-        Loggin.Print("New TCP_IN thread " + thread.getIdString() + " --> " + thread.toString());
-        thread.start();
         return thread;
     }
 
@@ -67,8 +63,6 @@ public class NetworkThreadManager implements Listener
     {
         TCPServerThread thread = new TCPServerThread(port);
         this.threads.put(thread.getIdString(), thread);
-        Loggin.Print("New TCP Server thread " + thread.getIdString() + " --> " + thread.toString());
-        thread.start();
         return thread;
     }
 

@@ -1,4 +1,4 @@
-package ClavarChat.Utils.Loggin;
+package ClavarChat.Utils.Log;
 
 public class ConsoleColors
 {

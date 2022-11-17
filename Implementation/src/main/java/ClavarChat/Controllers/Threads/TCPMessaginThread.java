@@ -8,23 +8,33 @@ import java.net.UnknownHostException;
 public class TCPMessaginThread extends NetworkThread
 {
     protected Socket socket;
-    protected InetAddress ip;
-    protected int port;
+    protected InetAddress distantIP;
+    protected int distantPort;
 
     protected TCPMessaginThread(String ip, int port) throws UnknownHostException
     {
         super();
         this.socket = new Socket();
-        this.ip = InetAddress.getByName(ip);
-        this.port = port;
+        this.distantIP = InetAddress.getByName(ip);
+        this.distantPort = port;
     }
 
     protected TCPMessaginThread(Socket socket)
     {
-        super();
+        super(socket.getLocalAddress(), socket.getLocalPort());
         this.socket = socket;
-        this.ip = socket.getInetAddress();
-        this.port = socket.getPort();
+        this.distantIP = socket.getInetAddress();
+        this.distantPort = socket.getPort();
+    }
+
+    public int getDistantPort()
+    {
+        return this.distantPort;
+    }
+
+    public String getDistantIP()
+    {
+        return this.distantIP.toString().split("/")[1];
     }
 
     @Override

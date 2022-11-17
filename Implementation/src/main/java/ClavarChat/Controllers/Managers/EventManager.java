@@ -3,7 +3,7 @@ package ClavarChat.Controllers.Managers;
 import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
-import ClavarChat.Utils.Loggin.Loggin;
+import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class EventManager
         }
         else
         {
-            Loggin.Warning("Event : " + eventType + " already registered");
+            Log.Warning("Event : " + eventType + " already registered");
         }
     }
 
@@ -35,7 +35,7 @@ public class EventManager
     {
         if (!this.listennersMap.containsKey(eventType))
         {
-            Loggin.Warning("Event : " + eventType + " not registered");
+            Log.Warning("Event : " + eventType + " not registered");
         }
         else
         {
@@ -47,7 +47,7 @@ public class EventManager
     {
         if (!this.listennersMap.containsKey(event.type))
         {
-            Loggin.Warning("Event : " + event.type + " not registered");
+            Log.Warning("Event : " + event.type + " not registered");
         }
         else
         {
