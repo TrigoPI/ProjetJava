@@ -1,11 +1,9 @@
 package ClavarChat.Controllers.Managers;
 
+import ClavarChat.Controllers.Threads.*;
+import ClavarChat.Models.Events.*;
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Threads.TCPINSocketThread;
-import ClavarChat.Controllers.Threads.TCPOUTSocketThread;
-import ClavarChat.Controllers.Threads.TCPServerThread;
-import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Loggin.Loggin;
@@ -24,7 +22,7 @@ public class NetworkManager implements Listener
     {
         this.eventManager = EventManager.getInstance();
         this.networkThreadManager = new NetworkThreadManager();
-        //this.tcpServerThread = this.networkThreadManager.createTCPServerThread(4000);
+        this.tcpServerThread = this.networkThreadManager.createTCPServerThread(4000);
 
         this.clients = new HashMap<String, ClientHandler>();
 
