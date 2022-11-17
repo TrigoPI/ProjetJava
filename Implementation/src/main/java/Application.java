@@ -10,8 +10,6 @@ public class Application
     public static void main(String[] args)
     {
         NetworkManager networkManager = new NetworkManager(4000, 5000);
-
-        networkManager.startTCPServer();
-        networkManager.sendTCP(new Paquet(new UserData("alexis", "0000", "127.0.0.1"), PAQUET_TYPE.PAQUET_LOGIN));
+        networkManager.sendTCP(new Paquet(new UserData("alexis", "0000", "192.168.1.2"), PAQUET_TYPE.PAQUET_LOGIN));
     }
 }
