@@ -42,7 +42,7 @@ public class NetworkThreadManager implements Listener
         {
             TCPOUTSocketThread thread = new TCPOUTSocketThread(ip, port);
             this.threads.put(thread.getIdString(), thread);
-            Loggin.Print("New TCP_IN thread " + thread.getIdString() + " --> " + thread.toString());
+            Loggin.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
             thread.start();
             return thread;
         }

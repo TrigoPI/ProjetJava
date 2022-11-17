@@ -1,6 +1,8 @@
 package ClavarChat.Models.Users;
 
-public class UserData
+import java.io.Serializable;
+
+public class UserData implements Serializable
 {
     public String pseudo;
     public String id;

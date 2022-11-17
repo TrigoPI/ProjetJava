@@ -3,7 +3,9 @@ package ClavarChat.Models.Paquets;
 import ClavarChat.Models.Paquets.Enums.PAQUET_TYPE;
 import ClavarChat.Models.Users.UserData;
 
-public class Paquet
+import java.io.Serializable;
+
+public class Paquet implements Serializable
 {
     public UserData user;
     public PAQUET_TYPE type;
