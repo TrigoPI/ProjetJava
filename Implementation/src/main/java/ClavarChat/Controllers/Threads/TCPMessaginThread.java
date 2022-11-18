@@ -12,6 +12,7 @@ public class TCPMessaginThread extends NetworkThread
     protected InetAddress localIP;
     protected int distantPort;
     protected int localPort;
+    protected boolean running;
 
     protected TCPMessaginThread(Socket socket)
     {
@@ -21,6 +22,13 @@ public class TCPMessaginThread extends NetworkThread
         this.localIP = socket.getLocalAddress();
         this.distantPort = socket.getPort();
         this.localPort = socket.getLocalPort();
+
+        this.running = false;
+    }
+
+    public void stopSocket()
+    {
+        this.running = false;
     }
 
     public int getDistantPort()

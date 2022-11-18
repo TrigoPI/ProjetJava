@@ -25,9 +25,11 @@ public class ConnectionThread extends NetworkThread
     @Override
     public void run()
     {
+        Log.Info(this.getClass().getName() + " RUN : " + this.distantIP + ":" + this.distantPort);
         this.connect();
         this.eventManager.notiy(new NewConnectionEvent(socket));
         this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
+        Log.Info(this.getClass().getName() + " : " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
     private void connect()
@@ -37,7 +39,7 @@ public class ConnectionThread extends NetworkThread
             InetAddress addr = InetAddress.getByName(this.distantIP);
             SocketAddress socketAddr = new InetSocketAddress(addr, this.distantPort);
             this.socket.connect(socketAddr);
-            Log.Info("Connection success with : " + this.distantIP + ":" + this.distantPort);
+            Log.Info(this.getClass().getName() + " connection success with : " + this.distantIP + ":" + this.distantPort);
         }
         catch (IOException e)
         {

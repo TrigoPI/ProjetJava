@@ -8,6 +8,7 @@ import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -65,10 +66,24 @@ public class NetworkManager implements Listener
         }
     }
 
+    public void closeTCP(String ip)
+    {
+        if (!this.clients.containsKey(ip))
+        {
+            Log.Warning(this.getClass().getName() + " no client with ip : " + ip);
+        }
+        else
+        {
+            this.clients.get(ip).stop();
+            this.clients.remove(ip);
+            Log.Info(this.getClass().getName() + " close TCP with : " + ip);
+        }
+    }
+
     @Override
     public void onEvent(Event event)
     {
-        Log.Print("NetworkManager Event --> " + event.type);
+        Log.Print(this.getClass().getName() + " Event --> " + event.type);
 
         switch (event.type)
         {
@@ -80,14 +95,15 @@ public class NetworkManager implements Listener
 
     private void onNetworkEvent(NetworkEvent event)
     {
+        Log.Print(this.getClass().getName() + " Event --> " + event.networkEventType);
+
         switch (event.networkEventType)
         {
             case NETWORK_EVENT_DATA:
-                Log.Print("NetworkManager Event --> " + event.networkEventType);
-                this.onNetworkEventData((DataEvent)event);
+                this.onNetworkDataEvent((DataEvent)event);
                 break;
             case NETWORK_EVENT_END_CONNECTION:
-                Log.Print("NetworkEvent --> " + event.networkEventType);
+                this.onEndConnectionEvent((EndConnectionEvent)event);
                 break;
             case NETWORK_EVENT_NEW_CONNECTION:
                 this.onNewConnectionEvent((NewConnectionEvent)event);
@@ -95,21 +111,25 @@ public class NetworkManager implements Listener
         }
     }
 
-    private void onNetworkEventData(DataEvent event)
+    private void onEndConnectionEvent(EndConnectionEvent event)
     {
-        Log.Info("new Paquet from : " + event.data.user.pseudo);
+        this.closeTCP(event.ip);
+    }
+
+    private void onNetworkDataEvent(DataEvent event)
+    {
+        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
         this.eventManager.notiy(new PaquetEvent(event.data));
     }
 
     private void onNewConnectionEvent(NewConnectionEvent event)
     {
-        Log.Info("New Connection : " + event.ip + ":" + event.port);
-        Log.Print("Creating new IN/OUT socket with " + event.ip + ":" + event.port);
+        Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " + event.ip + ":" + event.port);
 
         TCPINSocketThread in = this.networkThreadManager.createTCPINSocketThread(event.socket);
         TCPOUTSocketThread out = this.networkThreadManager.createTCPOUTSocketThread(event.socket);
 
-        this.clients.put(event.ip, new ClientHandler(in, out));
+        this.clients.put(event.ip, new ClientHandler(event.socket, in, out));
         if (this.pendingDatas.containsKey(event.ip)) this.flushPendingDatas(event.ip, out);
 
         in.start();
@@ -119,13 +139,13 @@ public class NetworkManager implements Listener
     private void flushPendingDatas(String ip, TCPOUTSocketThread out)
     {
         LinkedList<Paquet> datas = this.pendingDatas.get(ip);
-        while (!datas.isEmpty()) out.send(datas.pop());
+        while (!datas.isEmpty()) out.send(datas.removeLast());
         this.pendingDatas.remove(ip);
     }
 
     private void connect(String ip)
     {
-        Log.Print("Trying to connect : " + ip + ":" + this.TCPPort);
+        Log.Print(this.getClass().getName() + " trying to connect : " + ip + ":" + this.TCPPort);
         ConnectionThread connection = this.networkThreadManager.createConnectionThread(ip, this.TCPPort);
         connection.start();
 

@@ -29,11 +29,11 @@ public class NetworkThreadManager implements Listener
     {
         if (!this.threads.containsKey(id))
         {
-            Log.Warning("No thread with id : " + id);
+            Log.Warning(this.getClass().getName() + " no thread with id : " + id);
         }
         else
         {
-            Log.Print("Removing thread : " + id);
+            Log.Print(this.getClass().getName() + " removing thread : " + id);
             this.threads.remove(id);
         }
     }
@@ -42,7 +42,7 @@ public class NetworkThreadManager implements Listener
     {
         ConnectionThread thread = new ConnectionThread(ip, port);
         this.threads.put(thread.getIdString(), thread);
-        Log.Print("New Connection thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print(this.getClass().getName() + " new Connection thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 
@@ -50,7 +50,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPOUTSocketThread thread = new TCPOUTSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
-        Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print(this.getClass().getName() + " new TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 
@@ -58,7 +58,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPINSocketThread thread = new TCPINSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
-        Log.Print("New TCP_IN thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print(this.getClass().getName() + " new TCP_IN thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 
@@ -66,7 +66,7 @@ public class NetworkThreadManager implements Listener
     {
         TCPServerThread thread = new TCPServerThread(port);
         this.threads.put(thread.getIdString(), thread);
-        Log.Print("New TCP Server thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print(this.getClass().getName() + " new TCP Server thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 
@@ -76,7 +76,7 @@ public class NetworkThreadManager implements Listener
         switch (event.type)
         {
             case THREAD_EVENT:
-                Log.Print("NetworkThreadManager Event --> " + event.type);
+                Log.Print(this.getClass().getName() + " Event --> " + event.type);
                 this.onThreadEvent((ThreadEvent)event);
                 break;
         }
@@ -87,7 +87,7 @@ public class NetworkThreadManager implements Listener
         switch (event.threadEventType)
         {
             case THREAD_EVENT_FINISHED:
-                Log.Print("NetworkThreadManager Event --> " + event.threadEventType);
+                Log.Print(this.getClass().getName() + " Event --> " + event.threadEventType);
                 this.onThreadFinishedEvent(event);
                 break;
         }

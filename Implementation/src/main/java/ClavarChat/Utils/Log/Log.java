@@ -5,11 +5,26 @@ import java.util.Date;
 
 public class Log
 {
+    private static boolean active = true;
+
     private static void format(String color, String a)
     {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        String date = format.format(new Date());
-        System.out.println(color + "[" + date + "] " + a + ConsoleColors.RESET);
+        if (active)
+        {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            String date = format.format(new Date());
+            System.out.println(color + "[" + date + "] " + a + ConsoleColors.RESET);
+        }
+    }
+
+    public static void on()
+    {
+        active = true;
+    }
+
+    public static void off()
+    {
+        active = false;
     }
 
     public static void Print(String a)
