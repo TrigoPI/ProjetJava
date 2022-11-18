@@ -13,8 +13,16 @@ public class Application
         Log.on();
 
         NetworkManager networkManager = new NetworkManager(4000, 5000);
-        networkManager.startTCPServer();
-        networkManager.startUDPServer();
+//        networkManager.startTCPServer();
+//        networkManager.startUDPServer();
+
+        networkManager.sendUDP(
+                new Paquet(
+                        new UserData("Alexis", "0000"),
+                        PAQUET_TYPE.PAQUET_DISCOVER,
+                        "192.168.1.255"
+                )
+        );
 
 //        while (true)
 //        {

@@ -15,7 +15,6 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -61,7 +60,7 @@ public class NetworkManager implements Listener
         this.udpServerThread.start();
     }
 
-    public void broadcast(Paquet paquet)
+    public void sendUDP(Paquet paquet)
     {
         try
         {
@@ -150,7 +149,8 @@ public class NetworkManager implements Listener
 
     private void onNetworkDataEvent(DataEvent event)
     {
-        System.out.println(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
+        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
+        Log.Info(this.getClass().getName() + " paquet type : " + event.data.type);
         //this.eventManager.notiy(new PaquetEvent(event.data));
     }
 
