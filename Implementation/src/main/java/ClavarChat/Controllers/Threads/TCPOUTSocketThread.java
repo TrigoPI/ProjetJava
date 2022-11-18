@@ -75,7 +75,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
         }
         catch (IOException | InterruptedException e)
         {
-            Log.Warning(this.getClass().getName() + " ERROR : " + this.getLocalIP() + ":" + this.localPort + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+            Log.Warning(this.getClass().getName() + " ERROR : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
         }
 
         this.running = false;

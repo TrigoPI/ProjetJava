@@ -28,6 +28,6 @@ public class Application
 //            networkManager.sendTCP(new Paquet(new UserData(msg, "0000", "192.168.1.2"), PAQUET_TYPE.PAQUET_LOGIN));
 //        }
 
-            networkManager.sendTCP(new Paquet(new UserData("test", "0000", "192.168.1.2"), PAQUET_TYPE.PAQUET_LOGIN));
+            networkManager.sendTCP(new Paquet(new UserData("test", "0000"), PAQUET_TYPE.PAQUET_LOGIN, "192.168.1.2"));
     }
 }

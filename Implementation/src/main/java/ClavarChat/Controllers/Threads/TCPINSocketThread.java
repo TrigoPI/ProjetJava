@@ -22,14 +22,15 @@ public class TCPINSocketThread extends TCPMessaginThread
 
     public void receive(Paquet paquet)
     {
-        Log.Print(this.getClass().getName() + " : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+        Log.Print(this.getClass().getName() + " receive : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+        paquet.src = socket.getInetAddress().toString().split("/")[1];
         this.eventManager.notiy(new DataEvent(paquet));
     }
 
     @Override
     public void run()
     {
-        Log.Info(this.getClass().getName() + " : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+        Log.Info(this.getClass().getName() + " RUN : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
 
         this.update();
         this.eventManager.notiy(new EndConnectionEvent(this.distantIP.toString().split("/")[1]));
@@ -50,7 +51,6 @@ public class TCPINSocketThread extends TCPMessaginThread
         catch (IOException | ClassNotFoundException e)
         {
             Log.Warning(this.getClass().getName() + " ERROR : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
-
         }
 
         this.running = false;

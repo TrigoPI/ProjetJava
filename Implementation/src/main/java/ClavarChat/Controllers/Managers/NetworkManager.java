@@ -53,7 +53,7 @@ public class NetworkManager implements Listener
 
     public void sendTCP(Paquet paquet)
     {
-        String ip = paquet.user.ip;
+        String ip = paquet.dst;
 
         if (!this.clients.containsKey(ip))
         {
