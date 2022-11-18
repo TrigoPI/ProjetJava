@@ -8,7 +8,14 @@ import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -19,7 +26,9 @@ public class NetworkManager implements Listener
 
     private EventManager eventManager;
     private NetworkThreadManager networkThreadManager;
+
     private TCPServerThread tcpServerThread;
+    private UDPServerThread udpServerThread;
 
     private HashMap<String, LinkedList<Paquet>> pendingDatas;
     private HashMap<String, ClientHandler> clients;
@@ -33,6 +42,7 @@ public class NetworkManager implements Listener
         this.networkThreadManager = new NetworkThreadManager();
 
         this.tcpServerThread = this.networkThreadManager.createTCPServerThread(TCPPort);
+        this.udpServerThread = this.networkThreadManager.createUDPServerThread(UDPPort);
 
         this.pendingDatas = new HashMap<String, LinkedList<Paquet>>();
         this.clients = new HashMap<String, ClientHandler>();
@@ -46,8 +56,30 @@ public class NetworkManager implements Listener
         this.tcpServerThread.start();
     }
 
+    public void startUDPServer()
+    {
+        this.udpServerThread.start();
+    }
+
     public void broadcast(Paquet paquet)
     {
+        try
+        {
+            InetAddress addr = InetAddress.getByName(paquet.dst);
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            ObjectOutput oo = new ObjectOutputStream(bStream);
+            oo.writeObject(paquet);
+            oo.close();
+
+            byte[] serializedMessage = bStream.toByteArray();
+            DatagramSocket datagramSocket = new DatagramSocket();
+            DatagramPacket datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, addr, this.UDPPort);
+            datagramSocket.send(datagramPacket);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -118,8 +150,8 @@ public class NetworkManager implements Listener
 
     private void onNetworkDataEvent(DataEvent event)
     {
-        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
-        this.eventManager.notiy(new PaquetEvent(event.data));
+        System.out.println(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
+        //this.eventManager.notiy(new PaquetEvent(event.data));
     }
 
     private void onNewConnectionEvent(NewConnectionEvent event)
@@ -146,9 +178,8 @@ public class NetworkManager implements Listener
     private void connect(String ip)
     {
         Log.Print(this.getClass().getName() + " trying to connect : " + ip + ":" + this.TCPPort);
+        this.pendingDatas.put(ip, new LinkedList<Paquet>());
         ConnectionThread connection = this.networkThreadManager.createConnectionThread(ip, this.TCPPort);
         connection.start();
-
-        this.pendingDatas.put(ip, new LinkedList<Paquet>());
     }
 }

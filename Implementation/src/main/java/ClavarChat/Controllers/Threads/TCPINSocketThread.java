@@ -20,13 +20,6 @@ public class TCPINSocketThread extends TCPMessaginThread
         super(socket);
     }
 
-    public void receive(Paquet paquet)
-    {
-        Log.Print(this.getClass().getName() + " receive : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
-        paquet.src = socket.getInetAddress().toString().split("/")[1];
-        this.eventManager.notiy(new DataEvent(paquet));
-    }
-
     @Override
     public void run()
     {
@@ -54,5 +47,12 @@ public class TCPINSocketThread extends TCPMessaginThread
         }
 
         this.running = false;
+    }
+
+    private void receive(Paquet paquet)
+    {
+        Log.Print(this.getClass().getName() + " receive : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+        paquet.src = socket.getInetAddress().toString().split("/")[1];
+        this.eventManager.notiy(new DataEvent(paquet));
     }
 }

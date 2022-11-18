@@ -14,7 +14,6 @@ public class TCPServerThread extends ServerThread
     public TCPServerThread(int port)
     {
         super(port);
-        this.createServer(port);
     }
 
     @Override
@@ -22,7 +21,7 @@ public class TCPServerThread extends ServerThread
     {
         try
         {
-            Log.Info("TCP Server start on : " + this.ip + ":" + this.port);
+            Log.Info(this.getClass().getName() + " start on : " + this.port);
 
             while (true)
             {
@@ -36,12 +35,11 @@ public class TCPServerThread extends ServerThread
         }
     }
 
-    private void createServer(int port)
+    protected void createServer(int port)
     {
         try
         {
             this.serverSocket = new ServerSocket(port);
-            this.ip = this.serverSocket.getInetAddress();
         }
         catch (IOException e)
         {
