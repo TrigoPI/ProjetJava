@@ -9,22 +9,18 @@ public class TCPMessaginThread extends NetworkThread
 {
     protected Socket socket;
     protected InetAddress distantIP;
+    protected InetAddress localIP;
     protected int distantPort;
-
-    protected TCPMessaginThread(String ip, int port) throws UnknownHostException
-    {
-        super();
-        this.socket = new Socket();
-        this.distantIP = InetAddress.getByName(ip);
-        this.distantPort = port;
-    }
+    protected int localPort;
 
     protected TCPMessaginThread(Socket socket)
     {
-        super(socket.getLocalAddress(), socket.getLocalPort());
+        super();
         this.socket = socket;
         this.distantIP = socket.getInetAddress();
+        this.localIP = socket.getLocalAddress();
         this.distantPort = socket.getPort();
+        this.localPort = socket.getLocalPort();
     }
 
     public int getDistantPort()
@@ -32,21 +28,18 @@ public class TCPMessaginThread extends NetworkThread
         return this.distantPort;
     }
 
+    public int getLocalPort()
+    {
+        return this.localPort;
+    }
+
     public String getDistantIP()
     {
         return this.distantIP.toString().split("/")[1];
     }
 
-    @Override
-    public void close()
+    public String getLocalIP()
     {
-        try
-        {
-            this.socket.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        return localIP.toString().split("/")[1];
     }
 }

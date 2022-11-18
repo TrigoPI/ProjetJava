@@ -1,12 +1,10 @@
 package ClavarChat.Controllers.Managers;
 
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Threads.NetworkThread;
-import ClavarChat.Controllers.Threads.TCPINSocketThread;
-import ClavarChat.Controllers.Threads.TCPOUTSocketThread;
-import ClavarChat.Controllers.Threads.TCPServerThread;
+import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
+import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.net.Socket;
@@ -27,29 +25,33 @@ public class NetworkThreadManager implements Listener
         this.eventManager.addListenner(this, EVENT_TYPE.THREAD_EVENT);
     }
 
+    public void removeThread(String id)
+    {
+        if (!this.threads.containsKey(id))
+        {
+            Log.Warning("No thread with id : " + id);
+        }
+        else
+        {
+            Log.Print("Removing thread : " + id);
+            this.threads.remove(id);
+        }
+    }
+
+    public ConnectionThread createConnectionThread(String ip, int port)
+    {
+        ConnectionThread thread = new ConnectionThread(ip, port);
+        this.threads.put(thread.getIdString(), thread);
+        Log.Print("New Connection thread " + thread.getIdString() + " --> " + thread.toString());
+        return thread;
+    }
+
     public TCPOUTSocketThread createTCPOUTSocketThread(Socket socket)
     {
         TCPOUTSocketThread thread = new TCPOUTSocketThread(socket);
         this.threads.put(thread.getIdString(), thread);
         Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
-    }
-
-    public TCPOUTSocketThread TCPOUTSocketThread(String ip, int port)
-    {
-        try
-        {
-            TCPOUTSocketThread thread = new TCPOUTSocketThread(ip, port);
-            this.threads.put(thread.getIdString(), thread);
-            Log.Print("New TCP_OUT thread " + thread.getIdString() + " --> " + thread.toString());
-            return thread;
-        }
-        catch (UnknownHostException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public TCPINSocketThread createTCPINSocketThread(Socket socket)
@@ -71,6 +73,28 @@ public class NetworkThreadManager implements Listener
     @Override
     public void onEvent(Event event)
     {
+        switch (event.type)
+        {
+            case THREAD_EVENT:
+                Log.Print("NetworkThreadManager Event --> " + event.type);
+                this.onThreadEvent((ThreadEvent)event);
+                break;
+        }
+    }
 
+    private void onThreadEvent(ThreadEvent event)
+    {
+        switch (event.threadEventType)
+        {
+            case THREAD_EVENT_FINISHED:
+                Log.Print("NetworkThreadManager Event --> " + event.threadEventType);
+                this.onThreadFinishedEvent(event);
+                break;
+        }
+    }
+
+    private void onThreadFinishedEvent(ThreadEvent event)
+    {
+        this.removeThread(event.threadID);
     }
 }
