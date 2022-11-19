@@ -6,6 +6,7 @@ import ClavarChat.Models.Events.Enums.THREAD_EVENT_TYPE;
 import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 
 import java.io.IOException;
@@ -23,11 +24,11 @@ public class TCPINSocketThread extends TCPMessaginThread
     @Override
     public void run()
     {
-        Log.Info(this.getClass().getName() + " RUN : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+        Log.Info(this.getClass().getName() + " RUN : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
         this.update();
-        this.eventManager.notiy(new EndConnectionEvent(this.distantIP.toString().split("/")[1]));
+        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
         this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-        Log.Info(this.getClass().getName() + " : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort() + " finished");
+        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
     private void update()
@@ -41,7 +42,7 @@ public class TCPINSocketThread extends TCPMessaginThread
         }
         catch (IOException | ClassNotFoundException e)
         {
-            Log.Warning(this.getClass().getName() + " ERROR : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
+            Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
         }
 
         this.running = false;
@@ -49,8 +50,8 @@ public class TCPINSocketThread extends TCPMessaginThread
 
     private void receive(Paquet paquet)
     {
-        Log.Print(this.getClass().getName() + " receive : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
-        paquet.src = socket.getInetAddress().toString().split("/")[1];
+        Log.Print(this.getClass().getName() + " receive : " + this.localIP+ ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
+        paquet.src = NetworkUtils.inetAddressToString(socket.getInetAddress());
         this.eventManager.notiy(new DataEvent(paquet));
     }
 }

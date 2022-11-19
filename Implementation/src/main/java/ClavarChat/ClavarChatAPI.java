@@ -2,6 +2,7 @@ package ClavarChat;
 
 import ClavarChat.Controllers.Managers.EventManager;
 import ClavarChat.Controllers.Listenner.Listener;
+import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.PaquetEvent;
@@ -12,7 +13,7 @@ public class ClavarChatAPI implements Listener
 {
     private EventManager eventManager;
 
-    public ClavarChatAPI()
+    public ClavarChatAPI(int tcpPort, int udpPort)
     {
         this.eventManager = EventManager.getInstance();
 

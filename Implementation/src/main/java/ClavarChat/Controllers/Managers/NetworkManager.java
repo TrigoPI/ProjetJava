@@ -1,22 +1,20 @@
 package ClavarChat.Controllers.Managers;
 
-import ClavarChat.Controllers.Threads.*;
-import ClavarChat.Models.Events.*;
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
+import ClavarChat.Controllers.Threads.*;
+import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.net.*;
+import java.util.*;
 
 public class NetworkManager implements Listener
 {
@@ -48,6 +46,53 @@ public class NetworkManager implements Listener
 
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_EVENT);
+    }
+
+    public ArrayList<String> getAllIp()
+    {
+        return NetworkUtils.getAllIp();
+    }
+
+    public ArrayList<String[]> getActiveSockets()
+    {
+        ArrayList<String[]> sockets = new ArrayList<String[]>();
+
+        for (String key : this.clients.keySet())
+        {
+            String[] info = new String[4];
+            ClientHandler client = this.clients.get(key);
+
+            info[1] = Integer.toString(client.getLocalPort());
+            info[3] = Integer.toString(client.getDistantPort());
+            info[0] = client.getLocalIP();
+            info[2] = client.getDistantIP();
+
+            sockets.add(info);
+        }
+
+        return sockets;
+    }
+
+    public ArrayList<String> getConnectedNetworks()
+    {
+        ArrayList<String> networks = new ArrayList<String>();
+        ArrayList<String> ips = NetworkUtils.getAllIp();
+
+        for (String ip : ips)
+        {
+            String mask = NetworkUtils.getNetworkMask(ip);
+            networks.add(NetworkUtils.getNetwork(ip, mask));
+        }
+
+        return networks;
+    }
+
+    public ArrayList<String> getBroadcastAddresses()
+    {
+        ArrayList<String> broadcast = new ArrayList<String>();
+        ArrayList<String> ips = NetworkUtils.getAllIp();
+        for (String ip : ips) broadcast.add(NetworkUtils.getBroadcastAddress(ip));
+        return broadcast;
     }
 
     public void startTCPServer()
@@ -93,8 +138,13 @@ public class NetworkManager implements Listener
         }
         else
         {
-            this.clients.get(ip).out.send(paquet);
+            this.clients.get(ip).send(paquet);
         }
+    }
+
+    public void closeAllTcp()
+    {
+        for (String key : this.clients.keySet()) this.closeTCP(key);
     }
 
     public void closeTCP(String ip)
@@ -105,9 +155,9 @@ public class NetworkManager implements Listener
         }
         else
         {
+            Log.Info(this.getClass().getName() + " close TCP with : " + ip);
             this.clients.get(ip).stop();
             this.clients.remove(ip);
-            Log.Info(this.getClass().getName() + " close TCP with : " + ip);
         }
     }
 
@@ -136,9 +186,6 @@ public class NetworkManager implements Listener
             case NETWORK_EVENT_CONNECTION:
                 this.onConnectionEvent((ConnectionEvent)event);
                 break;
-//            case NETWORK_EVENT_NEW_CONNECTION:
-//                this.onNewConnectionEvent((SuccessConectionEvent)event);
-//                break;
         }
     }
 
@@ -188,7 +235,7 @@ public class NetworkManager implements Listener
 
     private void flushPendingDatas(String ip, TCPOUTSocketThread out)
     {
-        Log.Print(this.getClass().getName() + " flushing data to THREAD_OUT : " + out.getIdString() + "-->" + out);
+        Log.Print(this.getClass().getName() + " Flushing data to " + out.getIdString() + " --> " + out);
         LinkedList<Paquet> datas = this.pendingDatas.get(ip);
         while (!datas.isEmpty()) out.send(datas.removeLast());
         this.pendingDatas.remove(ip);

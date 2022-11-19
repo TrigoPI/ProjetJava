@@ -65,7 +65,7 @@ public class NetworkThreadManager implements Listener
     {
         UDPServerThread thread = new UDPServerThread(port);
         this.threads.put(thread.getIdString(), thread);
-        Log.Print(this.getClass().getName() + " new TCP Server thread " + thread.getIdString() + " --> " + thread.toString());
+        Log.Print(this.getClass().getName() + " new UDP Server thread " + thread.getIdString() + " --> " + thread.toString());
         return thread;
     }
 

@@ -43,11 +43,11 @@ public class TCPOUTSocketThread extends TCPMessaginThread
     @Override
     public void run()
     {
-        Log.Info(this.getClass().getName() + " RUN : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
+        Log.Info(this.getClass().getName() + " RUN : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
         this.update();
-        this.eventManager.notiy(new EndConnectionEvent(this.distantIP.toString().split("/")[1]));
+        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
         this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-        Log.Info(this.getClass().getName() + " : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort() + " finished");
+        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
     private void update()
@@ -63,7 +63,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
                 this.semaphore.acquire();
                 if (!this.datas.isEmpty())
                 {
-                    Log.Info(this.getClass().getName() + " send Data : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
+                    Log.Info(this.getClass().getName() + " send Data : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
                     Paquet paquet = this.datas.removeLast();
                     this.semaphore.release();
                     oout.writeObject(paquet);
@@ -73,7 +73,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
         }
         catch (IOException | InterruptedException e)
         {
-            Log.Warning(this.getClass().getName() + " ERROR : " + this.getLocalIP() + ":" + this.localPort + " --> " + this.getDistantIP() + ":" + this.getDistantPort());
+            Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
         }
 
         this.running = false;
