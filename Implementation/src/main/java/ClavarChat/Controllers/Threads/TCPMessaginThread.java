@@ -1,9 +1,7 @@
 package ClavarChat.Controllers.Threads;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class TCPMessaginThread extends NetworkThread
 {

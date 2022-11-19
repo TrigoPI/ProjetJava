@@ -134,7 +134,7 @@ public class NetworkManager implements Listener
                 this.onNetworkDataEvent((DataEvent)event);
                 break;
             case NETWORK_EVENT_CONNECTION:
-                this.onConnectionEvent((EndConnectionEvent)event);
+                this.onConnectionEvent((ConnectionEvent)event);
                 break;
 //            case NETWORK_EVENT_NEW_CONNECTION:
 //                this.onNewConnectionEvent((SuccessConectionEvent)event);

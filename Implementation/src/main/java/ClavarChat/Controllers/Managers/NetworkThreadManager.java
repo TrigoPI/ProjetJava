@@ -8,7 +8,6 @@ import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 
 public class NetworkThreadManager implements Listener
