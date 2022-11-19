@@ -1,14 +1,14 @@
 package ClavarChat.Models.Events;
 
-import ClavarChat.Models.Events.Enums.NETWORK_EVENT_TYPE;
+import ClavarChat.Models.Events.Enums.CONNECTION_EVENT_TYPE;
 
-public class EndConnectionEvent extends NetworkEvent
+public class EndConnectionEvent extends ConnectionEvent
 {
     public String ip;
 
     public EndConnectionEvent(String ip)
     {
-        super(NETWORK_EVENT_TYPE.NETWORK_EVENT_END_CONNECTION);
+        super(CONNECTION_EVENT_TYPE.CONNECTION_EVENT_END);
         this.ip = ip;
     }
 }

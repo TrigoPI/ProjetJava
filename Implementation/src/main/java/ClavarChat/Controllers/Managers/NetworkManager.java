@@ -133,28 +133,46 @@ public class NetworkManager implements Listener
             case NETWORK_EVENT_DATA:
                 this.onNetworkDataEvent((DataEvent)event);
                 break;
-            case NETWORK_EVENT_END_CONNECTION:
-                this.onEndConnectionEvent((EndConnectionEvent)event);
+            case NETWORK_EVENT_CONNECTION:
+                this.onConnectionEvent((EndConnectionEvent)event);
                 break;
-            case NETWORK_EVENT_NEW_CONNECTION:
-                this.onNewConnectionEvent((NewConnectionEvent)event);
-                break;
+//            case NETWORK_EVENT_NEW_CONNECTION:
+//                this.onNewConnectionEvent((SuccessConectionEvent)event);
+//                break;
         }
-    }
-
-    private void onEndConnectionEvent(EndConnectionEvent event)
-    {
-        this.closeTCP(event.ip);
     }
 
     private void onNetworkDataEvent(DataEvent event)
     {
         Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
         Log.Info(this.getClass().getName() + " paquet type : " + event.data.type);
+        System.out.println(event.data.user.pseudo + " : " + event.data.user.id);
         //this.eventManager.notiy(new PaquetEvent(event.data));
     }
 
-    private void onNewConnectionEvent(NewConnectionEvent event)
+    private void onConnectionEvent(ConnectionEvent event)
+    {
+        Log.Print(this.getClass().getName() + " Event --> " + event.connectionEventType);
+
+        switch (event.connectionEventType)
+        {
+            case CONNECTION_EVENT_SUCCESS:
+                this.onSuccessConnectionEvent((SuccessConectionEvent)event);
+                break;
+            case CONNECTION_EVENT_END:
+                this.onEndConnectionEvent((EndConnectionEvent)event);
+                break;
+            case CONNECTION_EVENT_FAILED:
+                break;
+        }
+    }
+
+    private void onEndConnectionEvent(EndConnectionEvent event)
+    {
+        if (this.clients.containsKey(event.ip)) this.closeTCP(event.ip);
+    }
+
+    private void onSuccessConnectionEvent(SuccessConectionEvent event)
     {
         Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " + event.ip + ":" + event.port);
 
@@ -170,6 +188,7 @@ public class NetworkManager implements Listener
 
     private void flushPendingDatas(String ip, TCPOUTSocketThread out)
     {
+        Log.Print(this.getClass().getName() + " flushing data to THREAD_OUT : " + out.getIdString() + "-->" + out);
         LinkedList<Paquet> datas = this.pendingDatas.get(ip);
         while (!datas.isEmpty()) out.send(datas.removeLast());
         this.pendingDatas.remove(ip);

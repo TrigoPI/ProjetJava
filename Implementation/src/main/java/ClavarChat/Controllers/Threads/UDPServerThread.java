@@ -24,7 +24,6 @@ public class UDPServerThread extends ServerThread
     public void run()
     {
         Log.Info(this.getClass().getName() + " start on : " + this.port);
-
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 

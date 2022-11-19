@@ -19,12 +19,6 @@ public class ClientHandler
         this.out = out;
     }
 
-    public ClientHandler()
-    {
-        this.in = null;
-        this.out = null;
-    }
-
     public void stop()
     {
         try

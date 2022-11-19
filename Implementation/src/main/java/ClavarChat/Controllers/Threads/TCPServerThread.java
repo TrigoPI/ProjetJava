@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.NewConnectionEvent;
+import ClavarChat.Models.Events.SuccessConectionEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class TCPServerThread extends ServerThread
             while (true)
             {
                 Socket socket = serverSocket.accept();
-                this.eventManager.notiy(new NewConnectionEvent(socket));
+                this.eventManager.notiy(new SuccessConectionEvent(socket));
             }
         }
         catch (IOException e)

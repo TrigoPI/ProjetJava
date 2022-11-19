@@ -24,11 +24,9 @@ public class TCPINSocketThread extends TCPMessaginThread
     public void run()
     {
         Log.Info(this.getClass().getName() + " RUN : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort());
-
         this.update();
         this.eventManager.notiy(new EndConnectionEvent(this.distantIP.toString().split("/")[1]));
         this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-
         Log.Info(this.getClass().getName() + " : " + this.getLocalIP() + ":" + this.getLocalPort() + " <-- " + this.getDistantIP() + ":" + this.getDistantPort() + " finished");
     }
 
