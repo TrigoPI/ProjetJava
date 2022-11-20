@@ -21,7 +21,7 @@ public class UDPServerThread extends ServerThread
     }
 
     @Override
-    public void run()
+    protected void update()
     {
         Log.Info(this.getClass().getName() + " start on : " + this.port);
         int bufferSize = 1024;
@@ -35,10 +35,7 @@ public class UDPServerThread extends ServerThread
                 this.datagramSocket.receive(datagramPacket);
                 this.receive(datagramPacket);
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+            catch (IOException e) { e.printStackTrace(); }
         }
     }
 
@@ -49,10 +46,7 @@ public class UDPServerThread extends ServerThread
         {
             this.datagramSocket = new DatagramSocket(port);
         }
-        catch (SocketException e)
-        {
-            e.printStackTrace();
-        }
+        catch (SocketException e) { e.printStackTrace(); }
     }
 
     private void receive(DatagramPacket datagramPacket)
@@ -64,9 +58,6 @@ public class UDPServerThread extends ServerThread
             ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
             this.eventManager.notiy(new DataEvent((Paquet)iStream.readObject()));
         }
-        catch (IOException | ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+        catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
 }

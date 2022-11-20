@@ -1,6 +1,7 @@
 package Application;
 
 import Application.CLI.NetworkManagerCLI;
+import Application.GUI.ClavarChatGUI;
 
 public class ClavarChatApplication
 {

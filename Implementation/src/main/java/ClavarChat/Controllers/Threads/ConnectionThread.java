@@ -1,8 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.Enums.THREAD_EVENT_TYPE;
 import ClavarChat.Models.Events.SuccessConectionEvent;
-import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.IOException;
@@ -23,14 +21,11 @@ public class ConnectionThread extends NetworkThread
     }
 
     @Override
-    public void run()
+    protected void update()
     {
         Log.Info(this.getClass().getName() + " RUN : " + this.distantIP + ":" + this.distantPort);
-
         this.connect();
-        this.eventManager.notiy(new SuccessConectionEvent(socket));
-        this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-
+        this.eventManager.notiy(new SuccessConectionEvent(socket, this.distantIP, this.distantPort));
         Log.Info(this.getClass().getName() + " : " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
@@ -40,11 +35,8 @@ public class ConnectionThread extends NetworkThread
         {
             InetAddress addr = InetAddress.getByName(this.distantIP);
             SocketAddress socketAddr = new InetSocketAddress(addr, this.distantPort);
-            this.socket.connect(socketAddr);
+            this.socket.connect(socketAddr, 10000);
         }
-        catch (IOException e)
-        {
-            Log.Warning(this.getClass().getName() + " connection failed with : " + this.distantIP + ":" + this.distantPort);
-        }
+        catch (IOException e) { Log.Warning(this.getClass().getName() + " connection failed with : " + this.distantIP + ":" + this.distantPort); }
     }
 }

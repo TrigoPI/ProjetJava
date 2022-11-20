@@ -1,8 +1,10 @@
 package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Controllers.Managers.EventManager;
+import ClavarChat.Models.Events.Enums.THREAD_EVENT_TYPE;
+import ClavarChat.Models.Events.ThreadEvent;
 
-public class NetworkThread extends Thread
+public abstract class NetworkThread extends Thread
 {
     protected EventManager eventManager;
 
@@ -13,6 +15,15 @@ public class NetworkThread extends Thread
 
     public String getIdString()
     {
-        return "" + this.getId();
+        return "" + this.threadId();
     }
+
+    @Override
+    public void run()
+    {
+        this.update();
+        this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
+    }
+
+    protected abstract void update();
 }

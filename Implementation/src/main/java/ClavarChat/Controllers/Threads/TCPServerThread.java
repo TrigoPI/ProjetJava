@@ -2,6 +2,7 @@ package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Models.Events.SuccessConectionEvent;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,7 +18,7 @@ public class TCPServerThread extends ServerThread
     }
 
     @Override
-    public void run()
+    protected void update()
     {
         try
         {
@@ -26,13 +27,10 @@ public class TCPServerThread extends ServerThread
             while (true)
             {
                 Socket socket = serverSocket.accept();
-                this.eventManager.notiy(new SuccessConectionEvent(socket));
+                this.eventManager.notiy(new SuccessConectionEvent(socket, NetworkUtils.inetAddressToString(socket.getInetAddress()), socket.getPort()));
             }
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
     protected void createServer(int port)
@@ -41,9 +39,6 @@ public class TCPServerThread extends ServerThread
         {
             this.serverSocket = new ServerSocket(port);
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        catch (IOException e) { e.printStackTrace(); }
     }
 }

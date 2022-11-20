@@ -21,31 +21,19 @@ public class TCPINSocketThread extends TCPMessaginThread
         super(socket);
     }
 
-    @Override
-    public void run()
+    protected void loop()
     {
         Log.Info(this.getClass().getName() + " RUN : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
-        this.update();
-        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
-        this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort + " finished");
-    }
 
-    private void update()
-    {
         try
         {
-            this.running = true;
             InputStream in = socket.getInputStream();
             ObjectInputStream iin = new ObjectInputStream(in);
             while (this.running) this.receive((Paquet)iin.readObject());
         }
-        catch (IOException | ClassNotFoundException e)
-        {
-            Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
-        }
+        catch (IOException | ClassNotFoundException e) { Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort); }
 
-        this.running = false;
+        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
     private void receive(Paquet paquet)

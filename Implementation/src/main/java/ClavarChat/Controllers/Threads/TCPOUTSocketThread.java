@@ -34,27 +34,16 @@ public class TCPOUTSocketThread extends TCPMessaginThread
             this.datas.push(paquet);
             this.semaphore.release();
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        catch (InterruptedException e) { e.printStackTrace(); }
     }
 
     @Override
-    public void run()
+    protected void loop()
     {
         Log.Info(this.getClass().getName() + " RUN : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
-        this.update();
-        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
-        this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
-        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort + " finished");
-    }
 
-    private void update()
-    {
         try
         {
-            this.running = true;
             OutputStream out = socket.getOutputStream();
             ObjectOutputStream oout = new ObjectOutputStream(out);
 
@@ -71,11 +60,8 @@ public class TCPOUTSocketThread extends TCPMessaginThread
                 this.semaphore.release();
             }
         }
-        catch (IOException | InterruptedException e)
-        {
-            Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
-        }
+        catch (IOException | InterruptedException e) { Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort); }
 
-        this.running = false;
+        Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort + " finished");
     }
 }

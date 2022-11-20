@@ -221,16 +221,34 @@ public class NetworkManager implements Listener
 
     private void onSuccessConnectionEvent(SuccessConectionEvent event)
     {
-        Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " + event.ip + ":" + event.port);
+        if (event.connected)
+        {
+            this.socketConnectedSuccess(event.socket, event.ip, event.port);
+        }
+        else
+        {
+            this.socketConnectedFailed(event.ip, event.port);
+        }
+    }
 
-        TCPINSocketThread in = this.networkThreadManager.createTCPINSocketThread(event.socket);
-        TCPOUTSocketThread out = this.networkThreadManager.createTCPOUTSocketThread(event.socket);
+    private void socketConnectedSuccess(Socket socket, String ip, int port)
+    {
+        Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " +  ip + ":" + port);
 
-        this.clients.put(event.ip, new ClientHandler(event.socket, in, out));
-        if (this.pendingDatas.containsKey(event.ip)) this.flushPendingDatas(event.ip, out);
+        TCPINSocketThread in = this.networkThreadManager.createTCPINSocketThread(socket);
+        TCPOUTSocketThread out = this.networkThreadManager.createTCPOUTSocketThread(socket);
+
+        this.clients.put(ip, new ClientHandler(socket, in, out));
+        if (this.pendingDatas.containsKey(ip)) this.flushPendingDatas(ip, out);
 
         in.start();
         out.start();
+    }
+
+    private void socketConnectedFailed(String ip, int port)
+    {
+        Log.Print(this.getClass().getName() + " Removing pending data to : " + ip + ":" + port);
+        this.pendingDatas.remove(ip);
     }
 
     private void flushPendingDatas(String ip, TCPOUTSocketThread out)

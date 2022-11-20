@@ -1,11 +1,12 @@
 package ClavarChat.Controllers.Threads;
 
+import ClavarChat.Models.Events.EndConnectionEvent;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class TCPMessaginThread extends NetworkThread
+public abstract class TCPMessaginThread extends NetworkThread
 {
     protected Socket socket;
     protected String distantIP;
@@ -18,16 +19,33 @@ public class TCPMessaginThread extends NetworkThread
     {
         super();
         this.socket = socket;
+
+        this.running = false;
+
         this.distantIP = NetworkUtils.inetAddressToString(socket.getInetAddress());
         this.localIP = NetworkUtils.inetAddressToString(socket.getLocalAddress());
         this.distantPort = socket.getPort();
         this.localPort = socket.getLocalPort();
-
-        this.running = false;
     }
 
     public void stopSocket()
     {
         this.running = false;
     }
+
+    public void startSocket()
+    {
+        this.running = true;
+    }
+
+    @Override
+    protected void update()
+    {
+        this.stopSocket();
+        this.loop();
+        this.stopSocket();
+        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
+    }
+
+    protected abstract void loop();
 }
