@@ -1,25 +1,43 @@
-package Application.CLI;
+package Application.CLI.Modules;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Models.Paquets.Enums.PAQUET_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Models.Users.UserData;
-import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class NetworkManagerCLI
+public class ModuleNetworkCLI extends ModuleCLI
 {
-
     private NetworkManager networkManager;
 
-    public NetworkManagerCLI()
+    public ModuleNetworkCLI(NetworkManager networkManager)
     {
-        Log.off();
-        Log.savingOn();
+        this.networkManager = networkManager;
+        this.addCommand("networks");
+        this.addCommand("send");
+        this.addCommand("close-socket");
+        this.addCommand("get-socket");
+    }
 
-        this.networkManager = new NetworkManager(4000, 5000);
+    @Override
+    protected void command(String cmd)
+    {
+        switch (cmd) {
+            case "networks":
+                this.networksCmd();
+                break;
+            case "send":
+                this.sendCmd();
+                break;
+            case "close-socket":
+                this.closeSocketCmd();
+                break;
+            case "get-socket":
+                this.getSocketCmd();
+                break;
+        }
     }
 
     private String getUserInput(String msg)
@@ -27,11 +45,6 @@ public class NetworkManagerCLI
         Scanner scanner = new Scanner(System.in);
         System.out.print(msg);
         return scanner.nextLine();
-    }
-
-    private void unknownCmd()
-    {
-        System.out.println("unknown command");
     }
 
     private void networksCmd()
@@ -48,11 +61,6 @@ public class NetworkManagerCLI
 
             System.out.println("ip : " + ip + " - network : " + network + " - broadcast : " + broadcast);
         }
-    }
-
-    private void logsCmd()
-    {
-        Log.displayLogs();
     }
 
     private void sendCmd()
@@ -85,48 +93,5 @@ public class NetworkManagerCLI
     {
         ArrayList<String[]> sockets = this.networkManager.getActiveSockets();
         for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
-    }
-
-    private void execCmd(String cmd)
-    {
-        String[] cmdSplit = cmd.split(" ");
-
-        if (cmdSplit.length > 0)
-        {
-            switch (cmdSplit[0])
-            {
-                case "networks":
-                    this.networksCmd();
-                    break;
-                case "logs":
-                    this.logsCmd();
-                    break;
-                case "send":
-                    this.sendCmd();
-                    break;
-                case "close-socket":
-                    this.closeSocketCmd();
-                    break;
-                case "get-socket":
-                    this.getSocketCmd();
-                    break;
-                case "exit":
-                    break;
-                default:
-                    this.unknownCmd();
-                    break;
-            }
-        }
-    }
-
-    public void run()
-    {
-        String input = "";
-
-        while (!input.equals("exit"))
-        {
-            input = getUserInput("> ");
-            this.execCmd(input);
-        }
     }
 }

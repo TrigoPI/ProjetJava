@@ -13,9 +13,11 @@ public abstract class NetworkThread extends Thread
         this.eventManager = EventManager.getInstance();
     }
 
+    protected abstract void update();
+
     public String getIdString()
     {
-        return "" + this.threadId();
+        return "" + this.getId();
     }
 
     @Override
@@ -24,6 +26,4 @@ public abstract class NetworkThread extends Thread
         this.update();
         this.eventManager.notiy(new ThreadEvent(THREAD_EVENT_TYPE.THREAD_EVENT_FINISHED, this.getIdString()));
     }
-
-    protected abstract void update();
 }

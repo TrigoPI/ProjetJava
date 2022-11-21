@@ -80,10 +80,11 @@ public class NetworkThreadManager implements Listener
     @Override
     public void onEvent(Event event)
     {
+        //                Log.Print(this.getClass().getName() + " Event --> " + event.type);
+
         switch (event.type)
         {
             case THREAD_EVENT:
-                Log.Print(this.getClass().getName() + " Event --> " + event.type);
                 this.onThreadEvent((ThreadEvent)event);
                 break;
         }
@@ -91,10 +92,11 @@ public class NetworkThreadManager implements Listener
 
     private void onThreadEvent(ThreadEvent event)
     {
+//        Log.Print(this.getClass().getName() + " Event --> " + event.threadEventType);
+
         switch (event.threadEventType)
         {
             case THREAD_EVENT_FINISHED:
-                Log.Print(this.getClass().getName() + " Event --> " + event.threadEventType);
                 this.onThreadFinishedEvent(event);
                 break;
         }

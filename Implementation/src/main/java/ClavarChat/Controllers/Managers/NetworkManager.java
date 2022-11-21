@@ -164,7 +164,7 @@ public class NetworkManager implements Listener
     @Override
     public void onEvent(Event event)
     {
-        Log.Print(this.getClass().getName() + " Event --> " + event.type);
+//        Log.Print(this.getClass().getName() + " Event --> " + event.type);
 
         switch (event.type)
         {
@@ -176,7 +176,7 @@ public class NetworkManager implements Listener
 
     private void onNetworkEvent(NetworkEvent event)
     {
-        Log.Print(this.getClass().getName() + " Event --> " + event.networkEventType);
+//        Log.Print(this.getClass().getName() + " Event --> " + event.networkEventType);
 
         switch (event.networkEventType)
         {
@@ -199,7 +199,7 @@ public class NetworkManager implements Listener
 
     private void onConnectionEvent(ConnectionEvent event)
     {
-        Log.Print(this.getClass().getName() + " Event --> " + event.connectionEventType);
+//        Log.Print(this.getClass().getName() + " Event --> " + event.connectionEventType);
 
         switch (event.connectionEventType)
         {

@@ -52,15 +52,18 @@ public class TCPOUTSocketThread extends TCPMessaginThread
                 this.semaphore.acquire();
                 if (!this.datas.isEmpty())
                 {
-                    Log.Info(this.getClass().getName() + " send Data : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
                     Paquet paquet = this.datas.removeLast();
                     this.semaphore.release();
                     oout.writeObject(paquet);
+                    Log.Info(this.getClass().getName() + " send Data : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
                 }
                 this.semaphore.release();
             }
         }
-        catch (IOException | InterruptedException e) { Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort); }
+        catch (IOException | InterruptedException e) {
+            Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
+            e.printStackTrace();
+        }
 
         Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort + " finished");
     }

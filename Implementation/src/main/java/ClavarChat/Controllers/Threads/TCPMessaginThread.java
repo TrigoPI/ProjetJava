@@ -28,6 +28,8 @@ public abstract class TCPMessaginThread extends NetworkThread
         this.localPort = socket.getLocalPort();
     }
 
+    protected abstract void loop();
+
     public void stopSocket()
     {
         this.running = false;
@@ -41,11 +43,9 @@ public abstract class TCPMessaginThread extends NetworkThread
     @Override
     protected void update()
     {
-        this.stopSocket();
+        this.startSocket();
         this.loop();
         this.stopSocket();
         this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
     }
-
-    protected abstract void loop();
 }

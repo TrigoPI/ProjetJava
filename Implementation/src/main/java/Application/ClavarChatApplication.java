@@ -1,6 +1,6 @@
 package Application;
 
-import Application.CLI.NetworkManagerCLI;
+import Application.CLI.CLI;
 import Application.GUI.ClavarChatGUI;
 
 public class ClavarChatApplication
@@ -8,6 +8,7 @@ public class ClavarChatApplication
 
     public static void main(String[] args)
     {
-       new NetworkManagerCLI().run();
+//        CLI.createCLI();
+        new ClavarChatGUI().run();
     }
 }
