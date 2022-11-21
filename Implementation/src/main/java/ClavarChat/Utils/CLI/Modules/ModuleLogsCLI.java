@@ -9,5 +9,19 @@ public class ModuleLogsCLI extends ModuleCLI
         this.addCommand("logs", () -> {
             Log.displayLogs();
         });
+
+        this.addCommand("continue", () -> {
+            String input = "";
+
+            Log.displayLogs();
+            Log.on();
+
+            while (!input.equals("q"))
+            {
+                input = this.getUserInput("");
+            }
+
+            Log.off();
+        });
     }
 }
