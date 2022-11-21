@@ -53,8 +53,8 @@ public class ClavarChatAPI implements Listener
 //        }
 //    }
 
-    private void onLoginPaquet(Paquet paquet)
-    {
-        Log.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.src);
-    }
+//    private void onLoginPaquet(Paquet paquet)
+//    {
+//        Log.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.src);
+//    }
 }
