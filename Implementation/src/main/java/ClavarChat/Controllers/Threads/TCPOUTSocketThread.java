@@ -53,7 +53,10 @@ public class TCPOUTSocketThread extends TCPMessaginThread
                 if (!this.datas.isEmpty())
                 {
                     Paquet paquet = this.datas.removeLast();
+                    paquet.src = this.localIP;
+
                     this.semaphore.release();
+
                     oout.writeObject(paquet);
                     Log.Info(this.getClass().getName() + " send Data : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
                 }
