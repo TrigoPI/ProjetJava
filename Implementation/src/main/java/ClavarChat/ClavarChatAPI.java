@@ -12,10 +12,12 @@ import ClavarChat.Utils.Log.Log;
 public class ClavarChatAPI implements Listener
 {
     private EventManager eventManager;
+    private NetworkManager networkManager;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
         this.eventManager = EventManager.getInstance();
+        this.networkManager = new NetworkManager(tcpPort, udpPort);
 
         this.eventManager.addEvent(EVENT_TYPE.PAQUET_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.PAQUET_EVENT);

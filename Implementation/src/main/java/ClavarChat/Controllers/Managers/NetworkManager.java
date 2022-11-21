@@ -5,7 +5,7 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Utils.CLI.Modules.ModuleNetworkCLI;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
@@ -53,12 +53,12 @@ public class NetworkManager implements Listener
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_EVENT);
 
-        this.debug();
+        this.DEBUG();
     }
 
-    private void debug()
+    private void DEBUG()
     {
-        ModuleNetworkCLI moduleNetworkCLI = new ModuleNetworkCLI();
+        ModuleCLI moduleNetworkCLI = new ModuleCLI();
 
         moduleNetworkCLI.addCommand("networks", () -> {
             ArrayList<String> allIp = this.getAllIp();

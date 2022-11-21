@@ -14,13 +14,10 @@ public class CLI
 
     private CLI()
     {
-        Log.off();
-        Log.savingOn();
-
         this.modules = new HashMap<String, ModuleCLI>();
     }
 
-    public void addModule(String name, ModuleCLI module)
+    private void addModule(String name, ModuleCLI module)
     {
         if (!this.modules.containsKey(name)) this.modules.put(name, module);
     }
@@ -49,7 +46,7 @@ public class CLI
         }
     }
 
-    public void run()
+    private void run()
     {
         String input = "";
 

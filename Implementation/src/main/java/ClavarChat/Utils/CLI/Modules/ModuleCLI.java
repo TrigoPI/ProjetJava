@@ -5,11 +5,11 @@ import ClavarChat.Utils.CLI.Command.Command;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public abstract class ModuleCLI
+public class ModuleCLI
 {
     private HashMap<String, Command> commands;
 
-    protected ModuleCLI()
+    public ModuleCLI()
     {
         this.commands = new HashMap<String, Command>();
     }

@@ -5,6 +5,8 @@ import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.ThreadEvent;
+import ClavarChat.Utils.CLI.CLI;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
 import java.net.Socket;
@@ -22,6 +24,19 @@ public class NetworkThreadManager implements Listener
 
         this.eventManager.addEvent(EVENT_TYPE.THREAD_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.THREAD_EVENT);
+
+        this.DEBUG();
+    }
+
+    private void DEBUG()
+    {
+        ModuleCLI moduleCLI = new ModuleCLI();
+
+        moduleCLI.addCommand("threads", () -> {
+            for (String key : this.threads.keySet()) System.out.println(key + " --> " + this.threads.get(key) + "/" + this.threads.get(key).getClass().getName());
+        });
+
+        CLI.installModule("thread", moduleCLI);
     }
 
     public void removeThread(String id)
@@ -80,8 +95,6 @@ public class NetworkThreadManager implements Listener
     @Override
     public void onEvent(Event event)
     {
-        //                Log.Print(this.getClass().getName() + " Event --> " + event.type);
-
         switch (event.type)
         {
             case THREAD_EVENT:
@@ -92,8 +105,6 @@ public class NetworkThreadManager implements Listener
 
     private void onThreadEvent(ThreadEvent event)
     {
-//        Log.Print(this.getClass().getName() + " Event --> " + event.threadEventType);
-
         switch (event.threadEventType)
         {
             case THREAD_EVENT_FINISHED:
