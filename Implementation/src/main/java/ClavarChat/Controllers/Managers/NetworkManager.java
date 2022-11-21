@@ -5,6 +5,8 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
+import ClavarChat.Models.NetworkMessage.Enums.NETWORK_MESSAGE_TYPE;
+import ClavarChat.Models.NetworkMessage.NetworkMessage;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
@@ -17,9 +19,7 @@ import java.net.*;
 import java.util.*;
 
 //DEBUG//
-import ClavarChat.Models.Paquets.Enums.PAQUET_TYPE;
 import ClavarChat.Models.Paquets.Paquet;
-import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.CLI.CLI;
 
 public class NetworkManager implements Listener
@@ -58,9 +58,9 @@ public class NetworkManager implements Listener
 
     private void DEBUG()
     {
-        ModuleCLI moduleNetworkCLI = new ModuleCLI();
+        ModuleCLI moduleCLI = new ModuleCLI();
 
-        moduleNetworkCLI.addCommand("networks", () -> {
+        moduleCLI.addCommand("networks", () -> {
             ArrayList<String> allIp = this.getAllIp();
             ArrayList<String> allNetworks = this.getConnectedNetworks();
             ArrayList<String> allBroadcasts = this.getBroadcastAddresses();
@@ -75,36 +75,39 @@ public class NetworkManager implements Listener
             }
         });
 
-        moduleNetworkCLI.addCommand("send", () -> {
-            String protocol = moduleNetworkCLI.getUserInput("TCP/UDP : ").toLowerCase();
-            String pseudo = moduleNetworkCLI.getUserInput("Pseudo : ");
-            String ip = moduleNetworkCLI.getUserInput("IP : ");
-            String id = moduleNetworkCLI.getUserInput("ID : ");
-
-            UserData user = new UserData(pseudo, id);
-            Paquet paquet = new Paquet(user, PAQUET_TYPE.PAQUET_LOGIN, ip);
+        moduleCLI.addCommand("send", () -> {
+            String protocol = moduleCLI.getUserInput("TCP/UDP : ").toLowerCase();
+            String ip = moduleCLI.getUserInput("IP : ");
 
             switch (protocol)
             {
                 case "tcp":
-                    this.sendTCP(paquet);
+                    this.sendTCP(new NetworkMessage(NETWORK_MESSAGE_TYPE.DISCOVER), ip);
                     break;
                 case "udp":
-                    this.sendUDP(paquet);
+                    this.sendUDP(new NetworkMessage(NETWORK_MESSAGE_TYPE.DISCOVER), ip);
                     break;
             }
         });
 
-        moduleNetworkCLI.addCommand("close-socket", () -> {
+        moduleCLI.addCommand("close-socket", () -> {
             this.closeAllTcp();
         });
 
-        moduleNetworkCLI.addCommand("get-socket", () -> {
+        moduleCLI.addCommand("get-socket", () -> {
             ArrayList<String[]> sockets = this.getActiveSockets();
             for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
         });
 
-        CLI.installModule("network", moduleNetworkCLI);
+        moduleCLI.addCommand("start-tcp", () -> {
+            this.startTCPServer();
+        });
+
+        moduleCLI.addCommand("start-udp", () -> {
+            this.startUDPServer();
+        });
+
+        CLI.installModule("network", moduleCLI);
     }
 
     public ArrayList<String> getAllIp()
@@ -164,8 +167,10 @@ public class NetworkManager implements Listener
         this.udpServerThread.start();
     }
 
-    public void sendUDP(Paquet paquet)
+    public void sendUDP(NetworkMessage data, String dst)
     {
+        Paquet paquet = new Paquet(data, dst);
+
         try
         {
             InetAddress addr = InetAddress.getByName(paquet.dst);
@@ -186,18 +191,18 @@ public class NetworkManager implements Listener
 
     }
 
-    public void sendTCP(Paquet paquet)
+    public void sendTCP(NetworkMessage data, String dst)
     {
-        String ip = paquet.dst;
+        Paquet paquet = new Paquet(data, dst);
 
-        if (!this.clients.containsKey(ip))
+        if (!this.clients.containsKey(paquet.dst))
         {
-            if (!this.pendingDatas.containsKey(ip)) this.connect(ip);
-            this.pendingDatas.get(ip).push(paquet);
+            if (!this.pendingDatas.containsKey(paquet.dst)) this.connect(paquet.dst);
+            this.pendingDatas.get(paquet.dst).push(paquet);
         }
         else
         {
-            this.clients.get(ip).send(paquet);
+            this.clients.get(paquet.dst).send(paquet);
         }
     }
 
@@ -235,8 +240,8 @@ public class NetworkManager implements Listener
     {
         switch (event.networkEventType)
         {
-            case NETWORK_EVENT_DATA:
-                this.onNetworkDataEvent((DataEvent)event);
+            case NETWORK_EVENT_PAQUET:
+                this.onNetworkPaquetEvent((PaquetEvent)event);
                 break;
             case NETWORK_EVENT_CONNECTION:
                 this.onConnectionEvent((ConnectionEvent)event);
@@ -244,11 +249,11 @@ public class NetworkManager implements Listener
         }
     }
 
-    private void onNetworkDataEvent(DataEvent event)
+    private void onNetworkPaquetEvent(PaquetEvent event)
     {
-        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.user.pseudo);
-        Log.Info(this.getClass().getName() + " paquet type : " + event.data.type);
-        System.out.println(event.data.user.pseudo + " : " + event.data.user.id);
+        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.src);
+//        Log.Info(this.getClass().getName() + " paquet type : " + event.data.type);
+//        System.out.println(event.data.user.pseudo + " : " + event.data.user.id);
         //this.eventManager.notiy(new PaquetEvent(event.data));
     }
 

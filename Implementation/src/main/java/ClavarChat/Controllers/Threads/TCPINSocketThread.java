@@ -1,9 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.DataEvent;
-import ClavarChat.Models.Events.EndConnectionEvent;
-import ClavarChat.Models.Events.Enums.THREAD_EVENT_TYPE;
-import ClavarChat.Models.Events.ThreadEvent;
+import ClavarChat.Models.Events.PaquetEvent;
 import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
@@ -40,6 +37,6 @@ public class TCPINSocketThread extends TCPMessaginThread
     {
         Log.Print(this.getClass().getName() + " receive : " + this.localIP+ ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
         paquet.src = NetworkUtils.inetAddressToString(socket.getInetAddress());
-        this.eventManager.notiy(new DataEvent(paquet));
+        this.eventManager.notiy(new PaquetEvent(paquet));
     }
 }
