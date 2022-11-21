@@ -7,8 +7,15 @@ public abstract class ServerThread extends NetworkThread
     protected ServerThread(int port)
     {
         this.port = port;
-        this.createServer(port);
     }
 
+    protected abstract void runServer();
     protected abstract void createServer(int port);
+
+    @Override
+    protected void update()
+    {
+        this.createServer(this.port);
+        this.runServer();
+    }
 }

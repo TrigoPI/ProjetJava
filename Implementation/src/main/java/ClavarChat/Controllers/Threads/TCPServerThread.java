@@ -18,7 +18,7 @@ public class TCPServerThread extends ServerThread
     }
 
     @Override
-    protected void update()
+    protected void runServer()
     {
         try
         {

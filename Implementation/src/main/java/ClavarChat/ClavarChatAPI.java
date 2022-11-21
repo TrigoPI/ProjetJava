@@ -7,7 +7,6 @@ import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.NetworkMessageEvent;
 import ClavarChat.Models.NetworkMessage.NetworkMessage;
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 
 public class ClavarChatAPI implements Listener
@@ -27,8 +26,6 @@ public class ClavarChatAPI implements Listener
     @Override
     public void onEvent(Event event)
     {
-        Log.Print("ClavarChatAPI Event --> " + event.type);
-
         switch (event.type)
         {
             case NETWORK_MESSAGE_EVENT:
@@ -37,26 +34,18 @@ public class ClavarChatAPI implements Listener
         }
     }
 
-    private void onNetworkMessageEvent(NetworkMessageEvent paquetEvent)
+    private void onNetworkMessageEvent(NetworkMessageEvent event)
     {
-        Log.Print("CalvarChatAPI PaquetType --> " + paquetEvent.data.type);
-
-//        switch (paquetEvent.data.type)
-//        {
-//            case PAQUET_LOGIN:
-//                this.onLoginPaquet(paquetEvent.data);
-//                break;
-//            case PAQUET_LOGOUT:
-//                break;
-//            case PAQUET_DISCOVER:
-//                break;
-//            case PAQUET_USER_INFORMATION:
-//                break;
-//        }
+        switch (event.data.type)
+        {
+            case DISCOVER:
+//                this.onDiscover();
+                break;
+        }
     }
 
-//    private void onLoginPaquet(Paquet paquet)
+//    private void onDiscover(NetworkMessageEvent event)
 //    {
-//        Log.Print("User : " + paquet.user.pseudo + "/" + paquet.user.id + "/" + paquet.src);
+//        Log.Print("Discover from : " + event.);
 //    }
 }

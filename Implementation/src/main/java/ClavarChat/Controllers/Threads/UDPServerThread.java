@@ -22,7 +22,7 @@ public class UDPServerThread extends ServerThread
     }
 
     @Override
-    protected void update()
+    protected void runServer()
     {
         Log.Info(this.getClass().getName() + " start on : " + this.port);
         int bufferSize = 1024;
