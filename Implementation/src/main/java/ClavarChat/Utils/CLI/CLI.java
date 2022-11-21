@@ -1,9 +1,6 @@
-package Application.CLI;
+package ClavarChat.Utils.CLI;
 
-import Application.CLI.Modules.LogsModuleCLI;
-import Application.CLI.Modules.ModuleCLI;
-import Application.CLI.Modules.ModuleNetworkCLI;
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.HashMap;
@@ -43,12 +40,12 @@ public class CLI
         {
             if (cmdSplit.length > 1)
             {
-                this.modules.get(cmdSplit[0]).execCmd(cmdSplit[1]);
+                this.modules.get(cmdSplit[0]).execCommand(cmdSplit[1]);
             }
         }
         else
         {
-            System.out.println("unknown command");
+            System.out.println("unknown module");
         }
     }
 
@@ -63,13 +60,25 @@ public class CLI
         }
     }
 
+    public static void installModule(String name, ModuleCLI moduleCLI)
+    {
+        if (instance != null)
+        {
+            instance.addModule(name, moduleCLI);
+        }
+        else
+        {
+            System.out.println("CLI not instanced");
+        }
+    }
+
     public static void createCLI()
     {
         if (instance == null) instance = new CLI();
+    }
 
-        instance.addModule("network", new ModuleNetworkCLI(new NetworkManager(4000, 5000)));
-        instance.addModule("log", new LogsModuleCLI());
-
+    public static void start()
+    {
         instance.run();
     }
 }

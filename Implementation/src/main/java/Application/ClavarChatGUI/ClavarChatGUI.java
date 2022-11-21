@@ -1,4 +1,4 @@
-package Application.GUI;
+package Application.ClavarChatGUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

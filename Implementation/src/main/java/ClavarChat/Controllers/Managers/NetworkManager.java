@@ -5,7 +5,7 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Models.Paquets.Paquet;
+import ClavarChat.Utils.CLI.Modules.ModuleNetworkCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
@@ -15,6 +15,12 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.*;
+
+//DEBUG//
+import ClavarChat.Models.Paquets.Enums.PAQUET_TYPE;
+import ClavarChat.Models.Paquets.Paquet;
+import ClavarChat.Models.Users.UserData;
+import ClavarChat.Utils.CLI.CLI;
 
 public class NetworkManager implements Listener
 {
@@ -46,6 +52,59 @@ public class NetworkManager implements Listener
 
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_EVENT);
+
+        this.debug();
+    }
+
+    private void debug()
+    {
+        ModuleNetworkCLI moduleNetworkCLI = new ModuleNetworkCLI();
+
+        moduleNetworkCLI.addCommand("networks", () -> {
+            ArrayList<String> allIp = this.getAllIp();
+            ArrayList<String> allNetworks = this.getConnectedNetworks();
+            ArrayList<String> allBroadcasts = this.getBroadcastAddresses();
+
+            for (int i = 0; i < allIp.size(); i++)
+            {
+                String ip = allIp.get(i);
+                String network = allNetworks.get(i);
+                String broadcast = allBroadcasts.get(i);
+
+                System.out.println("ip : " + ip + " - network : " + network + " - broadcast : " + broadcast);
+            }
+        });
+
+        moduleNetworkCLI.addCommand("send", () -> {
+            String protocol = moduleNetworkCLI.getUserInput("TCP/UDP : ").toLowerCase();
+            String pseudo = moduleNetworkCLI.getUserInput("Pseudo : ");
+            String ip = moduleNetworkCLI.getUserInput("IP : ");
+            String id = moduleNetworkCLI.getUserInput("ID : ");
+
+            UserData user = new UserData(pseudo, id);
+            Paquet paquet = new Paquet(user, PAQUET_TYPE.PAQUET_LOGIN, ip);
+
+            switch (protocol)
+            {
+                case "tcp":
+                    this.sendTCP(paquet);
+                    break;
+                case "udp":
+                    this.sendUDP(paquet);
+                    break;
+            }
+        });
+
+        moduleNetworkCLI.addCommand("close-socket", () -> {
+            this.closeAllTcp();
+        });
+
+        moduleNetworkCLI.addCommand("get-socket", () -> {
+            ArrayList<String[]> sockets = this.getActiveSockets();
+            for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
+        });
+
+        CLI.installModule("network", moduleNetworkCLI);
     }
 
     public ArrayList<String> getAllIp()
@@ -164,8 +223,6 @@ public class NetworkManager implements Listener
     @Override
     public void onEvent(Event event)
     {
-//        Log.Print(this.getClass().getName() + " Event --> " + event.type);
-
         switch (event.type)
         {
             case NETWORK_EVENT:
@@ -176,8 +233,6 @@ public class NetworkManager implements Listener
 
     private void onNetworkEvent(NetworkEvent event)
     {
-//        Log.Print(this.getClass().getName() + " Event --> " + event.networkEventType);
-
         switch (event.networkEventType)
         {
             case NETWORK_EVENT_DATA:
@@ -199,8 +254,6 @@ public class NetworkManager implements Listener
 
     private void onConnectionEvent(ConnectionEvent event)
     {
-//        Log.Print(this.getClass().getName() + " Event --> " + event.connectionEventType);
-
         switch (event.connectionEventType)
         {
             case CONNECTION_EVENT_SUCCESS:
