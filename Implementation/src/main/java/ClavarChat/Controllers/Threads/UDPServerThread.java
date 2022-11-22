@@ -1,13 +1,13 @@
 package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Models.Events.PaquetEvent;
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -57,9 +57,15 @@ public class UDPServerThread extends ServerThread
         try
         {
             ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-            Paquet paquet = (Paquet)iStream.readObject();
-            paquet.src = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
-            this.eventManager.notiy(new PaquetEvent(paquet));
+
+            Serializable data = (Serializable)iStream.readObject();
+            String src = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
+
+            Log.Warning("UDP" + src);
+
+//            String dst = NetworkUtils.inetAddressToString(datagramPacket.getSocketAddress())
+//
+//            this.eventManager.notiy(new PaquetEvent(paquet));
         }
         catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }

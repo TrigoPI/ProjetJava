@@ -9,6 +9,7 @@ import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.net.Socket;
 
 public class TCPINSocketThread extends TCPMessaginThread
@@ -33,10 +34,10 @@ public class TCPINSocketThread extends TCPMessaginThread
         Log.Info(this.getClass().getName() + " : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort + " finished");
     }
 
-    private void receive(Paquet paquet)
+    private void receive(Serializable data)
     {
         Log.Print(this.getClass().getName() + " receive : " + this.localIP+ ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
-        paquet.src = NetworkUtils.inetAddressToString(socket.getInetAddress());
-        this.eventManager.notiy(new PaquetEvent(paquet));
+        //paquet.src = NetworkUtils.inetAddressToString(socket.getInetAddress());
+        //this.eventManager.notiy(new PaquetEvent(paquet));
     }
 }

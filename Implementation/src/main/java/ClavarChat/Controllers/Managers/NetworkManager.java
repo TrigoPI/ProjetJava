@@ -2,19 +2,15 @@ package ClavarChat.Controllers.Managers;
 
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Threads.*;
-import ClavarChat.Models.Events.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Models.NetworkMessage.Enums.NETWORK_MESSAGE_TYPE;
 import ClavarChat.Models.NetworkMessage.NetworkMessage;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
+import ClavarChat.Controllers.Threads.*;
+import ClavarChat.Models.Events.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -33,7 +29,7 @@ public class NetworkManager implements Listener
     private TCPServerThread tcpServerThread;
     private UDPServerThread udpServerThread;
 
-    private HashMap<String, LinkedList<Paquet>> pendingDatas;
+    private HashMap<String, LinkedList<Serializable>> pendingDatas;
     private HashMap<String, ClientHandler> clients;
 
     public NetworkManager(int TCPPort, int UDPPort)
@@ -47,7 +43,7 @@ public class NetworkManager implements Listener
         this.tcpServerThread = this.networkThreadManager.createTCPServerThread(TCPPort);
         this.udpServerThread = this.networkThreadManager.createUDPServerThread(UDPPort);
 
-        this.pendingDatas = new HashMap<String, LinkedList<Paquet>>();
+        this.pendingDatas = new HashMap<String, LinkedList<Serializable>>();
         this.clients = new HashMap<String, ClientHandler>();
 
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
@@ -78,14 +74,15 @@ public class NetworkManager implements Listener
         moduleCLI.addCommand("send", () -> {
             String protocol = moduleCLI.getUserInput("TCP/UDP : ").toLowerCase();
             String ip = moduleCLI.getUserInput("IP : ");
+            String msg = moduleCLI.getUserInput("Message : ");
 
             switch (protocol)
             {
                 case "tcp":
-                    this.sendTCP(new NetworkMessage(NETWORK_MESSAGE_TYPE.DISCOVER), ip);
+                    this.sendTCP(msg, ip);
                     break;
                 case "udp":
-                    this.sendUDP(new NetworkMessage(NETWORK_MESSAGE_TYPE.DISCOVER), ip);
+                    this.sendUDP(msg, ip);
                     break;
             }
         });
@@ -167,16 +164,14 @@ public class NetworkManager implements Listener
         this.udpServerThread.start();
     }
 
-    public void sendUDP(NetworkMessage data, String dst)
+    public void sendUDP(Serializable data, String dst)
     {
-        Paquet paquet = new Paquet(data, dst);
-
         try
         {
-            InetAddress addr = InetAddress.getByName(paquet.dst);
+            InetAddress addr = InetAddress.getByName(dst);
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeObject(paquet);
+            oo.writeObject(data);
             oo.close();
 
             byte[] serializedMessage = bStream.toByteArray();
@@ -191,18 +186,16 @@ public class NetworkManager implements Listener
 
     }
 
-    public void sendTCP(NetworkMessage data, String dst)
+    public void sendTCP(Serializable data, String dst)
     {
-        Paquet paquet = new Paquet(data, dst);
-
-        if (!this.clients.containsKey(paquet.dst))
+        if (!this.clients.containsKey(dst))
         {
-            if (!this.pendingDatas.containsKey(paquet.dst)) this.connect(paquet.dst);
-            this.pendingDatas.get(paquet.dst).push(paquet);
+            if (!this.pendingDatas.containsKey(dst)) this.connect(dst);
+            this.pendingDatas.get(dst).push(data);
         }
         else
         {
-            this.clients.get(paquet.dst).send(paquet);
+            this.clients.get(dst).send(data);
         }
     }
 
@@ -251,8 +244,8 @@ public class NetworkManager implements Listener
 
     private void onNetworkPaquetEvent(PaquetEvent event)
     {
-        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.src);
-        this.eventManager.notiy(new NetworkMessageEvent(event.data.src, event.data.data));
+//        Log.Info(this.getClass().getName() + " new Paquet from : " + event.data.src);
+//        this.eventManager.notiy(new NetworkMessageEvent(event.data.src, event.data.data));
     }
 
     private void onConnectionEvent(ConnectionEvent event)
@@ -310,7 +303,7 @@ public class NetworkManager implements Listener
     private void flushPendingDatas(String ip, TCPOUTSocketThread out)
     {
         Log.Print(this.getClass().getName() + " Flushing data to " + out.getIdString() + " --> " + out);
-        LinkedList<Paquet> datas = this.pendingDatas.get(ip);
+        LinkedList<Serializable> datas = this.pendingDatas.get(ip);
         while (!datas.isEmpty()) out.send(datas.removeLast());
         this.pendingDatas.remove(ip);
     }
@@ -318,7 +311,7 @@ public class NetworkManager implements Listener
     private void connect(String ip)
     {
         Log.Print(this.getClass().getName() + " trying to connect : " + ip + ":" + this.TCPPort);
-        this.pendingDatas.put(ip, new LinkedList<Paquet>());
+        this.pendingDatas.put(ip, new LinkedList<Serializable>());
         ConnectionThread connection = this.networkThreadManager.createConnectionThread(ip, this.TCPPort);
         connection.start();
     }

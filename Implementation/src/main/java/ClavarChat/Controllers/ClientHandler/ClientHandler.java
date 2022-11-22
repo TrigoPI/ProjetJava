@@ -2,10 +2,10 @@ package ClavarChat.Controllers.ClientHandler;
 
 import ClavarChat.Controllers.Threads.TCPINSocketThread;
 import ClavarChat.Controllers.Threads.TCPOUTSocketThread;
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 
 public class ClientHandler
@@ -52,9 +52,9 @@ public class ClientHandler
         return localIP;
     }
 
-    public void send(Paquet paquet)
+    public void send(Serializable data)
     {
-        this.out.send(paquet);
+        this.out.send(data);
     }
 
     public void stop()

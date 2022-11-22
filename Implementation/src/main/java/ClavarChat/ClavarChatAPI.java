@@ -26,22 +26,22 @@ public class ClavarChatAPI implements Listener
     @Override
     public void onEvent(Event event)
     {
-        switch (event.type)
-        {
-            case NETWORK_MESSAGE_EVENT:
-                this.onNetworkMessageEvent((NetworkMessageEvent)event);
-                break;
-        }
+//        switch (event.type)
+//        {
+//            case NETWORK_MESSAGE_EVENT:
+//                this.onNetworkMessageEvent((NetworkMessageEvent)event);
+//                break;
+//        }
     }
 
     private void onNetworkMessageEvent(NetworkMessageEvent event)
     {
-        switch (event.data.type)
-        {
-            case DISCOVER:
+//        switch (event.data.type)
+//        {
+//            case DISCOVER:
 //                this.onDiscover();
-                break;
-        }
+//                break;
+//        }
     }
 
 //    private void onDiscover(NetworkMessageEvent event)
