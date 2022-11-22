@@ -60,13 +60,13 @@ public class ClavarChatAPI implements Listener
         switch (data.type)
         {
             case DISCOVER:
-                this.onDiscover(data);
+                this.onDiscover(event);
                 break;
         }
     }
 
-    private void onDiscover(ClavarChatMessage data)
+    private void onDiscover(NetworkMessageEvent event)
     {
-        Log.Print("Discover from : " + data.type);
+        Log.Print("Discover from : " + event.src);
     }
 }
