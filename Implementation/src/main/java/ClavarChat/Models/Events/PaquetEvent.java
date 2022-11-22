@@ -7,15 +7,15 @@ import java.io.Serializable;
 
 public class PaquetEvent extends NetworkEvent
 {
-    public String dst;
     public String src;
+    public int port;
     public Serializable data;
 
-    public PaquetEvent(Serializable data, String dst, String src)
+    public PaquetEvent(Serializable data, String src, int port)
     {
         super(NETWORK_EVENT_TYPE.NETWORK_EVENT_PAQUET);
-        this.dst = dst;
         this.src = src;
+        this.port = port;
         this.data = data;
     }
 }

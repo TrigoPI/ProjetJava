@@ -52,7 +52,7 @@ public class TCPOUTSocketThread extends TCPMessaginThread
                     Serializable data = this.datas.removeLast();
                     this.semaphore.release();
 
-                    //oout.writeObject(paquet);
+                    oout.writeObject(data);
                     Log.Info(this.getClass().getName() + " send Data : " + this.localIP + ":" + this.localPort + " --> " + this.distantIP + ":" + this.distantPort);
                 }
                 this.semaphore.release();

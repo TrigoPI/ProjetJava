@@ -36,8 +36,7 @@ public class TCPINSocketThread extends TCPMessaginThread
 
     private void receive(Serializable data)
     {
-        Log.Print(this.getClass().getName() + " receive : " + this.localIP+ ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
-        //paquet.src = NetworkUtils.inetAddressToString(socket.getInetAddress());
-        //this.eventManager.notiy(new PaquetEvent(paquet));
+        Log.Print(this.getClass().getName() + " receive : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
+        this.eventManager.notiy(new PaquetEvent(data, this.distantIP, this.distantPort));
     }
 }

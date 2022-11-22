@@ -60,12 +60,8 @@ public class UDPServerThread extends ServerThread
 
             Serializable data = (Serializable)iStream.readObject();
             String src = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
-
-            Log.Warning("UDP" + src);
-
-//            String dst = NetworkUtils.inetAddressToString(datagramPacket.getSocketAddress())
-//
-//            this.eventManager.notiy(new PaquetEvent(paquet));
+            int port = datagramPacket.getPort();
+            this.eventManager.notiy(new PaquetEvent(data, src, port));
         }
         catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }
