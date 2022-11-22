@@ -1,14 +1,16 @@
 package ClavarChat.Models.Events;
 
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Models.NetworkMessage.NetworkMessage;
+import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
+
+import java.io.Serializable;
 
 public class NetworkMessageEvent extends Event
 {
     public String src;
-    public NetworkMessage data;
+    public Serializable data;
 
-    public NetworkMessageEvent(String src, NetworkMessage data)
+    public NetworkMessageEvent(Serializable data, String src)
     {
         super(EVENT_TYPE.NETWORK_MESSAGE_EVENT);
         this.src = src;

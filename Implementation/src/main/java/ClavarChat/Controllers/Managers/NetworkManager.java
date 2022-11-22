@@ -3,7 +3,6 @@ package ClavarChat.Controllers.Managers;
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Models.NetworkMessage.NetworkMessage;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
@@ -243,7 +242,7 @@ public class NetworkManager implements Listener
     private void onNetworkPaquetEvent(PaquetEvent event)
     {
         Log.Info(this.getClass().getName() + " new Paquet from : " + event.src + ":" + event.port);
-//        this.eventManager.notiy(new NetworkMessageEvent(event.data.src, event.data.data));
+        this.eventManager.notiy(new NetworkMessageEvent(event.data, event.src));
     }
 
     private void onConnectionEvent(ConnectionEvent event)

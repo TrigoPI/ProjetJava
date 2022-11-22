@@ -1,7 +1,6 @@
 package ClavarChat.Models.Events;
 
 import ClavarChat.Models.Events.Enums.NETWORK_EVENT_TYPE;
-import ClavarChat.Models.Paquets.Paquet;
 
 import java.io.Serializable;
 
