@@ -1,10 +1,7 @@
 package ClavarChat.Controllers.Threads;
 
 import ClavarChat.Models.Events.PaquetEvent;
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.NetworkUtils.NetworkUtils;
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +24,7 @@ public class TCPINSocketThread extends TCPMessaginThread
         {
             InputStream in = socket.getInputStream();
             ObjectInputStream iin = new ObjectInputStream(in);
-            while (this.running) this.receive((Paquet)iin.readObject());
+            while (this.running) this.receive((Serializable) iin.readObject());
         }
         catch (IOException | ClassNotFoundException e) { Log.Warning(this.getClass().getName() + " ERROR : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort); }
 
