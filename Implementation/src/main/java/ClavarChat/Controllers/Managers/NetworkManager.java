@@ -15,7 +15,6 @@ import java.net.*;
 import java.util.*;
 
 //DEBUG//
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.CLI.CLI;
 
 public class NetworkManager implements Listener
@@ -74,15 +73,14 @@ public class NetworkManager implements Listener
         moduleCLI.addCommand("send", () -> {
             String protocol = moduleCLI.getUserInput("TCP/UDP : ").toLowerCase();
             String ip = moduleCLI.getUserInput("IP : ");
-            String msg = moduleCLI.getUserInput("Message : ");
 
             switch (protocol)
             {
                 case "tcp":
-                    this.sendTCP(msg, ip);
+                    this.sendTCP("", ip);
                     break;
                 case "udp":
-                    this.sendUDP(msg, ip);
+                    this.sendUDP("", ip);
                     break;
             }
         });
