@@ -11,7 +11,7 @@ import ClavarChat.Models.Events.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.Map;
+import java.util.Map.Entry;
 
 //DEBUG//
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
@@ -207,7 +207,7 @@ public class NetworkManager implements Listener
         Iterator it = this.clients.entrySet().iterator();
         while (it.hasNext())
         {
-            Map.Entry<String, ClientHandler> item = (Map.Entry<String, ClientHandler>)it.next();
+            Entry<String, ClientHandler> item = (Entry<String, ClientHandler>)it.next();
             this.closeTCP(item.getKey());
         }
     }
