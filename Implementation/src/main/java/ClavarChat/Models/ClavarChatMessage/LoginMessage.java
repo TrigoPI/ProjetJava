@@ -5,7 +5,7 @@ import ClavarChat.Models.Users.UserData;
 
 public class LoginMessage extends ClavarChatMessage
 {
-    UserData user;
+    public UserData user;
 
     public LoginMessage(UserData user)
     {

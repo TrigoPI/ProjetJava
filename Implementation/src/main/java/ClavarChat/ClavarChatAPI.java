@@ -85,8 +85,11 @@ public class ClavarChatAPI implements Listener
                 for (UserData user : users)
                 {
                     LoginMessage loginMessage = new LoginMessage(mainUser);
-                    ArrayList<String> ip = this.userManager.getUserIP(user.pseudo);
-                    this.networkManager.sendTCP(loginMessage, ip.get(0));
+                    ArrayList<String> ips = this.userManager.getUserIP(user.pseudo);
+                    for (String ip : ips)
+                    {
+                        this.networkManager.sendTCP(loginMessage, ip);
+                    }
                 }
             }
             else
@@ -137,6 +140,9 @@ public class ClavarChatAPI implements Listener
             case DISCOVER_INFORMATION:
                 this.onDiscoverInformation((DiscoverInformationMessage)data, event.src);
                 break;
+            case LOGIN:
+                this.onLogin((LoginMessage)data, event.src);
+                break;
             case DATA:
                 this.onData((DataMessage)data, event.src);
                 break;
@@ -165,6 +171,11 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.user.pseudo + " / " + "#" + data.user.id);
         this.userManager.addUser(data.user, src);
         this.discoverModule.onDiscoverInformation(data);
+    }
+
+    private void onLogin(LoginMessage data, String src)
+    {
+        this.userManager.addUser(data.user, src);
     }
 
     private void onData(DataMessage data, String src)
