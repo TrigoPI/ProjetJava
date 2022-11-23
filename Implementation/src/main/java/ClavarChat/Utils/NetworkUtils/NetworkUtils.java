@@ -1,11 +1,9 @@
 package ClavarChat.Utils.NetworkUtils;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class NetworkUtils
 {
@@ -70,7 +68,14 @@ public class NetworkUtils
         try
         {
             NetworkInterface networkInterface = NetworkInterface.getByInetAddress(InetAddress.getByName(ip));
-            InetAddress broadcastAddr = networkInterface.getInterfaceAddresses().get(0).getBroadcast();
+            List<InterfaceAddress> interfaceAddresses = networkInterface.getInterfaceAddresses();
+            InetAddress broadcastAddr = null;
+
+            for (InterfaceAddress interfaceAddress : interfaceAddresses)
+            {
+                if (interfaceAddress.getAddress() instanceof Inet4Address) broadcastAddr = interfaceAddress.getBroadcast();
+            }
+
             broadcast = inetAddressToString(broadcastAddr);
 
         } catch (SocketException | UnknownHostException e) { e.printStackTrace(); }

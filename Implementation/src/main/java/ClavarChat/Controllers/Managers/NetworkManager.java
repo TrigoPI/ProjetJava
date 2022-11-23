@@ -93,6 +93,11 @@ public class NetworkManager implements Listener
             for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
         });
 
+        moduleCLI.addCommand("start-server", () -> {
+            this.startTCPServer();
+            this.startUDPServer();
+        });
+
         moduleCLI.addCommand("start-tcp", () -> {
             this.startTCPServer();
         });
@@ -254,8 +259,6 @@ public class NetworkManager implements Listener
                 break;
             case CONNECTION_EVENT_END:
                 this.onEndConnectionEvent((EndConnectionEvent)event);
-                break;
-            case CONNECTION_EVENT_FAILED:
                 break;
         }
     }

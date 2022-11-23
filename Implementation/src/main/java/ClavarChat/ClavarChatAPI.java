@@ -12,6 +12,7 @@ import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ClavarChatAPI implements Listener
@@ -69,4 +70,9 @@ public class ClavarChatAPI implements Listener
     {
         Log.Print("Discover from : " + event.src);
     }
+
+//    private boolean isDecodable(Serializable message)
+//    {
+//
+//    }
 }

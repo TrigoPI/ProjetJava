@@ -1,5 +1,4 @@
 package ClavarChat.Controllers.Threads;
-import ClavarChat.Models.Paquets.Paquet;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.IOException;

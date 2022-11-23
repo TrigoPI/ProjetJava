@@ -1,7 +1,6 @@
 package ClavarChat.Models.Events;
 
 import ClavarChat.Models.Events.Enums.CONNECTION_EVENT_TYPE;
-import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
 import java.net.Socket;
 
