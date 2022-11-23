@@ -5,10 +5,7 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.UserManager;
 import ClavarChat.Controllers.Modules.DiscoverModule;
-import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Models.ClavarChatMessage.DataMessage;
-import ClavarChat.Models.ClavarChatMessage.TextMessage;
-import ClavarChat.Models.ClavarChatMessage.DiscoverInformationMessage;
+import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.NetworkMessageEvent;
@@ -62,6 +59,12 @@ public class ClavarChatAPI implements Listener
             }
         });
 
+        moduleCLI.addCommand("login", () -> {
+            String pseudo = moduleCLI.getUserInput("Pseudo : ");
+            String id = moduleCLI.getUserInput("ID : ");
+            this.login(pseudo, id);
+        });
+
         CLI.installModule("api", moduleCLI);
     }
 
@@ -78,8 +81,9 @@ public class ClavarChatAPI implements Listener
 
                 for (UserData user : users)
                 {
-//                    UserInformationMessage userInformationMessage = new UserInformationMessage(mainUser, userCount);
-//                    this.networkManager.sendTCP();
+                    LoginMessage loginMessage = new LoginMessage(mainUser);
+                    ArrayList<String> ip = this.userManager.getUserIP(user.pseudo);
+                    this.networkManager.sendTCP(loginMessage, ip.get(0));
                 }
             }
         }
@@ -99,7 +103,7 @@ public class ClavarChatAPI implements Listener
         }
         else
         {
-            Log.Error(this.getClass().getName() + " User not logged");
+            Log.Error(this.getClass().getName() + " Cannot send message, user not logged");
         }
     }
 
