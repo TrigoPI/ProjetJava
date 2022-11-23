@@ -248,7 +248,7 @@ public class NetworkManager implements Listener
 
     private void onNetworkPaquetEvent(PaquetEvent event)
     {
-        Log.Info(this.getClass().getName() + " new Paquet from : " + event.src + ":" + event.port);
+        Log.Print(this.getClass().getName() + " Paquet from : " + event.src + ":" + event.port);
         if (this.validPaquet(event))
         {
             this.eventManager.notiy(new NetworkMessageEvent(event.data, event.src));

@@ -3,6 +3,7 @@ package ClavarChat.Controllers.Managers;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
+import ClavarChat.Utils.Log.Log;
 
 import java.util.*;
 
@@ -56,6 +57,8 @@ public class UserManager
 
     public void addUser(UserData user, String src)
     {
+        Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
+
         if (!this.ipTable.containsKey(user))
         {
             this.ipTable.put(user.pseudo, new ArrayList<String>());
@@ -68,6 +71,8 @@ public class UserManager
 
     public void setUser(String pseudo, String id)
     {
+        Log.Info(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
+
         this.logged = true;
         this.user.pseudo = pseudo;
         this.user.id = id;

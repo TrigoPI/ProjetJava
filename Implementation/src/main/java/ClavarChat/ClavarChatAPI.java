@@ -86,9 +86,12 @@ public class ClavarChatAPI implements Listener
                 {
                     LoginMessage loginMessage = new LoginMessage(mainUser);
                     ArrayList<String> ip = this.userManager.getUserIP(user.pseudo);
-                    System.out.println(ip);
                     this.networkManager.sendTCP(loginMessage, ip.get(0));
                 }
+            }
+            else
+            {
+                Log.Error(this.getClass().getName() + " Pseudo already used");
             }
         }
         else
