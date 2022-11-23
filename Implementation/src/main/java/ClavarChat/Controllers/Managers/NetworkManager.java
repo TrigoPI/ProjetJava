@@ -3,7 +3,6 @@ package ClavarChat.Controllers.Managers;
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import ClavarChat.Controllers.Threads.*;
@@ -12,8 +11,10 @@ import ClavarChat.Models.Events.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Map;
 
 //DEBUG//
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.CLI.CLI;
 
 public class NetworkManager implements Listener
@@ -203,7 +204,12 @@ public class NetworkManager implements Listener
 
     public void closeAllTcp()
     {
-        for (String key : this.clients.keySet()) this.closeTCP(key);
+        Iterator it = this.clients.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<String, ClientHandler> item = (Map.Entry<String, ClientHandler>)it.next();
+            this.closeTCP(item.getKey());
+        }
     }
 
     public void closeTCP(String ip)

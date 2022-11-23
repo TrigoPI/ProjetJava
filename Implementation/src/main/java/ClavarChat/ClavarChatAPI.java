@@ -73,8 +73,6 @@ public class ClavarChatAPI implements Listener
         }
     }
 
-
-
     @Override
     public void onEvent(Event event)
     {
