@@ -48,8 +48,13 @@ public class ClavarChatAPI implements Listener
 
         moduleCLI.addCommand("send", () -> {
             String ip = moduleCLI.getUserInput("IP : ");
-            String message = moduleCLI.getUserInput("Message : ");
-            this.sendMessage(message, ip);
+            String input = "";
+
+            while (!input.equals("q"))
+            {
+                input = moduleCLI.getUserInput("");
+                this.sendMessage(input, ip);
+            }
         });
 
         CLI.installModule("api", moduleCLI);
@@ -61,7 +66,7 @@ public class ClavarChatAPI implements Listener
         {
             UserData user = this.userManager.getUser();
             TextMessage mgs = new TextMessage(user, message);
-            this.networkManager.sendTCP(message, ip);
+            this.networkManager.sendTCP(mgs, ip);
         }
         else
         {

@@ -43,12 +43,12 @@ public class UserManager
 
     public UserData getUser()
     {
-        this.logged = true;
         return this.user;
     }
 
     public void setUser(String pseudo, String id)
     {
+        this.logged = true;
         this.user.pseudo = pseudo;
         this.user.id = id;
     }
