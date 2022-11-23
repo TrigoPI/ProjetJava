@@ -9,6 +9,7 @@ import java.util.*;
 public class UserManager
 {
     private boolean logged;
+    private int userCount;
 
     private UserData user;
     private ArrayList<UserData> users;
@@ -19,6 +20,8 @@ public class UserManager
         this.user = new UserData("", "");
         this.users = new ArrayList<UserData>();
         this.ipTable = new HashMap<String, String>();
+
+        this.userCount = 1;
         this.logged = false;
 
         this.DEBUG();
@@ -53,6 +56,11 @@ public class UserManager
     public boolean isLogged()
     {
         return this.logged;
+    }
+
+    public int getUserCount()
+    {
+        return userCount;
     }
 
     public UserData getUser()

@@ -4,6 +4,7 @@ import ClavarChat.Controllers.Managers.EventManager;
 import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.UserManager;
+import ClavarChat.Controllers.Modules.DiscoverModule;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.ClavarChatMessage.DataMessage;
 import ClavarChat.Models.ClavarChatMessage.Enums.MESSAGE_TYPE;
@@ -13,11 +14,11 @@ import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.NetworkMessageEvent;
 import ClavarChat.Models.Users.UserData;
-import ClavarChat.Utils.CLI.CLI;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
-import java.util.ArrayList;
+//DEBUG
+import ClavarChat.Utils.CLI.CLI;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 
 public class ClavarChatAPI implements Listener
 {
@@ -25,11 +26,15 @@ public class ClavarChatAPI implements Listener
     private NetworkManager networkManager;
     private UserManager userManager;
 
+    private DiscoverModule discoverModule;
+
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
         this.eventManager = EventManager.getInstance();
         this.userManager = new UserManager();
         this.networkManager = new NetworkManager(tcpPort, udpPort);
+
+        this.discoverModule = new DiscoverModule(this.networkManager);
 
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_MESSAGE_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_MESSAGE_EVENT);
@@ -59,6 +64,11 @@ public class ClavarChatAPI implements Listener
         CLI.installModule("api", moduleCLI);
     }
 
+    public void login(String user, String id)
+    {
+
+    }
+
     public void sendMessage(String message, String ip)
     {
         if (this.userManager.isLogged())
@@ -69,7 +79,7 @@ public class ClavarChatAPI implements Listener
         }
         else
         {
-            Log.Warning("User not logged");
+            Log.Error(this.getClass().getName() + " User not logged");
         }
     }
 
@@ -104,22 +114,26 @@ public class ClavarChatAPI implements Listener
 
     private void onDiscover(ClavarChatMessage data, String src)
     {
-        Log.Print("Discover from : " + src);
+        Log.Print(this.getClass().getName() + " Discover from : " + src);
 
         if (this.userManager.isLogged())
         {
+            int count = this.userManager.getUserCount();
             UserData user = this.userManager.getUser();
-            this.networkManager.sendTCP(new UserInformationMessage(user), src);
+            UserInformationMessage informationMessage = new UserInformationMessage(user, count);
+            this.networkManager.sendTCP(informationMessage, src);
         }
         else
         {
-            Log.Warning("User not logged cannot respond to DISCOVER");
+            Log.Error(this.getClass().getName() + " User not logged cannot respond to DISCOVER");
         }
     }
 
     private void onInformation(UserInformationMessage data, String src)
     {
+        Log.Info(this.getClass().getName() + " Information from user : " + data.user.pseudo + " / " + "#" + data.user.id);
         this.userManager.addUser(data.user, src);
+        this.discoverModule.onUserInformation(data);
     }
 
     private void onData(DataMessage data, String src)
@@ -134,12 +148,11 @@ public class ClavarChatAPI implements Listener
 
     private void onTextMessage(TextMessage data, String src)
     {
-        Log.Print("Message from " + src + " : " + data.message);
+        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
     }
 
     private void discover()
     {
-        ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
-        for (String addresse : broadcast) this.networkManager.sendUDP(new ClavarChatMessage(MESSAGE_TYPE.DISCOVER), addresse);
+        this.discoverModule.discover();
     }
 }
