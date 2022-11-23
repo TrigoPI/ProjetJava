@@ -3,7 +3,7 @@ package ClavarChat.Models.ClavarChatMessage.Enums;
 public enum MESSAGE_TYPE
 {
     DISCOVER,
-    INFORMATION,
+    DISCOVER_INFORMATION,
     LOGIN,
     LOGOUT,
     DATA,

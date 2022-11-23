@@ -204,12 +204,8 @@ public class NetworkManager implements Listener
 
     public void closeAllTcp()
     {
-        Iterator it = this.clients.entrySet().iterator();
-        while (it.hasNext())
-        {
-            Entry<String, ClientHandler> item = (Entry<String, ClientHandler>)it.next();
-            this.closeTCP(item.getKey());
-        }
+        for (String key : this.clients.keySet()) this.clients.get(key).stop();
+        this.clients.clear();
     }
 
     public void closeTCP(String ip)
@@ -253,7 +249,14 @@ public class NetworkManager implements Listener
     private void onNetworkPaquetEvent(PaquetEvent event)
     {
         Log.Info(this.getClass().getName() + " new Paquet from : " + event.src + ":" + event.port);
-        this.eventManager.notiy(new NetworkMessageEvent(event.data, event.src));
+        if (this.validPaquet(event))
+        {
+            this.eventManager.notiy(new NetworkMessageEvent(event.data, event.src));
+        }
+        else
+        {
+            Log.Print(this.getClass().getName() + " dropping from " + event.src + ":" + event.port);
+        }
     }
 
     private void onConnectionEvent(ConnectionEvent event)
@@ -320,5 +323,10 @@ public class NetworkManager implements Listener
         this.pendingDatas.put(ip, new LinkedList<Serializable>());
         ConnectionThread connection = this.networkThreadManager.createConnectionThread(ip, this.TCPPort);
         connection.start();
+    }
+
+    private boolean validPaquet(PaquetEvent event)
+    {
+        return !NetworkUtils.getAllIp().contains(event.src);
     }
 }
