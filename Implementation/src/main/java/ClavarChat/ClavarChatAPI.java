@@ -8,6 +8,7 @@ import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.ClavarChatMessage.DataMessage;
 import ClavarChat.Models.ClavarChatMessage.Enums.MESSAGE_TYPE;
 import ClavarChat.Models.ClavarChatMessage.TextMessage;
+import ClavarChat.Models.ClavarChatMessage.UserInformationMessage;
 import ClavarChat.Models.Events.Enums.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.NetworkMessageEvent;
@@ -16,7 +17,6 @@ import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ClavarChatAPI implements Listener
@@ -42,8 +42,7 @@ public class ClavarChatAPI implements Listener
         ModuleCLI moduleCLI = new ModuleCLI();
 
         moduleCLI.addCommand("discover", () -> {
-            ArrayList<String> ips = this.networkManager.getBroadcastAddresses();
-            for (String ip : ips) this.networkManager.sendUDP(new ClavarChatMessage(MESSAGE_TYPE.DISCOVER), ip);
+            this.discover();
         });
 
         moduleCLI.addCommand("send", () -> {
@@ -74,6 +73,8 @@ public class ClavarChatAPI implements Listener
         }
     }
 
+
+
     @Override
     public void onEvent(Event event)
     {
@@ -94,6 +95,9 @@ public class ClavarChatAPI implements Listener
             case DISCOVER:
                 this.onDiscover(data, event.src);
                 break;
+            case INFORMATION:
+                this.onInformation((UserInformationMessage)data, event.src);
+                break;
             case DATA:
                 this.onData((DataMessage)data, event.src);
                 break;
@@ -103,6 +107,21 @@ public class ClavarChatAPI implements Listener
     private void onDiscover(ClavarChatMessage data, String src)
     {
         Log.Print("Discover from : " + src);
+
+        if (this.userManager.isLogged())
+        {
+            UserData user = this.userManager.getUser();
+            this.networkManager.sendTCP(new UserInformationMessage(user), src);
+        }
+        else
+        {
+            Log.Warning("User not logged cannot respond to DISCOVER");
+        }
+    }
+
+    private void onInformation(UserInformationMessage data, String src)
+    {
+        this.userManager.addUser(data.user, src);
     }
 
     private void onData(DataMessage data, String src)
@@ -118,5 +137,11 @@ public class ClavarChatAPI implements Listener
     private void onTextMessage(TextMessage data, String src)
     {
         Log.Print("Message from " + src + " : " + data.message);
+    }
+
+    private void discover()
+    {
+        ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
+        for (String addresse : broadcast) this.networkManager.sendUDP(new ClavarChatMessage(MESSAGE_TYPE.DISCOVER), addresse);
     }
 }
