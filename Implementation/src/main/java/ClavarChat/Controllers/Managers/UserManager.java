@@ -12,13 +12,13 @@ public class UserManager
     private int userCount;
 
     private UserData user;
-    private ArrayList<UserData> users;
+    private HashMap<String, UserData> users;
     private HashMap<String, ArrayList<String>> ipTable;
 
     public UserManager()
     {
         this.user = new UserData("", "");
-        this.users = new ArrayList<UserData>();
+        this.users = new HashMap<String, UserData>();
         this.ipTable = new HashMap<String, ArrayList<String>>();
 
         this.userCount = 1;
@@ -39,8 +39,9 @@ public class UserManager
         });
 
         moduleCLI.addCommand("list-user", () -> {
-            for (UserData user : this.users)
+            for (String key : this.users.keySet())
             {
+                UserData user = this.users.get(key);
                 System.out.println(this.ipTable.get(user.pseudo) + " --> " + user.pseudo + " " + user.id);
             }
         });
@@ -55,10 +56,14 @@ public class UserManager
 
     public void addUser(UserData user, String src)
     {
-        if (!this.ipTable.containsKey(user)) this.ipTable.put(user.pseudo, new ArrayList<String>());
-        this.userCount++;
+        if (!this.ipTable.containsKey(user))
+        {
+            this.ipTable.put(user.pseudo, new ArrayList<String>());
+            this.users.put(user.pseudo, user);
+        }
+
         this.ipTable.get(user.pseudo).add(src);
-        this.users.add(user);
+        this.userCount++;
     }
 
     public void setUser(String pseudo, String id)
@@ -75,7 +80,7 @@ public class UserManager
 
     public boolean userExist(String pseudo)
     {
-        return this.users.contains(pseudo);
+        return this.users.containsKey(pseudo);
     }
 
     public int getUserCount()
@@ -90,7 +95,9 @@ public class UserManager
 
     public ArrayList<UserData> getUsers()
     {
-        return this.users;
+        ArrayList<UserData> users = new ArrayList<UserData>();
+        for (String key : this.users.keySet()) users.add(this.users.get(key));
+        return users;
     }
 
     public ArrayList<String> getUserIP(String pseudo)

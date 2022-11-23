@@ -37,6 +37,9 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(EVENT_TYPE.NETWORK_MESSAGE_EVENT);
         this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_MESSAGE_EVENT);
 
+        this.networkManager.startTCPServer();
+        this.networkManager.startUDPServer();
+
         this.DEBUG();
     }
 
@@ -83,6 +86,7 @@ public class ClavarChatAPI implements Listener
                 {
                     LoginMessage loginMessage = new LoginMessage(mainUser);
                     ArrayList<String> ip = this.userManager.getUserIP(user.pseudo);
+                    System.out.println(ip);
                     this.networkManager.sendTCP(loginMessage, ip.get(0));
                 }
             }
