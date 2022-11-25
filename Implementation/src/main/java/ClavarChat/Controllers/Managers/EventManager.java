@@ -1,62 +1,59 @@
 package ClavarChat.Controllers.Managers;
 
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Models.Events.Enums.EVENT_TYPE;
+import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 
 public class EventManager
 {
     private static EventManager instance = null;
 
-    private HashMap<EVENT_TYPE, ArrayList<Listener>> listennersMap;
+    private HashMap<EVENT_TYPE, ArrayList<Listener>> listenners;
 
     private EventManager()
     {
-        this.listennersMap = new HashMap<EVENT_TYPE, ArrayList<Listener>>();
+        this.listenners = new HashMap<EVENT_TYPE, ArrayList<Listener>>();
     }
 
     public void addEvent(EVENT_TYPE eventType)
     {
-        if (!this.listennersMap.containsKey(eventType))
+        if (!this.listenners.containsKey(eventType))
         {
-            this.listennersMap.put(eventType, new ArrayList<Listener>());
+            this.listenners.put(eventType, new ArrayList<Listener>());
+            Log.Print(this.getClass().getName() + " Event " + eventType);
         }
         else
         {
-            Log.Warning("Event : " + eventType + " already registered");
+            Log.Warning(this.getClass().getName() + " Event : " + eventType + " already registered");
         }
     }
 
     public void addListenner(Listener listener, EVENT_TYPE eventType)
     {
-        if (!this.listennersMap.containsKey(eventType))
+        if (!this.listenners.containsKey(eventType))
         {
-            Log.Warning("Event : " + eventType + " not registered");
+            Log.Print(this.getClass().getName() + " Event : " + eventType + " not registered");
         }
         else
         {
-            this.listennersMap.get(eventType).add(listener);
+            this.listenners.get(eventType).add(listener);
         }
     }
 
     public void notiy(Event event)
     {
-        if (!this.listennersMap.containsKey(event.type))
+        if (!this.listenners.containsKey(event.type))
         {
-            Log.Warning("Event : " + event.type + " not registered");
+            Log.Warning(this.getClass().getName() + " Event : " + event.type + " not registered");
         }
         else
         {
-            ArrayList<Listener> listeners = this.listennersMap.get(event.type);
-
-            for (int i = 0; i < listeners.size(); i++)
-            {
-                listeners.get(i).onEvent(event);
-            }
+            for (Listener listener : this.listenners.get(event.type)) listener.onEvent(event);
         }
     }
 

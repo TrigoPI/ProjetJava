@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.PaquetEvent;
+import ClavarChat.Models.Events.SocketDataEvent;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 
@@ -61,7 +61,7 @@ public class UDPServerThread extends ServerThread
             Serializable data = (Serializable)iStream.readObject();
             String src = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
             int port = datagramPacket.getPort();
-            this.eventManager.notiy(new PaquetEvent(data, src, port));
+            this.eventManager.notiy(new SocketDataEvent(src, port, data));
         }
         catch (IOException | ClassNotFoundException e) { e.printStackTrace(); }
     }

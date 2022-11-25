@@ -1,15 +1,23 @@
 package ClavarChat.Models.Events;
 
-import ClavarChat.Models.Events.Enums.CONNECTION_EVENT_TYPE;
-import ClavarChat.Models.Events.Enums.NETWORK_EVENT_TYPE;
+import java.net.Socket;
 
-public class ConnectionEvent extends NetworkEvent
+public class ConnectionEvent extends Event
 {
-    public CONNECTION_EVENT_TYPE connectionEventType;
+    public enum CONNECTION_STATUS { SUCCESS, FAILED, ENDED }
 
-    public ConnectionEvent(CONNECTION_EVENT_TYPE connectionEventType)
+    public Socket socket;
+    public String distantIP;
+    public int distantPort;
+    public CONNECTION_STATUS status;
+
+    public ConnectionEvent(CONNECTION_STATUS status, String distantIP, int distantPort, Socket socket)
     {
-        super(NETWORK_EVENT_TYPE.NETWORK_EVENT_CONNECTION);
-        this.connectionEventType = connectionEventType;
+        super(EVENT_TYPE.EVENT_NETWORK_PAQUET);
+
+        this.distantIP = distantIP;
+        this.distantPort = distantPort;
+        this.status = status;
+        this.socket = socket;
     }
 }

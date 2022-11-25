@@ -2,16 +2,15 @@ package ClavarChat.Controllers.Managers;
 
 import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
+import ClavarChat.Models.Events.Event.EVENT_TYPE;
+import ClavarChat.Utils.Log.Log;
 import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.*;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.Map.Entry;
 
 //DEBUG//
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
@@ -45,8 +44,11 @@ public class NetworkManager implements Listener
         this.pendingDatas = new HashMap<String, LinkedList<Serializable>>();
         this.clients = new HashMap<String, ClientHandler>();
 
-        this.eventManager.addEvent(EVENT_TYPE.NETWORK_EVENT);
-        this.eventManager.addListenner(this, EVENT_TYPE.NETWORK_EVENT);
+        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
+        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_CONNECTION);
+        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_PAQUET);
+        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
+        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_CONNECTION);
 
         this.DEBUG();
     }
@@ -227,31 +229,21 @@ public class NetworkManager implements Listener
     {
         switch (event.type)
         {
-            case NETWORK_EVENT:
-                this.onNetworkEvent((NetworkEvent)event);
-                break;
-        }
-    }
-
-    private void onNetworkEvent(NetworkEvent event)
-    {
-        switch (event.networkEventType)
-        {
-            case NETWORK_EVENT_PAQUET:
-                this.onNetworkPaquetEvent((PaquetEvent)event);
-                break;
-            case NETWORK_EVENT_CONNECTION:
+            case EVENT_NETWORK_CONNECTION:
                 this.onConnectionEvent((ConnectionEvent)event);
                 break;
+            case EVENT_NETWORK_SOCKET_DATA:
+                this.onSocketDataEvent((SocketDataEvent)event);
+                break;
         }
     }
 
-    private void onNetworkPaquetEvent(PaquetEvent event)
+    private void onSocketDataEvent(SocketDataEvent event)
     {
         Log.Print(this.getClass().getName() + " Paquet from : " + event.src + ":" + event.port);
         if (this.validPaquet(event))
         {
-            this.eventManager.notiy(new NetworkMessageEvent(event.data, event.src));
+            this.eventManager.notiy(new NetworkPaquetEvent(event.src, event.port, event.data));
         }
         else
         {
@@ -261,35 +253,26 @@ public class NetworkManager implements Listener
 
     private void onConnectionEvent(ConnectionEvent event)
     {
-        switch (event.connectionEventType)
+        switch (event.status)
         {
-            case CONNECTION_EVENT_SUCCESS:
-                this.onSuccessConnectionEvent((SuccessConectionEvent)event);
+            case SUCCESS:
+                this.onConnectionSuccess(event.socket, event.distantIP, event.distantPort);
                 break;
-            case CONNECTION_EVENT_END:
-                this.onEndConnectionEvent((EndConnectionEvent)event);
+            case ENDED:
+                this.onConnectionEnded(event.distantIP);
+                break;
+            case FAILED:
+                this.onConnectionFailed(event.distantIP, event.distantPort);
                 break;
         }
     }
 
-    private void onEndConnectionEvent(EndConnectionEvent event)
+    private void onConnectionEnded(String ip)
     {
-        if (this.clients.containsKey(event.ip)) this.closeTCP(event.ip);
+        if (this.clients.containsKey(ip)) this.closeTCP(ip);
     }
 
-    private void onSuccessConnectionEvent(SuccessConectionEvent event)
-    {
-        if (event.connected)
-        {
-            this.socketConnectedSuccess(event.socket, event.ip, event.port);
-        }
-        else
-        {
-            this.socketConnectedFailed(event.ip, event.port);
-        }
-    }
-
-    private void socketConnectedSuccess(Socket socket, String ip, int port)
+    private void onConnectionSuccess(Socket socket, String ip, int port)
     {
         Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " +  ip + ":" + port);
 
@@ -303,7 +286,7 @@ public class NetworkManager implements Listener
         out.start();
     }
 
-    private void socketConnectedFailed(String ip, int port)
+    private void onConnectionFailed(String ip, int port)
     {
         Log.Print(this.getClass().getName() + " Removing pending data to : " + ip + ":" + port);
         this.pendingDatas.remove(ip);
@@ -325,7 +308,7 @@ public class NetworkManager implements Listener
         connection.start();
     }
 
-    private boolean validPaquet(PaquetEvent event)
+    private boolean validPaquet(SocketDataEvent event)
     {
         return !NetworkUtils.getAllIp().contains(event.src);
     }

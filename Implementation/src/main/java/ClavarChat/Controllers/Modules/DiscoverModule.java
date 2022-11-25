@@ -1,45 +1,40 @@
 package ClavarChat.Controllers.Modules;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.UserManager;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Models.ClavarChatMessage.Enums.MESSAGE_TYPE;
-import ClavarChat.Models.ClavarChatMessage.DiscoverInformationMessage;
+import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
+import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-public class DiscoverModule
+public class DiscoverModule extends Handler
 {
     private NetworkManager networkManager;
+    private UserManager userManager;
     private Semaphore semaphore;
 
     private int userCount;
     private int responseCount;
     private int timeout;
 
-    private boolean success;
-
-    public DiscoverModule(NetworkManager networkManager)
+    public DiscoverModule(NetworkManager networkManager, UserManager userManager)
     {
+        super();
+
         this.networkManager = networkManager;
+        this.userManager = userManager;
         this.semaphore = new Semaphore(1);
 
         this.userCount = 0;
         this.responseCount = -1;
         this.timeout = 10;
-
-        this.success = false;
     }
 
-    public void discover()
-    {
-        this.broadcast();
-        this.waitResponses();
-    }
-
-    public void onDiscoverInformation(DiscoverInformationMessage data)
+    public void onDiscoverInformation(DiscoverMessage data, String src)
     {
         try
         {
@@ -47,11 +42,12 @@ public class DiscoverModule
 
             if (this.responseCount == -1)
             {
-                Log.Print(this.getClass().getName() + " Waiting for " + data.userCount + " responses");
+                Log.Print(this.getClass().getName() + " Waiting for " + data.count + " responses");
                 this.responseCount = 0;
-                this.userCount = data.userCount;
+                this.userCount = data.count;
             }
 
+            this.userManager.addUser(data.user, src);
             this.responseCount++;
 
             semaphore.release();
@@ -59,39 +55,44 @@ public class DiscoverModule
         catch (InterruptedException e) { e.printStackTrace(); }
     }
 
-    public boolean succeed()
+    @Override
+    public void handle()
     {
-        return this.success;
+        this.broadcast();
+        this.waitResponses();
+        if (this.succeed() && this.next != null) this.next.handle();
     }
 
     private void broadcast()
     {
         ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
-        for (String addresse : broadcast) this.networkManager.sendUDP(new ClavarChatMessage(MESSAGE_TYPE.DISCOVER), addresse);
+        for (String addresse : broadcast) this.networkManager.sendUDP(new DiscoverMessage(), addresse);
     }
 
     private void waitResponses()
     {
-        Log.Print(this.getClass().getName() + "Waiting...");
-
+        Log.Info(this.getClass().getName() + "Waiting...");
         Clock clock = new Clock();
+        while (this.validUserCount() && clock.timeSecond() < this.timeout) {}
+    }
 
-        while (this.isValid() && clock.timeSecond() < this.timeout) {}
-
+    private boolean succeed()
+    {
         if (this.responseCount == this.userCount || this.responseCount == -1)
         {
             Log.Info(this.getClass().getName() + " Success Discover");
             if (this.responseCount == -1) Log.Info(this.getClass().getName() + " No response, alone on the network");
-            this.success = true;
+            for (UserData user : this.userManager.getUsers()) Log.Info(this.getClass().getName() + " Discovered " + this.userManager.getUserIP(user.pseudo) + " --> " + user.pseudo + " / #" + user.id);
+
+            return true;
         }
-        else
-        {
-            Log.Error(this.getClass().getName() + " ERROR Discover timeout");
-            this.success = false;
-        }
+
+        Log.Error(this.getClass().getName() + " ERROR Discover timeout");
+
+        return false;
     }
 
-    private boolean isValid()
+    private boolean validUserCount()
     {
         boolean valid = true;
 

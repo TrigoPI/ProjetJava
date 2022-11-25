@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.PaquetEvent;
+import ClavarChat.Models.Events.SocketDataEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.IOException;
@@ -34,6 +34,6 @@ public class TCPINSocketThread extends TCPMessaginThread
     private void receive(Serializable data)
     {
         Log.Print(this.getClass().getName() + " receive : " + this.localIP + ":" + this.localPort + " <-- " + this.distantIP + ":" + this.distantPort);
-        this.eventManager.notiy(new PaquetEvent(data, this.distantIP, this.distantPort));
+        this.eventManager.notiy(new SocketDataEvent(this.distantIP, this.distantPort, data));
     }
 }

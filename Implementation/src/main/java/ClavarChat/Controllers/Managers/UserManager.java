@@ -55,6 +55,11 @@ public class UserManager
         CLI.installModule("user", moduleCLI);
     }
 
+    public void setLogged(boolean logged)
+    {
+        this.logged = logged;
+    }
+
     public void addUser(UserData user, String src)
     {
         Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
@@ -71,11 +76,22 @@ public class UserManager
 
     public void setUser(String pseudo, String id)
     {
-        Log.Info(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
-
-        this.logged = true;
+        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
         this.user.pseudo = pseudo;
         this.user.id = id;
+    }
+
+    public ArrayList<UserData> getUsers()
+    {
+        ArrayList<UserData> users = new ArrayList<UserData>();
+        for (String key : this.users.keySet()) users.add(this.users.get(key));
+        return users;
+    }
+
+    public ArrayList<String> getUserIP(String pseudo)
+    {
+        if (!this.userExist(pseudo)) return new ArrayList<>();
+        return this.ipTable.get(pseudo);
     }
 
     public boolean isLogged()
@@ -96,18 +112,5 @@ public class UserManager
     public UserData getUser()
     {
         return this.user;
-    }
-
-    public ArrayList<UserData> getUsers()
-    {
-        ArrayList<UserData> users = new ArrayList<UserData>();
-        for (String key : this.users.keySet()) users.add(this.users.get(key));
-        return users;
-    }
-
-    public ArrayList<String> getUserIP(String pseudo)
-    {
-        if (!this.userExist(pseudo)) return new ArrayList<>();
-        return this.ipTable.get(pseudo);
     }
 }

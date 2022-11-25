@@ -1,12 +1,12 @@
 package ClavarChat.Controllers.Managers;
 
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Threads.*;
-import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-import ClavarChat.Models.Events.Event;
-import ClavarChat.Models.Events.ThreadEvent;
-import ClavarChat.Utils.CLI.CLI;
+import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
+import ClavarChat.Models.Events.ThreadEvent;
+import ClavarChat.Models.Events.Event;
+import ClavarChat.Controllers.Threads.*;
+import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.Log.Log;
 
 import java.net.Socket;
@@ -22,8 +22,8 @@ public class NetworkThreadManager implements Listener
         this.eventManager = EventManager.getInstance();
         this.threads = new HashMap<String, NetworkThread>();
 
-        this.eventManager.addEvent(EVENT_TYPE.THREAD_EVENT);
-        this.eventManager.addListenner(this, EVENT_TYPE.THREAD_EVENT);
+        this.eventManager.addEvent(EVENT_TYPE.EVENT_THREAD);
+        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_THREAD);
 
         this.DEBUG();
     }
@@ -97,7 +97,7 @@ public class NetworkThreadManager implements Listener
     {
         switch (event.type)
         {
-            case THREAD_EVENT:
+            case EVENT_THREAD:
                 this.onThreadEvent((ThreadEvent)event);
                 break;
         }
@@ -105,16 +105,16 @@ public class NetworkThreadManager implements Listener
 
     private void onThreadEvent(ThreadEvent event)
     {
-        switch (event.threadEventType)
+        switch (event.status)
         {
-            case THREAD_EVENT_FINISHED:
-                this.onThreadFinishedEvent(event);
+            case FINISHED:
+                this.onThreadFinished(event.threadID);
                 break;
         }
     }
 
-    private void onThreadFinishedEvent(ThreadEvent event)
+    private void onThreadFinished(String threadID)
     {
-        this.removeThread(event.threadID);
+        this.removeThread(threadID);
     }
 }

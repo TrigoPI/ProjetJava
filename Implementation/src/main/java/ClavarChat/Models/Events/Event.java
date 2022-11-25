@@ -1,9 +1,17 @@
 package ClavarChat.Models.Events;
 
-import ClavarChat.Models.Events.Enums.EVENT_TYPE;
-
 public class Event
 {
+    public enum EVENT_TYPE
+    {
+        EVENT_NETWORK_CONNECTION,
+        EVENT_NETWORK_SOCKET_DATA,
+        EVENT_NETWORK_PAQUET,
+
+        EVENT_THREAD,
+    }
+
+
     public EVENT_TYPE type;
 
     public Event(EVENT_TYPE type)

@@ -1,7 +1,6 @@
 package Application.ClavaChatCLI;
 
 import ClavarChat.ClavarChatAPI;
-import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
@@ -39,7 +38,7 @@ public class ClavarChatCLI
     public static void init()
     {
         addModuleLogCLI();
-        new ClavarChatAPI(4000, 5000);
+        new ClavarChatAPI(8080, 7070);
     }
 
     public static void run()

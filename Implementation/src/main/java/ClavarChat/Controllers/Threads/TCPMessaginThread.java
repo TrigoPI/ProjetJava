@@ -1,9 +1,9 @@
 package ClavarChat.Controllers.Threads;
 
-import ClavarChat.Models.Events.EndConnectionEvent;
+import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
+import ClavarChat.Models.Events.ConnectionEvent.CONNECTION_STATUS;
 
-import java.net.InetAddress;
 import java.net.Socket;
 
 public abstract class TCPMessaginThread extends NetworkThread
@@ -46,6 +46,6 @@ public abstract class TCPMessaginThread extends NetworkThread
         this.startSocket();
         this.loop();
         this.stopSocket();
-        this.eventManager.notiy(new EndConnectionEvent(this.distantIP));
+        this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.ENDED, this.distantIP, this.distantPort, this.socket));
     }
 }
