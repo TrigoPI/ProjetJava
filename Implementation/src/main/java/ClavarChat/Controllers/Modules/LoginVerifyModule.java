@@ -34,6 +34,8 @@ public class LoginVerifyModule extends Handler
                 ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
                 this.networkManager.sendTCP(new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN), dst.get(0));
             }
+
+            this.userManager.setLogged(true);
         }
         else
         {
