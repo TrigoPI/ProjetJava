@@ -1,0 +1,48 @@
+@import "color.css"
+
+.root {
+    -fx-font-family: "Comfortaa SemiBold";
+    -fx-font-size: 16px;
+}
+
+.clvc-dracula-orchid {
+    -fx-background-color: clvc-dracula-orchid;
+}
+
+.clvc-american-river{
+    -fx-background-color: clvc-american-river;
+}
+
+.clvc-transparent-background {
+    -fx-background-color: transparent;
+}
+
+.clvc-input-field {
+    -fx-background-color: clvc-concrete;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+}
+
+.clvc-input-field > VBox {
+    -fx-background-color: #bdc3c7;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+}
+
+.clvc-input-field > VBox > Button {
+    -fx-background-color: #2f3542;
+    -fx-border-width: 0;
+}
+
+.clvc-input-field > .mfx-text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: none;
+    -fx-padding: 5px 10px;
+    -fx-border-width: 0;
+}
+
+.clvc-input-field > .mfx-text-field .floating-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #5b5b5b;
+    -fx-background-color: transparent;
+}
