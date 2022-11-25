@@ -13,7 +13,7 @@ public class ConnectionEvent extends Event
 
     public ConnectionEvent(CONNECTION_STATUS status, String distantIP, int distantPort, Socket socket)
     {
-        super(EVENT_TYPE.EVENT_NETWORK_PAQUET);
+        super(EVENT_TYPE.EVENT_NETWORK_CONNECTION);
 
         this.distantIP = distantIP;
         this.distantPort = distantPort;
