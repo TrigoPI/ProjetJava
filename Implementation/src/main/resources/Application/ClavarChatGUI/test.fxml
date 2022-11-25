@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml">
+<VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="20.0" styleClass="dark_bg_color" stylesheets="@CSS/stylesheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="200.0" left="200.0" right="200.0" top="200.0" />
     </padding>
-
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!"/>
+   <ImageView fitHeight="273.0" fitWidth="494.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@CSS/LogoText.png" />
+      </image>
+   </ImageView>
+   <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" styleClass="login_secondary_container">
+      <children>
+         <MFXButton alignment="CENTER" layoutX="260.0" layoutY="435.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #BAD381; -fx-background-radius: 25;" text="Login" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="355.0" />
+         <MFXTextField layoutX="408.0" layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="180.0" promptText="#0000" style="-fx-background-color: #b2bec3;" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="215.0" />
+         <MFXPasswordField layoutX="197.0" layoutY="314.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="180.0" promptText="Password" style="-fx-background-color: #b2bec3;" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="285.0" />
+         <MFXTextField layoutX="228.0" layoutY="103.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="180.0" promptText="Username" style="-fx-background-color: #b2bec3;" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="145.0" />
+      </children>
+   </AnchorPane>
+   <AnchorPane prefHeight="200.0" prefWidth="200.0" />
 </VBox>

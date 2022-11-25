@@ -1,12 +1,14 @@
 package Application;
 
 import Application.ClavaChatCLI.ClavarChatCLI;
+import Application.ClavarChatGUI.ClavarChatGUI;
 
 public class ClavarChatApplication
 {
 
     public static void main(String[] args)
     {
-        ClavarChatCLI.run();
+        ClavarChatGUI clavarChatGUI = new ClavarChatGUI();
+        clavarChatGUI.run();
     }
 }

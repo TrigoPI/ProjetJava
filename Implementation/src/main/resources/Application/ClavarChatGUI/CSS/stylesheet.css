@@ -1,0 +1,15 @@
+.dark_bg_color
+{
+    -fx-background-color:  #2d3436;
+}
+
+.login_secondary_container
+{
+    -fx-background-color:  #636e72;
+    -fx-background-radius: 30;
+}
+
+.logo_image
+{
+    -fx-background-image: "./LogoText.png";
+}
