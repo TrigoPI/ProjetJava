@@ -5,6 +5,7 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.UserManager;
 import ClavarChat.Controllers.Modules.DiscoverModule;
+import ClavarChat.Controllers.Modules.LoginVerifyModule;
 import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
@@ -22,6 +23,7 @@ public class ClavarChatAPI implements Listener
     private NetworkManager networkManager;
     private UserManager userManager;
     private DiscoverModule discoverModule;
+    private LoginVerifyModule loginVerifyModule;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
@@ -30,6 +32,9 @@ public class ClavarChatAPI implements Listener
         this.networkManager = new NetworkManager(tcpPort, udpPort);
 
         this.discoverModule = new DiscoverModule(this.networkManager, this.userManager);
+        this.loginVerifyModule = new LoginVerifyModule(this.networkManager, this.userManager);
+
+        this.discoverModule.setNext(this.loginVerifyModule);
 
         this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_PAQUET);
 
@@ -65,6 +70,7 @@ public class ClavarChatAPI implements Listener
 
     public void login(String pseudo, String id)
     {
+        this.userManager.setUser(pseudo, id);
         this.discoverModule.handle();
     }
 
@@ -99,8 +105,15 @@ public class ClavarChatAPI implements Listener
 
         switch (data.type)
         {
+            case LOGIN:
+                this.onLogin(data, event.ip);
+                break;
+            case LOGOUT:
+                break;
             case DISCOVER:
                 this.onDiscover((DiscoverMessage)data, event.ip);
+                break;
+            case DATA:
                 break;
         }
     }
@@ -116,6 +129,11 @@ public class ClavarChatAPI implements Listener
                 this.onDiscoverResponse(data, src);
                 break;
         }
+    }
+
+    private void onLogin(ClavarChatMessage data, String src)
+    {
+        this.userManager.addUser(data.user, src);
     }
 
     private void onDiscoverRequest(DiscoverMessage data, String src)
@@ -140,12 +158,7 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.user.pseudo + " / " + "#" + data.user.id);
         this.discoverModule.onDiscoverInformation(data, src);
     }
-//
-//    private void onLogin(LoginMessage data, String src)
-//    {
-//        this.userManager.addUser(data.user, src);
-//    }
-//
+
 //    private void onData(DataMessage data, String src)
 //    {
 //        switch (data.dataType)

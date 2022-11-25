@@ -23,7 +23,7 @@ public class UserManager
         this.ipTable = new HashMap<String, ArrayList<String>>();
 
         this.userCount = 1;
-        this.logged = false;
+        this.logged = true;
 
         this.DEBUG();
     }
@@ -93,7 +93,7 @@ public class UserManager
         if (!this.userExist(pseudo)) return new ArrayList<>();
         return this.ipTable.get(pseudo);
     }
-
+    
     public boolean isLogged()
     {
         return this.logged;
