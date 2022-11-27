@@ -35,11 +35,14 @@ public class PackedArray<T>
 
         int index = this.datasMap.get(id);
         int lastIndex = this.datas.size() - 1;
+
         T lastItem = this.datas.get(lastIndex);
         T item = this.datas.get(index);
 
+        if (!this.datas.isEmpty()) this.datas.set(index, lastItem);
+
         this.datas.remove(lastIndex);
-        this.datas.set(index, lastItem);
+        this.id = lastIndex;
         this.datasMap.put(id, index);
 
         return item;

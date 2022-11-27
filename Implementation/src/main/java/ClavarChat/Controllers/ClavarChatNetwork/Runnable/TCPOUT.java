@@ -2,7 +2,6 @@ package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -31,8 +30,6 @@ public class TCPOUT extends TcpMessagin
     @Override
     protected void runSocket()
     {
-        try
-        {
             while (true)
             {
                 if (!this.datas.isEmpty())
@@ -41,10 +38,5 @@ public class TCPOUT extends TcpMessagin
                     this.networkManager.tcpSend(socketId, data);
                 }
             }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 }

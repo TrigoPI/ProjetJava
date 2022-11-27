@@ -115,16 +115,17 @@ public class ClavarChatNetwork implements Listener
         switch (event.status)
         {
             case SUCCESS:
-                this.onConnectionSuccess(event.socketID, event.distantIP, event.distantPort);
-                break;
-            case ENDED:
+                this.connectionSuccess(event.socketID, event.distantIP, event.distantPort);
                 break;
             case FAILED:
+                this.connectionFailed(event.socketID, event.distantIP, event.distantPort);
+                break;
+            case ENDED:
                 break;
         }
     }
 
-    private void onConnectionSuccess(int socketId, String dstIp, int dstPort)
+    private void connectionSuccess(int socketId, String dstIp, int dstPort)
     {
         Log.Info(this.getClass().getName() + " Connection success with : " + dstIp + ":" + dstPort + " --> socketId " + socketId);
         Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
@@ -151,6 +152,12 @@ public class ClavarChatNetwork implements Listener
         Log.Print(this.getClass().getName() + " TCPOUT id : " + ids[1]);
 
         this.flushPendingData(dstIp);
+    }
+
+    private void connectionFailed(int socketId, String dstIp, int dstPort)
+    {
+        Log.Print(this.getClass().getName() + " Removing pending data to : " + dstIp + ":" + dstPort);
+        this.pendingDatas.remove(dstIp);
     }
 
     private void flushPendingData(String ip)

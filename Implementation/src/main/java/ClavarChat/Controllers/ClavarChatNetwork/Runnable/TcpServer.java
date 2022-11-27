@@ -2,8 +2,6 @@ package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
 
-import java.io.IOException;
-
 public class TcpServer extends Server
 {
     public TcpServer(NetworkManager networkManager, int serverId, int port)
@@ -14,13 +12,6 @@ public class TcpServer extends Server
     @Override
     protected void runServer()
     {
-        try
-        {
-            this.networkManager.startTcpServer(this.serverId, this.port);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        this.networkManager.startTcpServer(this.serverId, this.port);
     }
 }

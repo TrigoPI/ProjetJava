@@ -2,13 +2,11 @@ package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
 
-import java.io.IOException;
-
 public class TcpConnection extends NetworkRunnable
 {
-    private int socketId;
     private String ip;
     private int port;
+    private int socketId;
 
     public TcpConnection(NetworkManager networkManager, int socketId, String ip, int port)
     {
@@ -21,13 +19,6 @@ public class TcpConnection extends NetworkRunnable
     @Override
     protected void update()
     {
-        try
-        {
-            this.networkManager.connect(this.socketId, this.ip, this.port);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        this.networkManager.connect(this.socketId, this.ip, this.port);
     }
 }
