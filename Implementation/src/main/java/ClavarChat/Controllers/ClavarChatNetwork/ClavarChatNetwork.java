@@ -7,6 +7,7 @@ import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.ThreadManager;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
+import ClavarChat.Models.Events.SocketDataEvent;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
@@ -115,6 +116,9 @@ public class ClavarChatNetwork implements Listener
             case EVENT_NETWORK_CONNECTION:
                 this.onNetworkConnectionEvent((ConnectionEvent)event);
                 break;
+            case EVENT_NETWORK_SOCKET_DATA:
+                this.onNetworkSocketDataEvent((SocketDataEvent)event);
+                break;
         }
     }
 
@@ -128,9 +132,14 @@ public class ClavarChatNetwork implements Listener
             case FAILED:
                 this.connectionFailed(event.dstIp, event.dstPort);
                 break;
-            case ENDED:
-                break;
         }
+    }
+
+    private void onNetworkSocketDataEvent(SocketDataEvent event)
+    {
+        String data = (String)event.data;
+
+        Log.Info(this.getClass().getName() + " " + event.src + ":" + event.port + " say : " + data);
     }
 
     private void connectionSuccess(int socketId, String dstIp, String srcIp, int dstPort, int srcPort)
@@ -194,11 +203,6 @@ public class ClavarChatNetwork implements Listener
             Log.Print(this.getClass().getName() + " Removing pending data to : " + dstIp + ":" + dstPort);
             this.pendingDatas.remove(dstIp);
         }
-    }
-
-    private void connectionEnded(String dstIp, String srcIp, int dstPort, int srcPort)
-    {
-
     }
 
     private void flushPendingData(String ip)

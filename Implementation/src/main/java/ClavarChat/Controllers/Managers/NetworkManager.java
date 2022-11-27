@@ -51,18 +51,27 @@ public class NetworkManager
         return this.sockets.add(new Socket());
     }
 
-    public Serializable tcpReceive(int socketId)
+    public void tcpReceive(int socketId)
     {
         Socket socket = this.sockets.get(socketId);
-        Serializable data = null;
 
         if (socket != null)
         {
             try
             {
+                String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+                int srcPort = NetworkUtils.getSocketLocalPort(socket);
+                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
                 InputStream in = socket.getInputStream();
                 ObjectInputStream iin = new ObjectInputStream(in);
-                data = (Serializable)iin.readObject();
+                Serializable data = (Serializable)iin.readObject();
+
+                Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+
+                this.eventManager.notiy(new SocketDataEvent(dstIp, dstPort, data));
             }
             catch (IOException | ClassNotFoundException e)
             {
@@ -79,7 +88,6 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " Cannot connect receive socket is null ");
         }
 
-        return data;
     }
 
     public void tcpSend(int socketId, Serializable data)
