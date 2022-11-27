@@ -163,19 +163,30 @@ public class ClavarChatNetwork implements Listener
 
     private void connectionFailed(String dstIp, int dstPort)
     {
-        Log.Print(this.getClass().getName() + " Removing socket data to : " + dstIp + ":" + dstPort);
-        this.socketsId.remove(dstIp);
+        if (socketsId.containsKey(dstIp))
+        {
+            Log.Print(this.getClass().getName() + " Removing socket data to : " + dstIp + ":" + dstPort);
+            this.socketsId.remove(dstIp);
+        }
 
         if (this.clientsMap.containsKey(dstIp))
         {
             Integer ids[] = this.clientsMap.get(dstIp);
+            TCPIN in = this.tcpIn.get(ids[0]);
+            TCPOUT out = this.tcpOut.get(ids[1]);
+
+            Log.Print(this.getClass().getName() + " Stopping TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
+
+            in.stop();
+            out.stop();
+
+            Log.Print(this.getClass().getName() + " Removing TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
 
             this.tcpIn.remove(ids[0]);
             this.tcpOut.remove(ids[1]);
 
             this.clientsMap.remove(dstIp);
 
-            Log.Print(this.getClass().getName() + " Removing TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
         }
 
         if (this.pendingDatas.containsKey(dstIp))
