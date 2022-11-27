@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class Insert {
+public class InsertUser {
     private Connection connect() {
         // SQLite connection string
         URL path = Connect.class.getResource("ClavarDataBase.db");
@@ -21,13 +21,13 @@ public class Insert {
     }
 
 
-    public void insert(String pseudo, int id) {
-        String sql = "INSERT INTO users(pseudo) VALUES(?,?)";
+    public void InsertUser(String pseudo) {
+        String sql = "INSERT INTO users(pseudo) VALUES(?)";
 
         try {
             Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(id, pseudo);
+            pstmt.setString(1,pseudo);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -39,9 +39,9 @@ public class Insert {
      */
     public static void main(String[] args) {
 
-        Insert app = new Insert();
+        InsertUser app = new InsertUser();
         // insert three new rows
-        app.insert("Alexis",1);
-        app.insert("Clement",2);
+        app.InsertUser("Alexis");
+        app.InsertUser("Clement");
     }
 }
