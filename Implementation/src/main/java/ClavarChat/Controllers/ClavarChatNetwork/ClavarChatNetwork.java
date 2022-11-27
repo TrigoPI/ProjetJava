@@ -51,6 +51,7 @@ public class ClavarChatNetwork implements Listener
         this.tcpOut = new PackedArray<>();
 
         this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
+        this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
 
         this.DEBUG();
     }
