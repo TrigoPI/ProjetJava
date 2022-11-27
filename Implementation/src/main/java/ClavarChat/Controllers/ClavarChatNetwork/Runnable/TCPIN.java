@@ -13,6 +13,9 @@ public class TCPIN extends TcpMessagin
     @Override
     protected void runSocket()
     {
-        while (true) {this.networkManager.tcpReceive(this.socketId);}
+        while (this.isRunning())
+        {
+            this.networkManager.tcpReceive(this.socketId);
+        }
     }
 }

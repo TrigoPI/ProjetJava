@@ -25,6 +25,7 @@ public class ClavarChatNetwork implements Listener
 
     private HashMap<String, LinkedList<Serializable>> pendingDatas;
     private HashMap<String, Integer[]> clientsMap;
+    private HashMap<String, Integer> socketsId;
     private PackedArray<TCPIN> tcpIn;
     private PackedArray<TCPOUT> tcpOut;
 
@@ -43,6 +44,7 @@ public class ClavarChatNetwork implements Listener
 
         this.pendingDatas = new HashMap<>();
         this.clientsMap = new HashMap<>();
+        this.socketsId = new HashMap<>();
 
         this.tcpIn = new PackedArray<>();
         this.tcpOut = new PackedArray<>();
@@ -71,22 +73,28 @@ public class ClavarChatNetwork implements Listener
 
     public void send(String ip, int port, Serializable data)
     {
-        if (this.clientsMap.containsKey(ip))
+        if (this.socketsId.containsKey(ip))
         {
-            int outId = this.clientsMap.get(ip)[1];
-            TCPOUT out = this.tcpOut.get(outId);
-            out.put(data);
+            if (this.clientsMap.containsKey(ip))
+            {
+                int outId = this.clientsMap.get(ip)[1];
+                TCPOUT out = this.tcpOut.get(outId);
+                out.put(data);
+            }
+            else
+            {
+                this.pendingDatas.get(ip).push(data);
+            }
         }
         else
         {
-            if (!this.pendingDatas.containsKey(ip))
-            {
-                this.pendingDatas.put(ip, new LinkedList<>());
-                int socketId = this.networkManager.createSocket();
-                int threadId = this.threadManager.createThread(new TcpConnection(this.networkManager, socketId, ip, port));
-                this.threadManager.startThread(threadId);
-            }
+            int socketId = this.networkManager.createSocket();
+            int threadId = this.threadManager.createThread(new TcpConnection(this.networkManager, socketId, ip, port));
+
+            this.socketsId.put(ip, socketId);
+            this.pendingDatas.put(ip, new LinkedList<>());
             this.pendingDatas.get(ip).push(data);
+            this.threadManager.startThread(threadId);
         }
     }
 
@@ -115,23 +123,23 @@ public class ClavarChatNetwork implements Listener
         switch (event.status)
         {
             case SUCCESS:
-                this.connectionSuccess(event.socketID, event.distantIP, event.distantPort);
+                this.connectionSuccess(event.dstIp, event.srcIp, event.dstPort, event.srcPort);
                 break;
             case FAILED:
-                this.connectionFailed(event.socketID, event.distantIP, event.distantPort);
+                this.connectionFailed(event.dstIp, event.dstPort);
                 break;
             case ENDED:
                 break;
         }
     }
 
-    private void connectionSuccess(int socketId, String dstIp, int dstPort)
+    private void connectionSuccess(String dstIp, String srcIp, int dstPort, int srcPort)
     {
-        Log.Info(this.getClass().getName() + " Connection success with : " + dstIp + ":" + dstPort + " --> socketId " + socketId);
-        Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
-
+        int socketId = this.socketsId.get(dstIp);
         int inId = this.threadManager.createThread();
         int outId = this.threadManager.createThread();
+
+        Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
 
         Integer ids[] = new Integer[2];
         TCPIN in = new TCPIN(this.networkManager, socketId);
@@ -148,16 +156,39 @@ public class ClavarChatNetwork implements Listener
 
         this.clientsMap.put(dstIp, ids);
 
-        Log.Print(this.getClass().getName() + " TCPIN id : " + ids[0]);
-        Log.Print(this.getClass().getName() + " TCPOUT id : " + ids[1]);
+        Log.Print(this.getClass().getName() + " TCPIN id : " + ids[0] + " / " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+        Log.Print(this.getClass().getName() + " TCPOUT id : " + ids[1] + " / " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
 
         this.flushPendingData(dstIp);
     }
 
-    private void connectionFailed(int socketId, String dstIp, int dstPort)
+    private void connectionFailed(String dstIp, int dstPort)
     {
-        Log.Print(this.getClass().getName() + " Removing pending data to : " + dstIp + ":" + dstPort);
-        this.pendingDatas.remove(dstIp);
+        Log.Print(this.getClass().getName() + " Removing socket data to : " + dstIp + ":" + dstPort);
+        this.socketsId.remove(dstIp);
+
+        if (this.clientsMap.containsKey(dstIp))
+        {
+            Integer ids[] = this.clientsMap.get(dstIp);
+
+            this.tcpIn.remove(ids[0]);
+            this.tcpOut.remove(ids[1]);
+
+            this.clientsMap.remove(dstIp);
+
+            Log.Print(this.getClass().getName() + " Removing TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
+        }
+
+        if (this.pendingDatas.containsKey(dstIp))
+        {
+            Log.Print(this.getClass().getName() + " Removing pending data to : " + dstIp + ":" + dstPort);
+            this.pendingDatas.remove(dstIp);
+        }
+    }
+
+    private void connectionEnded(String dstIp, String srcIp, int dstPort, int srcPort)
+    {
+
     }
 
     private void flushPendingData(String ip)

@@ -67,6 +67,11 @@ public class NetworkManager
             catch (IOException | ClassNotFoundException e)
             {
                 Log.Error(this.getClass().getName() + " Error in TCP receive");
+
+                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+                this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.FAILED, dstIp, dstPort, socketId));
             }
         }
         else
@@ -83,23 +88,28 @@ public class NetworkManager
 
         if (socket != null)
         {
-            String srcIp = NetworkUtils.getSocketLocalIp(socket);
-            String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-            int srcPort = NetworkUtils.getSocketLocalPort(socket);
-            int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
-            Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstPort + ":" + dstIp);
-
             try
             {
+                String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+                int srcPort = NetworkUtils.getSocketLocalPort(socket);
+                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+                Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+
                 OutputStream out = socket.getOutputStream();
                 ObjectOutputStream oout = new ObjectOutputStream(out);
                 oout.writeObject(data);
             }
             catch (IOException e)
             {
+                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
                 Log.Error(this.getClass().getName() + " Error in TCP Send");
+
+                this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.FAILED, dstIp, dstPort, socketId));
             }
         }
         else
@@ -116,11 +126,17 @@ public class NetworkManager
         {
             try
             {
-                Log.Print(this.getClass().getName() + " Trying to connect with : " + ip + ":" + port);
+                Log.Print(this.getClass().getName() + " Trying to connect with : " + ip + ":" + port + " --> socket id : " + socketId);
 
                 InetAddress inetAddress = InetAddress.getByName(ip);
                 SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
                 socket.connect(socketAddress, 5000);
+
+                String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                int srcPort = NetworkUtils.getSocketLocalPort(socket);
+
+                Log.Info(this.getClass().getName() + " Connection success with : " + ip + ":" + port + " --> socket id : " + socketId);
+                this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.SUCCESS, ip, port, srcIp, srcPort, socketId));
             }
             catch (IOException e)
             {
@@ -201,19 +217,56 @@ public class NetworkManager
         }
     }
 
-    public void closeTcpServer(int serverID) throws IOException
+    public void closeTcpServer(int serverID)
     {
         ServerSocket server = this.tcpServers.get(serverID);
 
         if (server != null)
         {
-            int port = server.getLocalPort();
-            server.close();
-            Log.Error(this.getClass().getName() + " No TCP server with id : " + serverID + " --> " + port);
+
+            try
+            {
+                int port = server.getLocalPort();
+                server.close();
+                Log.Error(this.getClass().getName() + " Closing TCP server with id : " + serverID + " --> " + port);
+            }
+            catch (IOException e)
+            {
+                Log.Error(this.getClass().getName() + " ERROR closeTcpServer");
+            }
         }
         else
         {
             Log.Error(this.getClass().getName() + " No TCP server with id : " + serverID);
+        }
+    }
+
+    public void closeTcpSocket(int socketId)
+    {
+        Socket socket = this.sockets.get(socketId);
+
+        if (socket != null)
+        {
+            try
+            {
+                String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+                int srcPort = NetworkUtils.getSocketLocalPort(socket);
+                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+
+                socket.close();
+                Log.Error(this.getClass().getName() + " Closing Socket server with id : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+            }
+            catch (IOException e)
+            {
+                Log.Error(this.getClass().getName() + " ERROR closeTcpSocket");
+            }
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " Cannot close socket is null ");
         }
     }
 }
