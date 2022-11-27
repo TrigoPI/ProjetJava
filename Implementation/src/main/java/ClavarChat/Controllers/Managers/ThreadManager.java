@@ -56,41 +56,42 @@ public class ThreadManager implements Listener
         return currentID++;
     }
 
-    public void removeThread(int id)
+    public void removeThread(int threadId)
     {
-        if (this.threads.containsKey(id))
+        if (this.threads.containsKey(threadId))
         {
-            Log.Print(this.getClass().getName() + " removing thread : " + id);
-            this.threads.remove(id);
+            Log.Print(this.getClass().getName() + " removing thread : " + threadId);
+            this.threads.remove(threadId);
         }
         else
         {
-            Log.Error(this.getClass().getName() + " no thread with id : " + id);
+            Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
         }
     }
 
-    public void setThreadRunnable(int id, ThreadRunnable runnable)
+    public void setThreadRunnable(int threadId, ThreadRunnable runnable)
     {
-        if (this.threads.containsKey(id))
+        if (this.threads.containsKey(threadId))
         {
-            this.threads.get(id).setRunnable(runnable);
+            Log.Print(this.getClass().getName() + " Adding " + runnable.getClass().getName() + " to thread : " + threadId);
+            this.threads.get(threadId).setRunnable(runnable);
         }
         else
         {
-            Log.Error(this.getClass().getName() + " no thread with id : " + id);
+            Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
         }
     }
 
-    public void startThread(int id)
+    public void startThread(int threadId)
     {
-        if (this.threads.containsKey(id))
+        if (this.threads.containsKey(threadId))
         {
-            Log.Print(this.getClass().getName() + " starting thread : " + id);
-            this.threads.get(id).start();
+            Log.Print(this.getClass().getName() + " starting thread : " + threadId);
+            this.threads.get(threadId).start();
         }
         else
         {
-            Log.Error(this.getClass().getName() + " no thread with id : " + id);
+            Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
         }
     }
 

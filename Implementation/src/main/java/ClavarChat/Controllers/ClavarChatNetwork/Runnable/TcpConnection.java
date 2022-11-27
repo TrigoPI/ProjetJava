@@ -10,10 +10,10 @@ public class TcpConnection extends NetworkRunnable
     private String ip;
     private int port;
 
-    public TcpConnection(NetworkManager networkManager, String ip, int port)
+    public TcpConnection(NetworkManager networkManager, int socketId, String ip, int port)
     {
         super(networkManager);
-        this.socketId = this.networkManager.createSocket();
+        this.socketId = socketId;
         this.port = port;
         this.ip = ip;
     }

@@ -7,6 +7,8 @@ import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.ThreadManager;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
+import ClavarChat.Utils.CLI.CLI;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
 
@@ -46,6 +48,20 @@ public class ClavarChatNetwork implements Listener
         this.tcpOut = new PackedArray<>();
 
         this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
+
+        this.DEBUG();
+    }
+
+    private void DEBUG()
+    {
+        ModuleCLI moduleCLI = new ModuleCLI();
+
+        moduleCLI.addCommand("send", () -> {
+            String ip = moduleCLI.getUserInput("IP : ");
+            this.send(ip, 5000, new String("OOOOOOKKKKK"));
+        });
+
+        CLI.installModule("network", moduleCLI);
     }
 
     public void close(String ip)
@@ -53,7 +69,7 @@ public class ClavarChatNetwork implements Listener
 
     }
 
-    public void send(String ip, Serializable data)
+    public void send(String ip, int port, Serializable data)
     {
         if (this.clientsMap.containsKey(ip))
         {
@@ -63,7 +79,13 @@ public class ClavarChatNetwork implements Listener
         }
         else
         {
-            if (!this.pendingDatas.containsKey(ip)) this.pendingDatas.put(ip, new LinkedList<>());
+            if (!this.pendingDatas.containsKey(ip))
+            {
+                this.pendingDatas.put(ip, new LinkedList<>());
+                int socketId = this.networkManager.createSocket();
+                int threadId = this.threadManager.createThread(new TcpConnection(this.networkManager, socketId, ip, port));
+                this.threadManager.startThread(threadId);
+            }
             this.pendingDatas.get(ip).push(data);
         }
     }
@@ -104,7 +126,7 @@ public class ClavarChatNetwork implements Listener
 
     private void onConnectionSuccess(int socketId, String dstIp, int dstPort)
     {
-        Log.Info(this.getClass().getName() + " Connection success with : " + dstIp + ":" + dstPort + " --> " + socketId);
+        Log.Info(this.getClass().getName() + " Connection success with : " + dstIp + ":" + dstPort + " --> socketId " + socketId);
         Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
 
         int inId = this.threadManager.createThread();

@@ -133,7 +133,7 @@ public class NetworkManager
                 int dstPort = socket.getPort();
                 String dstIp = NetworkUtils.inetAddressToString(socket.getInetAddress());
 
-                Log.Info(this.getClass().getName() + " New client : " + dstIp + ":" + port);
+                Log.Info(this.getClass().getName() + " New client : " + dstIp + ":" + dstPort);
 
                 this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, dstIp, dstPort, socketId));
             }
@@ -183,6 +183,21 @@ public class NetworkManager
         else
         {
             Log.Error(this.getClass().getName() + " No TCP server with id : " + serverID);
+        }
+    }
+
+    public void removeSocket(int socketId)
+    {
+        Socket socket = this.sockets.get(socketId);
+
+        if (socket != null)
+        {
+            Log.Print(this.getClass().getName() + " Removing socket with id : " + socketId);
+            this.sockets.remove(socketId);
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " No Socket with id : " + socketId);
         }
     }
 }
