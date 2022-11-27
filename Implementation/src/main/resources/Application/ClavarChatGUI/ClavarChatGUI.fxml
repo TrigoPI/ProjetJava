@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="clvc-dracula-orchid" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" spacing="20.0" styleClass="clvc-control-container">
+         <children>
+            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" spacing="20.0" styleClass="clvc-user-avatar-container">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Circle fill="DODGERBLUE" layoutX="50.0" layoutY="84.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fill="#7bed9f" layoutX="76.0" layoutY="122.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children>
+                  </AnchorPane>
+                  <VBox alignment="CENTER_LEFT" spacing="3.0">
+                     <children>
+                        <Label text="User">
+                           <styleClass>
+                              <String fx:value="clvlc-font-24px" />
+                              <String fx:value="clvc-font-bold" />
+                           </styleClass>
+                        </Label>
+                        <Label styleClass="clvc-font-12px" text="#0000" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox spacing="7.0" styleClass="clvc-search-container">
+               <children>
+                  <Label text="Chat">
+                     <styleClass>
+                        <String fx:value="clvc-font-bold" />
+                        <String fx:value="clvlc-font-24px" />
+                     </styleClass>
+                  </Label>
+                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
+                     <children>
+                        <VBox alignment="CENTER" prefWidth="70.0">
+                           <children>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                           </children>
+                        </VBox>
+                        <MFXTextField fx:id="usernameTextField" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="clvc-american-river" />
+                        <String fx:value="clvc-user-preview-container" />
+                     </styleClass>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
+               <children>
+                  <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0">
+                     <children>
+                        <Circle fill="DODGERBLUE" layoutX="100.0" layoutY="50.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fill="#7bed9f" layoutX="130.0" layoutY="91.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children>
+                  </AnchorPane>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label text="Name">
+                           <styleClass>
+                              <String fx:value="clvlc-font-24px" />
+                              <String fx:value="clvc-font-bold" />
+                           </styleClass>
+                        </Label>
+                        <Label styleClass="clvc-font-12px" text="#1111" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <MFXScrollPane styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0" />
+                        <HBox prefHeight="100.0" prefWidth="200.0" />
+                        <HBox prefHeight="100.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+               </content>
+            </MFXScrollPane>
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
+               <children>
+                  <VBox alignment="CENTER" prefWidth="70.0">
+                     <children>
+                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                     </children>
+                  </VBox>
+                  <MFXTextField fx:id="usernameTextField1" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <stylesheets>
+      <URL value="@CSS/utils.css" />
+      <URL value="@CSS/clavarchat.css" />
+   </stylesheets>
+</HBox>

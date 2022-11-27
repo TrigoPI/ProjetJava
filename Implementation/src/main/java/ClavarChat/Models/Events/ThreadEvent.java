@@ -4,14 +4,14 @@ public class ThreadEvent extends Event
 {
     public enum THREAD_STATUS { FINISHED }
 
-    public String threadID;
+    public int id;
     public THREAD_STATUS status;
 
-    public ThreadEvent(THREAD_STATUS status, String threadID)
+    public ThreadEvent(THREAD_STATUS status, int id)
     {
         super(EVENT_TYPE.EVENT_THREAD);
 
-        this.threadID = threadID;
+        this.id = id;
         this.status = status;
     }
 }

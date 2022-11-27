@@ -1,0 +1,13 @@
+.clvc-control-container {
+    -fx-padding: 0px 20px;
+}
+
+.clvc-user-preview-container {
+    -fx-background-radius: 30px;
+    -fx-border-radius: 30px;
+    -fx-padding: 0px 20px
+}
+
+.clvc-user-chat-avatar-container {
+    -fx-padding: 20px 0;
+}

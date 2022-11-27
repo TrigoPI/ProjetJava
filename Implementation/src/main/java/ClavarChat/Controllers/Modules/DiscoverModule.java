@@ -2,7 +2,6 @@ package ClavarChat.Controllers.Modules;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.UserManager;
-import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Clock.Clock;
@@ -65,8 +64,8 @@ public class DiscoverModule extends Handler
 
     private void broadcast()
     {
-        ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
-        for (String addresse : broadcast) this.networkManager.sendUDP(new DiscoverMessage(), addresse);
+//        ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
+//        for (String addresse : broadcast) this.networkManager.sendUDP(new DiscoverMessage(), addresse);
     }
 
     private void waitResponses()

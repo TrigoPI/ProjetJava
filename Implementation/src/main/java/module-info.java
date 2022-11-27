@@ -2,6 +2,7 @@ module Implementation
 {
     requires javafx.controls;
     requires javafx.fxml;
+    requires MaterialFX;
 
     opens Application.ClavarChatGUI to javafx.fxml;
     exports Application.ClavarChatGUI;

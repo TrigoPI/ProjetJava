@@ -1,315 +1,148 @@
 package ClavarChat.Controllers.Managers;
 
-import ClavarChat.Controllers.ClientHandler.ClientHandler;
 import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import ClavarChat.Models.Events.Event.EVENT_TYPE;
-import ClavarChat.Utils.Log.Log;
-import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Models.Events.*;
+import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.NetworkUtils.NetworkUtils;
+import ClavarChat.Utils.PackedArray.PackedArray;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 //DEBUG//
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
-import ClavarChat.Utils.CLI.CLI;
 
-public class NetworkManager implements Listener
+
+public class NetworkManager
 {
-    private int TCPPort;
-    private int UDPPort;
-
     private EventManager eventManager;
-    private NetworkThreadManager networkThreadManager;
 
-    private TCPServerThread tcpServerThread;
-    private UDPServerThread udpServerThread;
+    private PackedArray<Socket> sockets;
+    private PackedArray<ServerSocket> tcpServers;
+    private PackedArray<DatagramSocket> udpServers;
 
     private HashMap<String, LinkedList<Serializable>> pendingDatas;
-    private HashMap<String, ClientHandler> clients;
 
-    public NetworkManager(int TCPPort, int UDPPort)
+    public NetworkManager()
     {
-        this.TCPPort = TCPPort;
-        this.UDPPort = UDPPort;
-
         this.eventManager = EventManager.getInstance();
-        this.networkThreadManager = new NetworkThreadManager();
 
-        this.tcpServerThread = this.networkThreadManager.createTCPServerThread(TCPPort);
-        this.udpServerThread = this.networkThreadManager.createUDPServerThread(UDPPort);
+        this.sockets = new PackedArray<>();
+        this.tcpServers = new PackedArray<>();
+        this.udpServers = new PackedArray<>();
 
         this.pendingDatas = new HashMap<String, LinkedList<Serializable>>();
-        this.clients = new HashMap<String, ClientHandler>();
 
-        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
         this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_CONNECTION);
-        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_PAQUET);
-        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
-        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_CONNECTION);
-
-        this.DEBUG();
+        this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
     }
 
-    private void DEBUG()
+    public int createTcpServer()
     {
-        ModuleCLI moduleCLI = new ModuleCLI();
+        int id = -1;
+        try { id = this.tcpServers.add(new ServerSocket()); }
+        catch (IOException e) {e.printStackTrace();}
+        return id;
+    }
 
-        moduleCLI.addCommand("networks", () -> {
-            ArrayList<String> allIp = this.getAllIp();
-            ArrayList<String> allNetworks = this.getConnectedNetworks();
-            ArrayList<String> allBroadcasts = this.getBroadcastAddresses();
+    public int createUdpServer()
+    {
+        int id = -1;
+        try { id = this.udpServers.add(new DatagramSocket()); }
+        catch (IOException e) {e.printStackTrace();}
+        return id;
+    }
 
-            for (int i = 0; i < allIp.size(); i++)
+    public int createSocket()
+    {
+        return this.sockets.add(new Socket());
+    }
+
+    public boolean connect(int socketId, String ip, int port) throws IOException
+    {
+        Socket socket = this.sockets.get(socketId);
+
+        if (socket != null)
+        {
+            Log.Print(this.getClass().getName() + " Trying to connect with : " + ip + ":" + port);
+
+            InetAddress inetAddress = InetAddress.getByName(ip);
+            SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
+            socket.connect(socketAddress);
+
+            return true;
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " Cannot connect to : " + ip + ":" + port);
+        }
+
+        return false;
+    }
+
+    public void startTcpServer(int serverId, int port) throws IOException
+    {
+        ServerSocket server =  this.tcpServers.get(serverId);
+
+        if (server != null)
+        {
+            Log.Info(this.getClass().getName() + " Start TCP server on port : " + port);
+
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+            server.bind(inetSocketAddress);
+
+            while (!server.isClosed())
             {
-                String ip = allIp.get(i);
-                String network = allNetworks.get(i);
-                String broadcast = allBroadcasts.get(i);
+                Socket socket = server.accept();
 
-                System.out.println("ip : " + ip + " - network : " + network + " - broadcast : " + broadcast);
+                int socketId = this.createSocket();
+                int dstPort = socket.getPort();
+                String dstIp = NetworkUtils.inetAddressToString(socket.getInetAddress());
+
+                Log.Info(this.getClass().getName() + " New client : " + dstIp + ":" + port);
+
+                this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, dstIp, dstPort, socketId));
             }
-        });
-
-        moduleCLI.addCommand("send", () -> {
-            String protocol = moduleCLI.getUserInput("TCP/UDP : ").toLowerCase();
-            String ip = moduleCLI.getUserInput("IP : ");
-
-            switch (protocol)
-            {
-                case "tcp":
-                    this.sendTCP("", ip);
-                    break;
-                case "udp":
-                    this.sendUDP("", ip);
-                    break;
-            }
-        });
-
-        moduleCLI.addCommand("close-socket", () -> {
-            this.closeAllTcp();
-        });
-
-        moduleCLI.addCommand("get-socket", () -> {
-            ArrayList<String[]> sockets = this.getActiveSockets();
-            for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
-        });
-
-        moduleCLI.addCommand("start-server", () -> {
-            this.startTCPServer();
-            this.startUDPServer();
-        });
-
-        moduleCLI.addCommand("start-tcp", () -> {
-            this.startTCPServer();
-        });
-
-        moduleCLI.addCommand("start-udp", () -> {
-            this.startUDPServer();
-        });
-
-        CLI.installModule("network", moduleCLI);
-    }
-
-    public ArrayList<String> getAllIp()
-    {
-        return NetworkUtils.getAllIp();
-    }
-
-    public ArrayList<String[]> getActiveSockets()
-    {
-        ArrayList<String[]> sockets = new ArrayList<String[]>();
-
-        for (String key : this.clients.keySet())
-        {
-            String[] info = new String[4];
-            ClientHandler client = this.clients.get(key);
-
-            info[1] = Integer.toString(client.getLocalPort());
-            info[3] = Integer.toString(client.getDistantPort());
-            info[0] = client.getLocalIP();
-            info[2] = client.getDistantIP();
-
-            sockets.add(info);
-        }
-
-        return sockets;
-    }
-
-    public ArrayList<String> getConnectedNetworks()
-    {
-        ArrayList<String> networks = new ArrayList<String>();
-        ArrayList<String> ips = NetworkUtils.getAllIp();
-
-        for (String ip : ips)
-        {
-            String mask = NetworkUtils.getNetworkMask(ip);
-            networks.add(NetworkUtils.getNetwork(ip, mask));
-        }
-
-        return networks;
-    }
-
-    public ArrayList<String> getBroadcastAddresses()
-    {
-        ArrayList<String> broadcast = new ArrayList<String>();
-        ArrayList<String> ips = NetworkUtils.getAllIp();
-        for (String ip : ips) broadcast.add(NetworkUtils.getBroadcastAddress(ip));
-        return broadcast;
-    }
-
-    public void startTCPServer()
-    {
-        this.tcpServerThread.start();
-    }
-
-    public void startUDPServer()
-    {
-        this.udpServerThread.start();
-    }
-
-    public void sendUDP(Serializable data, String dst)
-    {
-        try
-        {
-            InetAddress addr = InetAddress.getByName(dst);
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeObject(data);
-            oo.close();
-
-            byte[] serializedMessage = bStream.toByteArray();
-            DatagramSocket datagramSocket = new DatagramSocket();
-            DatagramPacket datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, addr, this.UDPPort);
-            datagramSocket.send(datagramPacket);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void sendTCP(Serializable data, String dst)
-    {
-        if (!this.clients.containsKey(dst))
-        {
-            if (!this.pendingDatas.containsKey(dst)) this.connect(dst);
-            this.pendingDatas.get(dst).push(data);
         }
         else
         {
-            this.clients.get(dst).send(data);
+            Log.Error(this.getClass().getName() + " TCP server port : " + port + "is null ");
         }
     }
 
-    public void closeAllTcp()
+    public void startUdpServer(int serverId, int port) throws SocketException
     {
-        for (String key : this.clients.keySet()) this.clients.get(key).stop();
-        this.clients.clear();
-    }
+        DatagramSocket server =  this.udpServers.get(serverId);
 
-    public void closeTCP(String ip)
-    {
-        if (!this.clients.containsKey(ip))
+        if (server != null)
         {
-            Log.Warning(this.getClass().getName() + " no client with ip : " + ip);
+            Log.Info(this.getClass().getName() + " Start UDP server on port : " + port);
+
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+            server.bind(inetSocketAddress);
+
+//            while (!server.isClosed()) server.accept();
         }
         else
         {
-            Log.Info(this.getClass().getName() + " close TCP with : " + ip);
-            this.clients.get(ip).stop();
-            this.clients.remove(ip);
+            Log.Error(this.getClass().getName() + " TCP server port : " + port + "is null ");
         }
     }
 
-    @Override
-    public void onEvent(Event event)
+    public void closeTcpServer(int serverID) throws IOException
     {
-        switch (event.type)
-        {
-            case EVENT_NETWORK_CONNECTION:
-                this.onConnectionEvent((ConnectionEvent)event);
-                break;
-            case EVENT_NETWORK_SOCKET_DATA:
-                this.onSocketDataEvent((SocketDataEvent)event);
-                break;
-        }
-    }
+        ServerSocket server = this.tcpServers.get(serverID);
 
-    private void onSocketDataEvent(SocketDataEvent event)
-    {
-        Log.Print(this.getClass().getName() + " Paquet from : " + event.src + ":" + event.port);
-        if (this.validPaquet(event))
+        if (server != null)
         {
-            this.eventManager.notiy(new NetworkPaquetEvent(event.src, event.port, event.data));
+            int port = server.getLocalPort();
+            server.close();
+            Log.Error(this.getClass().getName() + " No TCP server with id : " + serverID + " --> " + port);
         }
         else
         {
-            Log.Print(this.getClass().getName() + " dropping from " + event.src + ":" + event.port);
+            Log.Error(this.getClass().getName() + " No TCP server with id : " + serverID);
         }
-    }
-
-    private void onConnectionEvent(ConnectionEvent event)
-    {
-        switch (event.status)
-        {
-            case SUCCESS:
-                this.onConnectionSuccess(event.socket, event.distantIP, event.distantPort);
-                break;
-            case ENDED:
-                this.onConnectionEnded(event.distantIP);
-                break;
-            case FAILED:
-                this.onConnectionFailed(event.distantIP, event.distantPort);
-                break;
-        }
-    }
-
-    private void onConnectionEnded(String ip)
-    {
-        if (this.clients.containsKey(ip)) this.closeTCP(ip);
-    }
-
-    private void onConnectionSuccess(Socket socket, String ip, int port)
-    {
-        Log.Print(this.getClass().getName() + " creating new IN/OUT socket with " +  ip + ":" + port);
-
-        TCPINSocketThread in = this.networkThreadManager.createTCPINSocketThread(socket);
-        TCPOUTSocketThread out = this.networkThreadManager.createTCPOUTSocketThread(socket);
-
-        this.clients.put(ip, new ClientHandler(socket, in, out));
-        if (this.pendingDatas.containsKey(ip)) this.flushPendingDatas(ip, out);
-
-        in.start();
-        out.start();
-    }
-
-    private void onConnectionFailed(String ip, int port)
-    {
-        Log.Print(this.getClass().getName() + " Removing pending data to : " + ip + ":" + port);
-        this.pendingDatas.remove(ip);
-    }
-
-    private void flushPendingDatas(String ip, TCPOUTSocketThread out)
-    {
-        Log.Print(this.getClass().getName() + " Flushing data to " + out.getIdString() + " --> " + out);
-        LinkedList<Serializable> datas = this.pendingDatas.get(ip);
-        while (!datas.isEmpty()) out.send(datas.removeLast());
-        this.pendingDatas.remove(ip);
-    }
-
-    private void connect(String ip)
-    {
-        Log.Print(this.getClass().getName() + " trying to connect : " + ip + ":" + this.TCPPort);
-        this.pendingDatas.put(ip, new LinkedList<Serializable>());
-        ConnectionThread connection = this.networkThreadManager.createConnectionThread(ip, this.TCPPort);
-        connection.start();
-    }
-
-    private boolean validPaquet(SocketDataEvent event)
-    {
-        return !NetworkUtils.getAllIp().contains(event.src);
     }
 }

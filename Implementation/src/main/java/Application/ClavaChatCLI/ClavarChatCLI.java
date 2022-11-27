@@ -41,7 +41,7 @@ public class ClavarChatCLI
         new ClavarChatAPI(8080, 7070);
     }
 
-    public static void run()
+    public static void runApplication()
     {
         CLI.createCLI();
         init();

@@ -4,8 +4,9 @@ import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,16 +16,19 @@ public class LoginController implements Initializable
     private ClavarChatAPI api;
 
     @FXML
-    private TextField username;
+    private TextField usernameTextField;
 
     @FXML
-    private TextField id;
+    private TextField idTextField;
 
     @FXML
-    private TextField password;
+    private TextField passwordTextField;
 
     @FXML
-    private Button login;
+    private MFXButton loginButton;
+
+    @FXML
+    private MFXProgressSpinner spinnerBar;
 
     public LoginController(ClavarChatAPI api)
     {
@@ -35,11 +39,29 @@ public class LoginController implements Initializable
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         Log.Print(this.getClass().getName() + " Initialized");
+
+        this.spinnerBar.setVisible(false);
+        this.spinnerBar.setManaged(false);
     }
 
     @FXML
-    private void handleLogin()
+    private void handleButtonLogin()
     {
-        Log.Error("Username : " + username.getText() + " / id : " + id.getText() + " / password : " + password.getText());
+        this.loginButton.setVisible(false);
+        this.loginButton.setManaged(false);
+
+        this.spinnerBar.setVisible(true);
+        this.spinnerBar.setManaged(true);
+
+        if (!this.api.login("fdfsdf", "zefdsf"))
+        {
+            this.loginButton.setVisible(true);
+            this.loginButton.setManaged(true);
+
+            this.spinnerBar.setVisible(false);
+            this.spinnerBar.setManaged(false);
+
+            Log.Error("ERROR LOGIN");
+        }
     }
 }

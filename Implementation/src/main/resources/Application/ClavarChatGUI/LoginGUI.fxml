@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import java.lang.String?>
 <?import java.net.URL?>
@@ -21,7 +22,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-user-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField floatingText="Pseudo" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="usernameTextField" floatingText="Pseudo" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
@@ -31,7 +32,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-id-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="idTextField" floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
@@ -41,12 +42,13 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-password-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="passwordTextField" floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <MFXButton prefHeight="60.0" prefWidth="200.0" styleClass="clvc-login-button" text="LOGIN" />
+            <MFXButton fx:id="loginButton" buttonType="RAISED" onAction="#handleButtonLogin" prefHeight="60.0" prefWidth="200.0" styleClass="clvc-login-button" text="LOGIN" />
+            <MFXProgressSpinner fx:id="spinnerBar" />
          </children>
          <styleClass>
             <String fx:value="clvc-american-river" />

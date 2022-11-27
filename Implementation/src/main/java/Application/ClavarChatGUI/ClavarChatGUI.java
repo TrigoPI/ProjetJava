@@ -15,8 +15,7 @@ public class ClavarChatGUI extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        ClavarChatAPI clavarChatAPI = new ClavarChatAPI(4000, 5000);
-
+        ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
         LoginController loginController = new LoginController(clavarChatAPI);
 
         URL fxmlURL = ClavarChatGUI.class.getResource("LoginGUI.fxml");
@@ -32,5 +31,11 @@ public class ClavarChatGUI extends Application
     public void run()
     {
         launch();
+    }
+
+    public static void runApplication()
+    {
+        ClavarChatGUI clavarChatGUI = new ClavarChatGUI();
+        clavarChatGUI.run();
     }
 }

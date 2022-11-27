@@ -1,8 +1,10 @@
 package ClavarChat;
 
+import ClavarChat.Controllers.ClavarChatNetwork.ClavarChatNetwork;
 import ClavarChat.Controllers.Managers.EventManager;
 import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.ThreadManager;
 import ClavarChat.Controllers.Managers.UserManager;
 import ClavarChat.Controllers.Modules.DiscoverModule;
 import ClavarChat.Controllers.Modules.LoginVerifyModule;
@@ -21,15 +23,22 @@ public class ClavarChatAPI implements Listener
 {
     private EventManager eventManager;
     private NetworkManager networkManager;
+    private ThreadManager threadManager;
     private UserManager userManager;
+
+    private ClavarChatNetwork clavarChatNetwork;
+
     private DiscoverModule discoverModule;
     private LoginVerifyModule loginVerifyModule;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
         this.eventManager = EventManager.getInstance();
+        this.networkManager = new NetworkManager();
+        this.threadManager = new ThreadManager();
         this.userManager = new UserManager();
-        this.networkManager = new NetworkManager(tcpPort, udpPort);
+
+        this.clavarChatNetwork = new ClavarChatNetwork(this.threadManager, this.networkManager);
 
         this.discoverModule = new DiscoverModule(this.networkManager, this.userManager);
         this.loginVerifyModule = new LoginVerifyModule(this.networkManager, this.userManager);
@@ -38,8 +47,7 @@ public class ClavarChatAPI implements Listener
 
         this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_PAQUET);
 
-        this.networkManager.startTCPServer();
-        this.networkManager.startUDPServer();
+        this.clavarChatNetwork.startServer();
 
         this.DEBUG();
     }
@@ -68,10 +76,12 @@ public class ClavarChatAPI implements Listener
         CLI.installModule("api", moduleCLI);
     }
 
-    public void login(String pseudo, String id)
+    public boolean login(String pseudo, String id)
     {
         this.userManager.setUser(pseudo, id);
         this.discoverModule.handle();
+
+        return false;
     }
 
     public void sendMessage(String message, String ip)
@@ -145,7 +155,7 @@ public class ClavarChatAPI implements Listener
             int count = this.userManager.getUserCount();
             UserData user = this.userManager.getUser();
             DiscoverMessage informationMessage = new DiscoverMessage(user, count);
-            this.networkManager.sendTCP(informationMessage, src);
+//            this.networkManager.sendTCP(informationMessage, src);
         }
         else
         {
