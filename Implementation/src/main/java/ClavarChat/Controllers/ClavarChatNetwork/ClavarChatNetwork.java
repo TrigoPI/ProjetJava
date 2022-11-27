@@ -123,7 +123,7 @@ public class ClavarChatNetwork implements Listener
         switch (event.status)
         {
             case SUCCESS:
-                this.connectionSuccess(event.dstIp, event.srcIp, event.dstPort, event.srcPort);
+                this.connectionSuccess(event.socketID, event.dstIp, event.srcIp, event.dstPort, event.srcPort);
                 break;
             case FAILED:
                 this.connectionFailed(event.dstIp, event.dstPort);
@@ -133,9 +133,8 @@ public class ClavarChatNetwork implements Listener
         }
     }
 
-    private void connectionSuccess(String dstIp, String srcIp, int dstPort, int srcPort)
+    private void connectionSuccess(int socketId, String dstIp, String srcIp, int dstPort, int srcPort)
     {
-        int socketId = this.socketsId.get(dstIp);
         int inId = this.threadManager.createThread();
         int outId = this.threadManager.createThread();
 
