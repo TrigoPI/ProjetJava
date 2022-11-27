@@ -129,7 +129,7 @@ public class NetworkManager
             {
                 Socket socket = server.accept();
 
-                int socketId = this.createSocket();
+                int socketId = this.sockets.add(socket);
                 int dstPort = socket.getPort();
                 String dstIp = NetworkUtils.inetAddressToString(socket.getInetAddress());
 
