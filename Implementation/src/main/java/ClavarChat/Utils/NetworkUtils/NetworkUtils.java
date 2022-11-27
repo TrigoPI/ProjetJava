@@ -13,6 +13,26 @@ public class NetworkUtils
         return addr.toString().split("/")[1];
     }
 
+    public static String getSocketDistantIp(Socket socket)
+    {
+        return inetAddressToString(socket.getInetAddress());
+    }
+
+    public static String getSocketLocalIp(Socket socket)
+    {
+        return inetAddressToString(socket.getLocalAddress());
+    }
+
+    public static int getSocketDistantPort(Socket socket)
+    {
+        return socket.getPort();
+    }
+
+    public static int getSocketLocalPort(Socket socket)
+    {
+        return socket.getLocalPort();
+    }
+
     public static String getNetworkMask(String ip)
     {
         String mask = "";

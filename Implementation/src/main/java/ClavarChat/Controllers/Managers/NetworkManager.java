@@ -1,18 +1,13 @@
 package ClavarChat.Controllers.Managers;
 
-import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Event.EVENT_TYPE;
-import ClavarChat.Models.Events.*;
-import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import ClavarChat.Utils.PackedArray.PackedArray;
+import ClavarChat.Utils.Log.Log;
+import ClavarChat.Models.Events.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
-
-//DEBUG//
-
 
 public class NetworkManager
 {
@@ -22,8 +17,6 @@ public class NetworkManager
     private PackedArray<ServerSocket> tcpServers;
     private PackedArray<DatagramSocket> udpServers;
 
-    private HashMap<String, LinkedList<Serializable>> pendingDatas;
-
     public NetworkManager()
     {
         this.eventManager = EventManager.getInstance();
@@ -31,8 +24,6 @@ public class NetworkManager
         this.sockets = new PackedArray<>();
         this.tcpServers = new PackedArray<>();
         this.udpServers = new PackedArray<>();
-
-        this.pendingDatas = new HashMap<String, LinkedList<Serializable>>();
 
         this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_CONNECTION);
         this.eventManager.addEvent(EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
@@ -49,7 +40,7 @@ public class NetworkManager
     public int createUdpServer()
     {
         int id = -1;
-        try { id = this.udpServers.add(new DatagramSocket()); }
+        try { id = this.udpServers.add(new DatagramSocket(null)); }
         catch (IOException e) {e.printStackTrace();}
         return id;
     }
@@ -59,7 +50,50 @@ public class NetworkManager
         return this.sockets.add(new Socket());
     }
 
-    public boolean connect(int socketId, String ip, int port) throws IOException
+    public Serializable tcpReceive(int socketId) throws IOException, ClassNotFoundException
+    {
+        Socket socket = this.sockets.get(socketId);
+        Serializable data = null;
+
+        if (socket != null)
+        {
+            InputStream in = socket.getInputStream();
+            ObjectInputStream iin = new ObjectInputStream(in);
+            data = (Serializable)iin.readObject();
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " Cannot connect receive socket is null ");
+        }
+
+        return data;
+    }
+
+    public void tcpSend(int socketId, Serializable data) throws IOException
+    {
+        Socket socket = this.sockets.get(socketId);
+
+        if (socket != null)
+        {
+            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+            String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+            Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstPort + ":" + dstIp);
+
+            OutputStream out = socket.getOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(data);
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " Cannot send socket is null ");
+        }
+    }
+
+    public void connect(int socketId, String ip, int port) throws IOException
     {
         Socket socket = this.sockets.get(socketId);
 
@@ -71,14 +105,13 @@ public class NetworkManager
             SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
             socket.connect(socketAddress);
 
-            return true;
+            this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, ip, port, socketId));
         }
         else
         {
-            Log.Error(this.getClass().getName() + " Cannot connect to : " + ip + ":" + port);
+            Log.Error(this.getClass().getName() + " Cannot connect to : " + ip + ":" + port + " socket is null");
+            this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.FAILED, ip, port, socketId));
         }
-
-        return false;
     }
 
     public void startTcpServer(int serverId, int port) throws IOException
@@ -111,7 +144,7 @@ public class NetworkManager
         }
     }
 
-    public void startUdpServer(int serverId, int port) throws SocketException
+    public void startUdpServer(int serverId, int port) throws IOException
     {
         DatagramSocket server =  this.udpServers.get(serverId);
 
@@ -119,10 +152,17 @@ public class NetworkManager
         {
             Log.Info(this.getClass().getName() + " Start UDP server on port : " + port);
 
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
             InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
             server.bind(inetSocketAddress);
 
-//            while (!server.isClosed()) server.accept();
+            while (!server.isClosed())
+            {
+                DatagramPacket datagramPacket = new DatagramPacket(buffer, bufferSize);
+                server.receive(datagramPacket);
+            };
         }
         else
         {

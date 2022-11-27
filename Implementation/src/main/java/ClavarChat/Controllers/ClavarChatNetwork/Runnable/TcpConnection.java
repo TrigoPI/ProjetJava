@@ -3,7 +3,6 @@ package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 import ClavarChat.Controllers.Managers.NetworkManager;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class TcpConnection extends NetworkRunnable
 {

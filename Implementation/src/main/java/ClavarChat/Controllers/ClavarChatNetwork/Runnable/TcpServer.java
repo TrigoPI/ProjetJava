@@ -6,15 +6,9 @@ import java.io.IOException;
 
 public class TcpServer extends Server
 {
-    public TcpServer(NetworkManager networkManager, int port)
+    public TcpServer(NetworkManager networkManager, int serverId, int port)
     {
-        super(networkManager, port);
-    }
-
-    @Override
-    protected void setServerID()
-    {
-        this.serverID = this.networkManager.createTcpServer();
+        super(networkManager, serverId, port);
     }
 
     @Override
@@ -22,7 +16,7 @@ public class TcpServer extends Server
     {
         try
         {
-            this.networkManager.startTcpServer(this.serverID, this.port);
+            this.networkManager.startTcpServer(this.serverId, this.port);
         }
         catch (IOException e)
         {
