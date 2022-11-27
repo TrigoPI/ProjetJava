@@ -172,12 +172,15 @@ public class NetworkManager
                     Socket socket = server.accept();
 
                     int socketId = this.sockets.add(socket);
-                    int dstPort = socket.getPort();
-                    String dstIp = NetworkUtils.inetAddressToString(socket.getInetAddress());
+
+                    String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                    String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+                    int srcPort = NetworkUtils.getSocketLocalPort(socket);
+                    int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
                     Log.Info(this.getClass().getName() + " New client : " + dstIp + ":" + dstPort);
-
-                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, dstIp, dstPort, socketId));
+                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
                 }
             }
             catch (IOException e)

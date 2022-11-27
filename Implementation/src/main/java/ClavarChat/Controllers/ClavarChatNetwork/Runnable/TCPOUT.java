@@ -30,7 +30,7 @@ public class TCPOUT extends TcpMessagin
     @Override
     protected void runSocket()
     {
-            while (true)
+            while (this.isRunning())
             {
                 if (!this.datas.isEmpty())
                 {
