@@ -1,6 +1,8 @@
 package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.Events.ConnectionEvent;
+import ClavarChat.Models.Events.ConnectionEvent.CONNECTION_STATUS;
 
 public class TcpServer extends Server
 {
@@ -12,6 +14,26 @@ public class TcpServer extends Server
     @Override
     protected void runServer()
     {
-        this.networkManager.startTcpServer(this.serverId, this.port);
+        int code = this.networkManager.startTcpServer(this.serverId, this.port);
+
+        if (code == 0)
+        {
+            while (true)
+            {
+                int socketId = this.networkManager.accept(this.serverId);
+
+                if (socketId >= 0)
+                {
+                    String srcIp = this.networkManager.getLocalSocketIp(socketId);
+                    String dstIp = this.networkManager.getLocalSocketIp(socketId);
+
+                    int srcPort = this.networkManager.getDistantSocketPort(socketId);
+                    int dstPort = this.networkManager.getDistantSocketPort(socketId);
+
+                    this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
+                }
+            }
+        }
+
     }
 }

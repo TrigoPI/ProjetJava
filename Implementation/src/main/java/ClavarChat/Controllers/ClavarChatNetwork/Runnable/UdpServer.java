@@ -1,8 +1,9 @@
 package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.Events.SocketDataEvent;
 
-import java.io.IOException;
+import java.io.Serializable;
 
 public class UdpServer extends Server
 {
@@ -14,12 +15,19 @@ public class UdpServer extends Server
     @Override
     protected void runServer()
     {
-        try
+        int code = this.networkManager.startUdpServer(this.serverId, port);
+
+        if (code == 0)
         {
-            this.networkManager.startUdpServer(this.serverId, port);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
+            while (true)
+            {
+                Serializable data = this.networkManager.udpReceive(this.serverId);
+
+                if (data != null)
+                {
+//                    this.eventManager.notiy(new SocketDataEvent());
+                }
+            }
         }
     }
 }
