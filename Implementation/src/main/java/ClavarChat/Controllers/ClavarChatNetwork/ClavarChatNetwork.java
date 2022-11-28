@@ -177,7 +177,7 @@ public class ClavarChatNetwork implements Listener
         this.threadManager.startThread(outId);
 
         this.clientsMap.put(dstIp, ids);
-        this.socketsId.put(dstIp, socketId)
+        this.socketsId.put(dstIp, socketId);
 
         Log.Print(this.getClass().getName() + " TCPIN id : " + ids[0] + " / " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
         Log.Print(this.getClass().getName() + " TCPOUT id : " + ids[1] + " / " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
