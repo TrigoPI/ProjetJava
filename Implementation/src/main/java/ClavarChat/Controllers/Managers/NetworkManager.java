@@ -78,7 +78,7 @@ public class NetworkManager
         return null;
     }
 
-    public Serializable udpReceive(int serverId)
+    public DatagramPacket udpReceive(int serverId)
     {
         DatagramSocket server =  this.udpServers.get(serverId);
 
@@ -95,6 +95,7 @@ public class NetworkManager
                     server.receive(datagramPacket);
 
                     Log.Print(this.getClass().getName() + " Paquet from UDP");
+                    return datagramPacket;
                 }
                 catch (IOException e)
                 {
@@ -161,6 +162,28 @@ public class NetworkManager
     public int createSocket()
     {
         return this.sockets.add(new Socket());
+    }
+
+    public void udpSend(Serializable data, String dst, int port)
+    {
+        try
+        {
+            InetAddress addr = InetAddress.getByName(dst);
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            ObjectOutput oo = new ObjectOutputStream(bStream);
+            oo.writeObject(data);
+            oo.close();
+
+            byte[] serializedMessage = bStream.toByteArray();
+            DatagramSocket datagramSocket = new DatagramSocket();
+            DatagramPacket datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, addr, port);
+            datagramSocket.send(datagramPacket);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     public int tcpSend(int socketId, Serializable data)

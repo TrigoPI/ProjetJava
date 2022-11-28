@@ -64,7 +64,16 @@ public class ClavarChatNetwork implements Listener
 
         moduleCLI.addCommand("send", () -> {
             String ip = moduleCLI.getUserInput("IP : ");
-            this.send(ip, 5000, new String("OOOOOOKKKKK"));
+            String protocol = moduleCLI.getUserInput("UDP/TCP : ").toLowerCase();
+
+            if (protocol.equals("tcp"))
+            {
+                this.sendTCP(ip, 5000, "OOOOOOKKKKK_TCP");
+            }
+            else
+            {
+                this.sendUDP(ip, 4000, "OOOOOOKKKKK_UDP");
+            }
         });
 
         CLI.installModule("network", moduleCLI);
@@ -75,7 +84,12 @@ public class ClavarChatNetwork implements Listener
 
     }
 
-    public void send(String ip, int port, Serializable data)
+    public void sendUDP(String ip, int port, Serializable data)
+    {
+        this.networkManager.udpSend(data, ip, port);
+    }
+
+    public void sendTCP(String ip, int port, Serializable data)
     {
         if (this.socketsId.containsKey(ip))
         {

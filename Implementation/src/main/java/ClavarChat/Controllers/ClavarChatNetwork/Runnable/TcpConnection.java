@@ -25,7 +25,7 @@ public class TcpConnection extends NetworkRunnable
         if (code == 0)
         {
             String srcIp = this.networkManager.getLocalSocketIp(this.socketId);
-            int srcPort = this.networkManager.getDistantSocketPort(this.socketId);
+            int srcPort = this.networkManager.getLocalSocketPort(this.socketId);
 
             this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.SUCCESS, this.ip, this.port, srcIp, srcPort, this.socketId));
         }
