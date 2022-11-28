@@ -49,12 +49,23 @@ public class NetworkManager
             for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
         });
 
+        moduleCLI.addCommand("debug", () -> {
+            System.out.println("\n\nSockets");
+            for (Socket socket : this.sockets.getDatas()) System.out.println(socket);
+
+            System.out.println("\n\nTcp server");
+            for (ServerSocket server : this.tcpServers.getDatas()) System.out.println(server);
+
+            System.out.println("\n\nudp server");
+            for (DatagramSocket server : this.udpServers.getDatas()) System.out.println(server);
+        });
+
         CLI.installModule("network", moduleCLI);
     }
 
     public ArrayList<String[]> getActiveSockets()
     {
-        ArrayList<String[]> sockets = new ArrayList<String[]>();
+        ArrayList<String[]> sockets = new ArrayList<>();
 
         for (Socket socket : this.sockets.getDatas())
         {
@@ -133,6 +144,7 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
         }
 
+        Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
         this.sockets.remove(socketId);
 
         return null;
@@ -277,6 +289,7 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
         }
 
+        Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
         this.sockets.remove(socketId);
 
         return -1;
