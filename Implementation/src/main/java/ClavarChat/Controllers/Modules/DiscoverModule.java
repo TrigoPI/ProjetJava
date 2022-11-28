@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Modules;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.ClavarChatNetwork.ClavarChatNetwork;
 import ClavarChat.Controllers.Managers.UserManager;
 import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
 import ClavarChat.Models.Users.UserData;
@@ -12,7 +12,9 @@ import java.util.concurrent.Semaphore;
 
 public class DiscoverModule extends Handler
 {
-    private NetworkManager networkManager;
+    private int udpPort;
+
+    private ClavarChatNetwork clavarChatNetwork;
     private UserManager userManager;
     private Semaphore semaphore;
 
@@ -20,11 +22,13 @@ public class DiscoverModule extends Handler
     private int responseCount;
     private int timeout;
 
-    public DiscoverModule(NetworkManager networkManager, UserManager userManager)
+    public DiscoverModule(ClavarChatNetwork clavarChatNetwork, UserManager userManager, int udpPort)
     {
         super();
 
-        this.networkManager = networkManager;
+        this.udpPort = udpPort;
+
+        this.clavarChatNetwork = clavarChatNetwork;
         this.userManager = userManager;
         this.semaphore = new Semaphore(1);
 
@@ -64,13 +68,13 @@ public class DiscoverModule extends Handler
 
     private void broadcast()
     {
-//        ArrayList<String> broadcast = this.networkManager.getBroadcastAddresses();
-//        for (String addresse : broadcast) this.networkManager.sendUDP(new DiscoverMessage(), addresse);
+        ArrayList<String> broadcast = this.clavarChatNetwork.getBroadcastAddresses();
+        for (String addresse : broadcast) this.clavarChatNetwork.sendUDP(addresse, this.udpPort, new DiscoverMessage());
     }
 
     private void waitResponses()
     {
-        Log.Info(this.getClass().getName() + "Waiting...");
+        Log.Info(this.getClass().getName() + " Waiting...");
         Clock clock = new Clock();
         while (this.validUserCount() && clock.timeSecond() < this.timeout) {}
     }

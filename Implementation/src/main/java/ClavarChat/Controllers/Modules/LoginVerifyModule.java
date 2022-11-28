@@ -1,5 +1,7 @@
 package ClavarChat.Controllers.Modules;
 
+import ClavarChat.Controllers.ClavarChatNetwork.ClavarChatNetwork;
+import ClavarChat.Models.Callback.Callback;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage.MESSAGE_TYPE;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Controllers.Managers.NetworkManager;
@@ -11,13 +13,24 @@ import java.util.ArrayList;
 
 public class LoginVerifyModule extends Handler
 {
-    private UserManager userManager;
-    private NetworkManager networkManager;
+    private int tcpPort;
 
-    public LoginVerifyModule(NetworkManager networkManager, UserManager userManager)
+    private UserManager userManager;
+    private ClavarChatNetwork clavarChatNetwork;
+    private Callback callback;
+
+    public LoginVerifyModule(ClavarChatNetwork clavarChatNetwork, UserManager userManager, int tcpPort)
     {
+        this.tcpPort = tcpPort;
+
+        this.callback = null;
         this.userManager = userManager;
-        this.networkManager = networkManager;
+        this.clavarChatNetwork = clavarChatNetwork;
+    }
+
+    public void setCallback(Callback callback)
+    {
+        this.callback = callback;
     }
 
     @Override
@@ -32,14 +45,16 @@ public class LoginVerifyModule extends Handler
             for (UserData other : users)
             {
                 ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
-//                this.networkManager.sendTCP(new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN), dst.get(0));
+                this.clavarChatNetwork.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));
             }
 
             this.userManager.setLogged(true);
+            if (this.callback != null) this.callback.call();
         }
         else
         {
             Log.Error(this.getClass().getName() + " Pseudo already used");
+            this.userManager.setLogged(false);
         }
     }
 }

@@ -53,8 +53,7 @@ public class LoginController implements Initializable
         this.spinnerBar.setVisible(true);
         this.spinnerBar.setManaged(true);
 
-        if (!this.api.login("fdfsdf", "zefdsf"))
-        {
+        this.api.login("fdfsdf", "zefdsf", () -> {
             this.loginButton.setVisible(true);
             this.loginButton.setManaged(true);
 
@@ -62,6 +61,6 @@ public class LoginController implements Initializable
             this.spinnerBar.setManaged(false);
 
             Log.Error("ERROR LOGIN");
-        }
+        });
     }
 }
