@@ -25,7 +25,7 @@ public class UdpServer extends Server
 
                 if (paquet != null)
                 {
-                    this.eventManager.notiy(new SocketDataEvent(paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
+                    this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, paquet.srcPort, paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
                 }
             }
         }

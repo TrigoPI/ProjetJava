@@ -170,10 +170,7 @@ public class NetworkManager
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
                     NetworkPaquet data = (NetworkPaquet)iStream.readObject();
 
-                    String dstIp = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
-                    int port = datagramPacket.getPort();
-
-                    Log.Print(this.getClass().getName() + " Paquet from UDP " + dstIp + ":" + port);
+                    Log.Print(this.getClass().getName() + " Paquet from UDP " + data.srcIp + ":" + data.srcPort);
 
                     return data;
                 }
@@ -253,7 +250,7 @@ public class NetworkManager
             DatagramSocket datagramSocket = new DatagramSocket();
             datagramSocket.connect(addr, port);
 
-            String srcIp = NetworkUtils.inetAddressToString(datagramSocket.getInetAddress());
+            String srcIp = NetworkUtils.inetAddressToString(datagramSocket.getLocalAddress());
             int srcPort = datagramSocket.getLocalPort();
 
             NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dst, port, data);

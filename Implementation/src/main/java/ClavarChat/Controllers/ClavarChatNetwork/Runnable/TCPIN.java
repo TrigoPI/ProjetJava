@@ -24,7 +24,7 @@ public class TCPIN extends TcpMessagin
 
             if (paquet != null)
             {
-                this.eventManager.notiy(new SocketDataEvent(paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
+                this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, paquet.dstPort, paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
             }
             else
             {

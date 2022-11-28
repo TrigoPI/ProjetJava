@@ -144,7 +144,16 @@ public class ClavarChatNetwork implements Listener
 
     private void onNetworkSocketDataEvent(SocketDataEvent event)
     {
-        this.eventManager.notiy(new NetworkPaquetEvent(event.src, event.port, event.data));
+        ArrayList<String> ips = this.networkManager.getUserIp();
+
+        if (!ips.contains(event.srcIp))
+        {
+            this.eventManager.notiy(new NetworkPaquetEvent(event.srcIp, event.srcPort, event.data));
+        }
+        else
+        {
+            Log.Print(this.getClass().getName() + " Dropping paquet from " + event.srcIp + ":" + event.srcPort);
+        }
     }
 
     private void connectionSuccess(int socketId, String dstIp, String srcIp, int dstPort, int srcPort)
