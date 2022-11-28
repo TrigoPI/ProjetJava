@@ -22,6 +22,11 @@ public class PackedArray<T>
         return this.id++;
     }
 
+    public ArrayList<T> getDatas()
+    {
+        return datas;
+    }
+
     public T get(int id)
     {
         if (!this.datasMap.containsKey(id)) return null;

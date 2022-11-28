@@ -76,7 +76,7 @@ public class ClavarChatNetwork implements Listener
             }
         });
 
-        CLI.installModule("network", moduleCLI);
+        CLI.installModule("network-api", moduleCLI);
     }
 
     public void close(String ip)

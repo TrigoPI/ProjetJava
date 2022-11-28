@@ -1,5 +1,7 @@
 package ClavarChat.Controllers.Managers;
 
+import ClavarChat.Utils.CLI.CLI;
+import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import ClavarChat.Utils.PackedArray.PackedArray;
 import ClavarChat.Utils.Log.Log;
@@ -19,6 +21,62 @@ public class NetworkManager
         this.sockets = new PackedArray<>();
         this.tcpServers = new PackedArray<>();
         this.udpServers = new PackedArray<>();
+
+        this.DEBUG();
+    }
+
+    private void DEBUG()
+    {
+        ModuleCLI moduleCLI = new ModuleCLI();
+
+        moduleCLI.addCommand("get-networks", () -> {
+            ArrayList<String> allIp = this.getUserIp();
+            ArrayList<String> allNetworks = this.getConnectedNetworks();
+            ArrayList<String> allBroadcasts = this.getBroadcastAddresses();
+
+            for (int i = 0; i < allIp.size(); i++)
+            {
+                String ip = allIp.get(i);
+                String network = allNetworks.get(i);
+                String broadcast = allBroadcasts.get(i);
+
+                System.out.println("ip : " + ip + " - network : " + network + " - broadcast : " + broadcast);
+            }
+        });
+
+        moduleCLI.addCommand("get-socket", () -> {
+            ArrayList<String[]> sockets = this.getActiveSockets();
+            for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
+        });
+
+        CLI.installModule("network", moduleCLI);
+    }
+
+    public ArrayList<String[]> getActiveSockets()
+    {
+        ArrayList<String[]> sockets = new ArrayList<String[]>();
+
+        for (Socket socket : this.sockets.getDatas())
+        {
+            String[] info = new String[4];
+
+            if (socket.isConnected())
+            {
+                info[1] = Integer.toString(NetworkUtils.getSocketLocalPort(socket));
+                info[3] = Integer.toString(NetworkUtils.getSocketDistantPort(socket));
+                info[0] = NetworkUtils.getSocketLocalIp(socket);
+                info[2] = NetworkUtils.getSocketDistantIp(socket);
+
+                sockets.add(info);
+            }
+        }
+
+        return sockets;
+    }
+
+    public ArrayList<String> getUserIp()
+    {
+        return NetworkUtils.getAllIp();
     }
 
     public ArrayList<String> getConnectedNetworks()
