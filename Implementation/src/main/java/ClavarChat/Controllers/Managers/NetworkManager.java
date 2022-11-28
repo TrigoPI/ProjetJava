@@ -369,7 +369,7 @@ public class NetworkManager
             }
             catch (IOException e)
             {
-                Log.Error(this.getClass().getName() + " ERROR closeTcpSocket");
+                Log.Error(this.getClass().getName() + " ERROR closeTcpSocket ");
             }
         }
         else
