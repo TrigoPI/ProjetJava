@@ -212,7 +212,6 @@ public class ClavarChatNetwork implements Listener
             this.tcpOut.remove(ids[1]);
 
             this.clientsMap.remove(dstIp);
-
         }
 
         if (this.pendingDatas.containsKey(dstIp))

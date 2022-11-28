@@ -133,6 +133,8 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
         }
 
+        this.sockets.remove(socketId);
+
         return null;
     }
 
@@ -241,7 +243,6 @@ public class NetworkManager
         {
             e.printStackTrace();
         }
-
     }
 
     public int tcpSend(int socketId, Serializable data)
@@ -275,6 +276,8 @@ public class NetworkManager
         {
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
         }
+
+        this.sockets.remove(socketId);
 
         return -1;
     }
@@ -445,9 +448,10 @@ public class NetworkManager
                 int srcPort = NetworkUtils.getSocketLocalPort(socket);
                 int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
-
                 socket.close();
-                Log.Error(this.getClass().getName() + " Closing Socket server with id : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+
+                this.sockets.remove(socketId);
+                Log.Info(this.getClass().getName() + " Closing Socket with id : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
             }
             catch (IOException e)
             {
