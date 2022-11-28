@@ -45,7 +45,6 @@ public class NetworkManager
 
     public Serializable tcpReceive(int socketId)
     {
-        Serializable data = null;
         Socket socket = this.sockets.get(socketId);
 
         if (socket != null)
@@ -60,9 +59,11 @@ public class NetworkManager
 
                 InputStream in = socket.getInputStream();
                 ObjectInputStream iin = new ObjectInputStream(in);
-                data = (Serializable)iin.readObject();
+                Serializable data = (Serializable)iin.readObject();
 
                 Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+
+                return data;
             }
             catch (IOException | ClassNotFoundException e)
             {
@@ -74,7 +75,7 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
         }
 
-        return data;
+        return null;
     }
 
     public Serializable udpReceive(int serverId)

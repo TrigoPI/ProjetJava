@@ -25,9 +25,9 @@ public class TcpServer extends Server
                 if (socketId >= 0)
                 {
                     String srcIp = this.networkManager.getLocalSocketIp(socketId);
-                    String dstIp = this.networkManager.getLocalSocketIp(socketId);
+                    String dstIp = this.networkManager.getDistantSocketIp(socketId);
 
-                    int srcPort = this.networkManager.getDistantSocketPort(socketId);
+                    int srcPort = this.networkManager.getLocalSocketPort(socketId);
                     int dstPort = this.networkManager.getDistantSocketPort(socketId);
 
                     this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
