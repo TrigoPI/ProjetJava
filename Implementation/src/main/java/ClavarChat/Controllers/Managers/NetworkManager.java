@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Managers;
 
+import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
@@ -112,7 +113,7 @@ public class NetworkManager
         return broadcast;
     }
 
-    public Serializable tcpReceive(int socketId)
+    public NetworkPaquet tcpReceive(int socketId)
     {
         Socket socket = this.sockets.get(socketId);
 
@@ -128,7 +129,7 @@ public class NetworkManager
 
                 InputStream in = socket.getInputStream();
                 ObjectInputStream iin = new ObjectInputStream(in);
-                Serializable data = (Serializable)iin.readObject();
+                NetworkPaquet data = (NetworkPaquet)iin.readObject();
 
                 Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
 
@@ -150,7 +151,7 @@ public class NetworkManager
         return null;
     }
 
-    public DatagramPacket udpReceive(int serverId)
+    public NetworkPaquet udpReceive(int serverId)
     {
         DatagramSocket server =  this.udpServers.get(serverId);
 
@@ -166,10 +167,17 @@ public class NetworkManager
                     DatagramPacket datagramPacket = new DatagramPacket(buffer, bufferSize);
                     server.receive(datagramPacket);
 
-                    Log.Print(this.getClass().getName() + " Paquet from UDP");
-                    return datagramPacket;
+                    ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
+                    NetworkPaquet data = (NetworkPaquet)iStream.readObject();
+
+                    String dstIp = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
+                    int port = datagramPacket.getPort();
+
+                    Log.Print(this.getClass().getName() + " Paquet from UDP " + dstIp + ":" + port);
+
+                    return data;
                 }
-                catch (IOException e)
+                catch (IOException | ClassNotFoundException e)
                 {
                     e.printStackTrace();
                 }
@@ -236,25 +244,39 @@ public class NetworkManager
         return this.sockets.add(new Socket());
     }
 
-    public void udpSend(Serializable data, String dst, int port)
+    public int udpSend(Serializable data, String dst, int port)
     {
         try
         {
             InetAddress addr = InetAddress.getByName(dst);
+
+            DatagramSocket datagramSocket = new DatagramSocket();
+            datagramSocket.connect(addr, port);
+
+            String srcIp = NetworkUtils.inetAddressToString(datagramSocket.getInetAddress());
+            int srcPort = datagramSocket.getLocalPort();
+
+            NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dst, port, data);
+
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeObject(data);
+            oo.writeObject(paquet);
             oo.close();
 
+
             byte[] serializedMessage = bStream.toByteArray();
-            DatagramSocket datagramSocket = new DatagramSocket();
             DatagramPacket datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, addr, port);
+
             datagramSocket.send(datagramPacket);
+
+            return 0;
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+
+        return -1;
     }
 
     public int tcpSend(int socketId, Serializable data)
@@ -271,11 +293,13 @@ public class NetworkManager
                 int srcPort = NetworkUtils.getSocketLocalPort(socket);
                 int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
+                NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, srcPort, data);
+
                 Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
 
                 OutputStream out = socket.getOutputStream();
                 ObjectOutputStream oout = new ObjectOutputStream(out);
-                oout.writeObject(data);
+                oout.writeObject(paquet);
 
                 return 0;
             }

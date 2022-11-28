@@ -5,20 +5,24 @@ import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Controllers.Managers.EventManager;
 import ClavarChat.Controllers.Managers.NetworkManager;
 import ClavarChat.Controllers.Managers.ThreadManager;
+import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
+import ClavarChat.Models.Events.NetworkPaquetEvent;
 import ClavarChat.Models.Events.SocketDataEvent;
-import ClavarChat.Utils.CLI.CLI;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ClavarChatNetwork implements Listener
 {
+    private int tcpPort;
+    private int udpPort;
+
     private EventManager eventManager;
 
     private ThreadManager threadManager;
@@ -33,8 +37,11 @@ public class ClavarChatNetwork implements Listener
     private int tcpServerID;
     private int udpServerID;
 
-    public ClavarChatNetwork(ThreadManager threadManager, NetworkManager networkManager)
+    public ClavarChatNetwork(ThreadManager threadManager, NetworkManager networkManager, int tcpPort, int udpPort)
     {
+        this.tcpPort = tcpPort;
+        this.udpPort = udpPort;
+
         this.eventManager = EventManager.getInstance();
 
         this.threadManager = threadManager;
@@ -52,31 +59,14 @@ public class ClavarChatNetwork implements Listener
 
         this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
         this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
+        this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_PAQUET);
         this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
         this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
-
-        this.DEBUG();
     }
 
-    private void DEBUG()
+    public ArrayList<String> getBroadcastAddresses()
     {
-        ModuleCLI moduleCLI = new ModuleCLI();
-
-        moduleCLI.addCommand("send", () -> {
-            String ip = moduleCLI.getUserInput("IP : ");
-            String protocol = moduleCLI.getUserInput("UDP/TCP : ").toLowerCase();
-
-            if (protocol.equals("tcp"))
-            {
-                this.sendTCP(ip, 5000, "OOOOOOKKKKK_TCP");
-            }
-            else
-            {
-                this.sendUDP(ip, 4000, "OOOOOOKKKKK_UDP");
-            }
-        });
-
-        CLI.installModule("network-api", moduleCLI);
+        return this.networkManager.getBroadcastAddresses();
     }
 
     public void close(String ip)
@@ -84,12 +74,12 @@ public class ClavarChatNetwork implements Listener
 
     }
 
-    public void sendUDP(String ip, int port, Serializable data)
+    public void sendUDP(String ip, int port, ClavarChatMessage data)
     {
         this.networkManager.udpSend(data, ip, port);
     }
 
-    public void sendTCP(String ip, int port, Serializable data)
+    public void sendTCP(String ip, int port, ClavarChatMessage data)
     {
         if (this.socketsId.containsKey(ip))
         {
@@ -118,8 +108,8 @@ public class ClavarChatNetwork implements Listener
 
     public void startServer()
     {
-        int tcpThreadID = this.threadManager.createThread(new TcpServer(this.networkManager, this.tcpServerID, 5000));
-        int udpThreadID = this.threadManager.createThread(new UdpServer(this.networkManager, this.udpServerID, 4000));
+        int tcpThreadID = this.threadManager.createThread(new TcpServer(this.networkManager, this.tcpServerID, this.tcpPort));
+        int udpThreadID = this.threadManager.createThread(new UdpServer(this.networkManager, this.udpServerID, this.udpPort));
 
         this.threadManager.startThread(tcpThreadID);
         this.threadManager.startThread(udpThreadID);
@@ -154,9 +144,7 @@ public class ClavarChatNetwork implements Listener
 
     private void onNetworkSocketDataEvent(SocketDataEvent event)
     {
-        String data = (String)event.data;
-
-        Log.Info(this.getClass().getName() + " " + event.src + ":" + event.port + " say : " + data);
+        this.eventManager.notiy(new NetworkPaquetEvent(event.src, event.port, event.data));
     }
 
     private void connectionSuccess(int socketId, String dstIp, String srcIp, int dstPort, int srcPort)

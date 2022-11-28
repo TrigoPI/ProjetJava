@@ -35,6 +35,7 @@ public class UserManager
         moduleCLI.addCommand("set-user", () -> {
             String pseudo = moduleCLI.getUserInput("Pseudo : ");
             String id = moduleCLI.getUserInput("id : ");
+            this.logged = true;
 
             this.setUser(pseudo, id);
         });

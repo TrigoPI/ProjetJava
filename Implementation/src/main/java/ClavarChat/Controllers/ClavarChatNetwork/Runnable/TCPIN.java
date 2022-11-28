@@ -1,11 +1,11 @@
 package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.ConnectionEvent.CONNECTION_STATUS;
 import ClavarChat.Models.Events.SocketDataEvent;
-
-import java.io.Serializable;
+import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 
 public class TCPIN extends TcpMessagin
 {
@@ -18,20 +18,17 @@ public class TCPIN extends TcpMessagin
     @Override
     protected void runSocket()
     {
-        String dstIp = this.networkManager.getDistantSocketIp(this.socketId);
-        int dstPort = this.networkManager.getDistantSocketPort(this.socketId);
-
         while (this.isRunning())
         {
-            Serializable data = this.networkManager.tcpReceive(this.socketId);
+            NetworkPaquet paquet = this.networkManager.tcpReceive(this.socketId);
 
-            if (data != null)
+            if (paquet != null)
             {
-                this.eventManager.notiy(new SocketDataEvent(dstIp, dstPort, data));
+                this.eventManager.notiy(new SocketDataEvent(paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
             }
             else
             {
-                this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.FAILED, dstIp, dstPort, this.socketId));
+                this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.FAILED, paquet.dstIp, paquet.dstPort, this.socketId));
             }
         }
     }

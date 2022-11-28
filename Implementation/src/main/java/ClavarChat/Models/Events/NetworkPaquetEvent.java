@@ -1,15 +1,15 @@
 package ClavarChat.Models.Events;
 
-import java.io.Serializable;
+import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 
 public class NetworkPaquetEvent extends Event
 {
 
-    public Serializable data;
+    public ClavarChatMessage data;
     public String ip;
     public int port;
 
-    public NetworkPaquetEvent(String ip, int port, Serializable data)
+    public NetworkPaquetEvent(String ip, int port, ClavarChatMessage data)
     {
         super(EVENT_TYPE.EVENT_NETWORK_PAQUET);
         this.ip = ip;

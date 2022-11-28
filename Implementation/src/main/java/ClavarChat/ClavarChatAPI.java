@@ -19,8 +19,13 @@ import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 
+import java.util.ArrayList;
+
 public class ClavarChatAPI implements Listener
 {
+    private int tcpPort;
+    private int udpPort;
+
     private EventManager eventManager;
     private NetworkManager networkManager;
     private ThreadManager threadManager;
@@ -33,12 +38,15 @@ public class ClavarChatAPI implements Listener
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
+        this.tcpPort = tcpPort;
+        this.udpPort = udpPort;
+
         this.eventManager = EventManager.getInstance();
         this.networkManager = new NetworkManager();
         this.threadManager = new ThreadManager();
         this.userManager = new UserManager();
 
-        this.clavarChatNetwork = new ClavarChatNetwork(this.threadManager, this.networkManager);
+        this.clavarChatNetwork = new ClavarChatNetwork(this.threadManager, this.networkManager, this.tcpPort, this.udpPort);
 
         this.discoverModule = new DiscoverModule(this.networkManager, this.userManager);
         this.loginVerifyModule = new LoginVerifyModule(this.networkManager, this.userManager);
@@ -67,6 +75,12 @@ public class ClavarChatAPI implements Listener
             }
         });
 
+        moduleCLI.addCommand("discover", () -> {
+            ArrayList<String> broadcasts =  this.clavarChatNetwork.getBroadcastAddresses();
+
+            for (String addresse : broadcasts) this.clavarChatNetwork.sendUDP(addresse, this.udpPort, new DiscoverMessage());
+        });
+
         moduleCLI.addCommand("login", () -> {
             String pseudo = moduleCLI.getUserInput("Pseudo : ");
             String id = moduleCLI.getUserInput("ID : ");
@@ -89,8 +103,8 @@ public class ClavarChatAPI implements Listener
         if (this.userManager.isLogged())
         {
             UserData user = this.userManager.getUser();
-//            TextMessage mgs = new TextMessage(user, message);
-//            this.networkManager.sendTCP(mgs, ip);
+            TextMessage mgs = new TextMessage(user, message);
+            this.clavarChatNetwork.sendTCP(ip, this.tcpPort, mgs);
         }
         else
         {
@@ -111,7 +125,7 @@ public class ClavarChatAPI implements Listener
 
     private void onNetworkPaquetEvent(NetworkPaquetEvent event)
     {
-        ClavarChatMessage data = (ClavarChatMessage)event.data;
+        ClavarChatMessage data = event.data;
 
         switch (data.type)
         {
@@ -124,6 +138,7 @@ public class ClavarChatAPI implements Listener
                 this.onDiscover((DiscoverMessage)data, event.ip);
                 break;
             case DATA:
+                this.onData((DataMessage)data, event.ip);
                 break;
         }
     }
@@ -169,18 +184,20 @@ public class ClavarChatAPI implements Listener
         this.discoverModule.onDiscoverInformation(data, src);
     }
 
-//    private void onData(DataMessage data, String src)
-//    {
-//        switch (data.dataType)
-//        {
-//            case TEXT:
-//                this.onTextMessage((TextMessage)data, src);
-//                break;
-//        }
-//    }
-//
-//    private void onTextMessage(TextMessage data, String src)
-//    {
-//        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
-//    }
+    private void onData(DataMessage data, String src)
+    {
+        switch (data.dataType)
+        {
+            case TEXT:
+                this.onTextMessage((TextMessage)data, src);
+                break;
+            case FILE:
+                break;
+        }
+    }
+
+    private void onTextMessage(TextMessage data, String src)
+    {
+        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
+    }
 }

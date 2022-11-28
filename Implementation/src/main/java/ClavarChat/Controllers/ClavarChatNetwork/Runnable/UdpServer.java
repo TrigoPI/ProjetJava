@@ -1,14 +1,9 @@
 package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.Events.SocketDataEvent;
-import ClavarChat.Utils.NetworkUtils.NetworkUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.net.DatagramPacket;
+import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 
 public class UdpServer extends Server
 {
@@ -26,23 +21,11 @@ public class UdpServer extends Server
         {
             while (true)
             {
-                DatagramPacket datagramPacket = this.networkManager.udpReceive(this.serverId);
+                NetworkPaquet paquet = this.networkManager.udpReceive(this.serverId);
 
-                if (datagramPacket != null)
+                if (paquet != null)
                 {
-                    try
-                    {
-                        ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-                        Serializable data = (Serializable)iStream.readObject();
-                        String dstIp = NetworkUtils.inetAddressToString(datagramPacket.getAddress());
-                        int port = datagramPacket.getPort();
-
-                        this.eventManager.notiy(new SocketDataEvent(dstIp, port, data));
-                    }
-                    catch (IOException | ClassNotFoundException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    this.eventManager.notiy(new SocketDataEvent(paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
                 }
             }
         }
