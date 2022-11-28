@@ -1,6 +1,8 @@
 package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
 
 import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Models.Events.ConnectionEvent;
+import ClavarChat.Models.Events.SocketDataEvent;
 
 import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,13 +32,22 @@ public class TCPOUT extends TcpMessagin
     @Override
     protected void runSocket()
     {
-            while (this.isRunning())
+        String dstIp = this.networkManager.getDistantSocketIp(this.socketId);
+        int dstPort = this.networkManager.getDistantSocketPort(this.socketId);
+
+        while (this.isRunning())
+        {
+            if (!this.datas.isEmpty())
             {
-                if (!this.datas.isEmpty())
+                Serializable data = this.datas.poll();
+
+                int code = this.networkManager.tcpSend(socketId, data);
+
+                if (code == -1)
                 {
-                    Serializable data = this.datas.poll();
-                    this.networkManager.tcpSend(socketId, data);
+                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.FAILED, dstIp, dstPort, this.socketId));
                 }
             }
+        }
     }
 }
