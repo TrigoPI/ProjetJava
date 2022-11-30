@@ -9,11 +9,11 @@ import java.sql.SQLException;
 public class InsertMessage {
     private Connection connect() {
         // SQLite connection string
-        URL path = Connect.class.getResource("ClavarDataBase.db");
-        String url = "jdbc:sqlite:" + path.getPath();
+        String url ="jdbc:sqlite:/Users/clementroussel/Desktop/Programmation/ProjetJava/Implementation/src/main/resources/BDD/Connect/ClavarDataBase.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
+            System.out.println("Connection to SQLite has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -21,17 +21,19 @@ public class InsertMessage {
     }
 
 
-    public void InsertMessage(int id_user, int id_conv, String text, String date) {
-        String sql = "INSERT INTO message(id_user,id_conv,text,date) VALUES(?,?,?,?)";
+    public void InsertMessage(int id_msg,int id_conv, int id_user, String msg, String date) {
+        String sql = "INSERT INTO messages(id_msg,id_conv,id_user,msg,date) VALUES(?,?,?,?,?)";
 
         try {
             Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, id_user);
+            pstmt.setInt(1, id_msg);
             pstmt.setInt(2, id_conv);
-            pstmt.setString(3,text);
-            pstmt.setString(4,date );
+            pstmt.setInt(3, id_user);
+            pstmt.setString(4,msg);
+            pstmt.setString(5,date);
             pstmt.executeUpdate();
+            System.out.println(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -43,5 +45,6 @@ public class InsertMessage {
     public static void main(String[] args) {
 
         InsertMessage app = new InsertMessage();
+        app.InsertMessage(1,1,6969,"salut","30/11/2022");
     }
 }

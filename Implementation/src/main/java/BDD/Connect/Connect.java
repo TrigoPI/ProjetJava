@@ -1,16 +1,11 @@
 package BDD.Connect;
 
-import Application.ClavarChatGUI.ClavarChatGUI;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- *
- * @author sqlitetutorial.net
- */
+
 public class Connect {
     /**
      * Connect to a sample database
