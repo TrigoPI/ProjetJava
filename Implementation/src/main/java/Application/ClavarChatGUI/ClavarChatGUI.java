@@ -15,14 +15,17 @@ public class ClavarChatGUI extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
-        LoginController loginController = new LoginController(clavarChatAPI);
-
         URL fxmlURL = ClavarChatGUI.class.getResource("LoginGUI.fxml");
+        URL fxmlURL2 = ClavarChatGUI.class.getResource("ClavarChatGUI.fxml");
+
+        ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
+        LoginController loginController = new LoginController(clavarChatAPI, fxmlURL2);
+
         FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL);
         fxmlLoader.setController(loginController);
 
         Scene scene = new Scene(fxmlLoader.load(), 1080, 720);
+
         stage.setTitle("ClavaChat!");
         stage.setScene(scene);
         stage.show();

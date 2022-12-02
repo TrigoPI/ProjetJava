@@ -1,4 +1,4 @@
-package ClavarChat.Controllers.Listenner;
+package ClavarChat.Controllers.Managers.Event;
 
 import ClavarChat.Models.Events.Event;
 

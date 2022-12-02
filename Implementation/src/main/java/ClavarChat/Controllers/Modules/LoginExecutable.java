@@ -1,12 +1,12 @@
 package ClavarChat.Controllers.Modules;
 
-import ClavarChat.Controllers.Threads.ThreadRunnable;
+import ClavarChat.Controllers.Managers.Thread.ThreadExecutable;
 
-public class LoginRunnable implements ThreadRunnable
+public class LoginExecutable implements ThreadExecutable
 {
     private DiscoverModule discoverModule;
 
-    public LoginRunnable(DiscoverModule discoverModule)
+    public LoginExecutable(DiscoverModule discoverModule)
     {
         this.discoverModule = discoverModule;
     }

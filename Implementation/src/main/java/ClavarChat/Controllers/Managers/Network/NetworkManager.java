@@ -1,4 +1,4 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Managers.Network;
 
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.CLI.CLI;
@@ -442,6 +442,22 @@ public class NetworkManager
         }
 
         return -1;
+    }
+
+    public void closeUdpServer(int serverID)
+    {
+        DatagramSocket server = this.udpServers.get(serverID);
+
+        if (server != null)
+        {
+            int port = server.getLocalPort();
+            server.close();
+            Log.Error(this.getClass().getName() + " Closing UDP server with id : " + serverID + " --> " + port);
+        }
+        else
+        {
+            Log.Error(this.getClass().getName() + " ERROR no UDP server with id : " + serverID);
+        }
     }
 
     public void closeTcpServer(int serverID)

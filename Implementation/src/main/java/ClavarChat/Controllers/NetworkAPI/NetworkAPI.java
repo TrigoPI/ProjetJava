@@ -1,10 +1,10 @@
-package ClavarChat.Controllers.ClavarChatNetwork;
+package ClavarChat.Controllers.NetworkAPI;
 
-import ClavarChat.Controllers.ClavarChatNetwork.Runnable.*;
-import ClavarChat.Controllers.Listenner.Listener;
-import ClavarChat.Controllers.Managers.EventManager;
-import ClavarChat.Controllers.Managers.NetworkManager;
-import ClavarChat.Controllers.Managers.ThreadManager;
+import ClavarChat.Controllers.Managers.Event.Listener;
+import ClavarChat.Controllers.Managers.Event.EventManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
+import ClavarChat.Controllers.Managers.Thread.ThreadManager;
+import ClavarChat.Controllers.ThreadExecutable.Network.*;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class ClavarChatNetwork implements Listener
+public class NetworkAPI implements Listener
 {
     private int tcpPort;
     private int udpPort;
@@ -37,7 +37,7 @@ public class ClavarChatNetwork implements Listener
     private int tcpServerID;
     private int udpServerID;
 
-    public ClavarChatNetwork(ThreadManager threadManager, NetworkManager networkManager, int tcpPort, int udpPort)
+    public NetworkAPI(ThreadManager threadManager, NetworkManager networkManager, int tcpPort, int udpPort)
     {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
@@ -69,9 +69,54 @@ public class ClavarChatNetwork implements Listener
         return this.networkManager.getBroadcastAddresses();
     }
 
+    public void closeServer()
+    {
+        this.networkManager.closeUdpServer(this.udpServerID);
+        this.networkManager.closeTcpServer(this.tcpServerID);
+    }
+
+    public void closeAll()
+    {
+        for (String key : this.socketsId.keySet())
+        {
+            int socketId = this.socketsId.get(key);
+            Integer[] client = this.clientsMap.get(key);
+
+            TCPIN tcpin = this.tcpIn.get(client[0]);
+            TCPOUT tcpout = this.tcpOut.get(client[1]);
+
+            tcpin.stop();
+            tcpout.stop();
+
+            this.networkManager.closeTcpSocket(socketId);
+        }
+
+        this.socketsId.clear();
+        this.clientsMap.clear();
+        this.tcpIn.clear();
+        this.tcpOut.clear();
+    }
+
     public void close(String ip)
     {
+        if (this.socketsId.containsKey(ip))
+        {
+            int socketId = this.socketsId.get(ip);
+            Integer[] client = this.clientsMap.get(ip);
 
+            TCPIN tcpin = this.tcpIn.get(client[0]);
+            TCPOUT tcpout = this.tcpOut.get(client[1]);
+
+            tcpin.stop();
+            tcpout.stop();
+
+            this.socketsId.remove(ip);
+            this.clientsMap.remove(ip);
+            this.tcpIn.remove(client[0]);
+            this.tcpOut.remove(client[1]);
+
+            this.networkManager.closeTcpSocket(socketId);
+        }
     }
 
     public void sendUDP(String ip, int port, ClavarChatMessage data)

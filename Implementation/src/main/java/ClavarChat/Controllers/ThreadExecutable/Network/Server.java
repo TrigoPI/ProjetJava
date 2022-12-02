@@ -1,8 +1,8 @@
-package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
+package ClavarChat.Controllers.ThreadExecutable.Network;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
 
-public abstract class Server extends NetworkRunnable
+public abstract class Server extends NetworkExecutable
 {
     protected int port;
     protected int serverId;

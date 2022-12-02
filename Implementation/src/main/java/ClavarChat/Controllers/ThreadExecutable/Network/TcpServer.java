@@ -1,6 +1,6 @@
-package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
+package ClavarChat.Controllers.ThreadExecutable.Network;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.Events.ConnectionEvent;
 import ClavarChat.Models.Events.ConnectionEvent.CONNECTION_STATUS;
 

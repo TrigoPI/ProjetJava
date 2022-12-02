@@ -1,10 +1,10 @@
-package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
+package ClavarChat.Controllers.ThreadExecutable.Network;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
 
 import java.util.concurrent.Semaphore;
 
-public abstract class TcpMessagin extends NetworkRunnable
+public abstract class TcpMessagin extends NetworkExecutable
 {
     protected int socketId;
     private boolean running;

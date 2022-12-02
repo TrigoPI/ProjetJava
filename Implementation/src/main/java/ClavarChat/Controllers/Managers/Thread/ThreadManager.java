@@ -1,16 +1,14 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Managers.Thread;
 
-import ClavarChat.Controllers.Listenner.Listener;
+import ClavarChat.Controllers.Managers.Event.Listener;
+import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Models.Events.Event;
-import ClavarChat.Controllers.Threads.*;
 import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.Log.Log;
 
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ThreadManager implements Listener
@@ -49,7 +47,7 @@ public class ThreadManager implements Listener
         return currentID++;
     }
 
-    public int createThread(ThreadRunnable runnable)
+    public int createThread(ThreadExecutable runnable)
     {
         Log.Print(this.getClass().getName() + " creating thread : " + this.currentID + " --> " + runnable.getClass().getName());
         this.threads.put(this.currentID, new TMThread(runnable, this.currentID));
@@ -69,12 +67,12 @@ public class ThreadManager implements Listener
         }
     }
 
-    public void setThreadRunnable(int threadId, ThreadRunnable runnable)
+    public void setThreadRunnable(int threadId, ThreadExecutable runnable)
     {
         if (this.threads.containsKey(threadId))
         {
             Log.Print(this.getClass().getName() + " Adding " + runnable.getClass().getName() + " to thread : " + threadId);
-            this.threads.get(threadId).setRunnable(runnable);
+            this.threads.get(threadId).setExecutable(runnable);
         }
         else
         {

@@ -1,11 +1,10 @@
 package ClavarChat.Controllers.Modules;
 
-import ClavarChat.Controllers.ClavarChatNetwork.ClavarChatNetwork;
+import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Models.Callback.Callback;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage.MESSAGE_TYPE;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Controllers.Managers.NetworkManager;
-import ClavarChat.Controllers.Managers.UserManager;
+import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Log.Log;
 
@@ -16,16 +15,16 @@ public class LoginVerifyModule extends Handler
     private int tcpPort;
 
     private UserManager userManager;
-    private ClavarChatNetwork clavarChatNetwork;
+    private NetworkAPI networkAPI;
     private Callback callback;
 
-    public LoginVerifyModule(ClavarChatNetwork clavarChatNetwork, UserManager userManager, int tcpPort)
+    public LoginVerifyModule(NetworkAPI networkAPI, UserManager userManager, int tcpPort)
     {
         this.tcpPort = tcpPort;
 
         this.callback = null;
         this.userManager = userManager;
-        this.clavarChatNetwork = clavarChatNetwork;
+        this.networkAPI = networkAPI;
     }
 
     public void setCallback(Callback callback)
@@ -45,7 +44,7 @@ public class LoginVerifyModule extends Handler
             for (UserData other : users)
             {
                 ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
-                this.clavarChatNetwork.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));
+                this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));
             }
 
             this.userManager.setLogged(true);

@@ -1,4 +1,4 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Managers.DataBase;
 
 public class DataBaseManager
 {

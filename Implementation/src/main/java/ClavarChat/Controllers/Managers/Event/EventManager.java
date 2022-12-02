@@ -1,12 +1,10 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Managers.Event;
 
-import ClavarChat.Controllers.Listenner.Listener;
 import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 
 public class EventManager

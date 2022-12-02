@@ -9,5 +9,8 @@ public abstract class Handler
         this.next = next;
     }
 
-    public abstract void handle();
+    public void handle()
+    {
+        if (this.next != null) this.next.handle();
+    }
 }

@@ -1,4 +1,4 @@
-package ClavarChat.Controllers.Managers;
+package ClavarChat.Controllers.Managers.User;
 
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.CLI.CLI;
@@ -19,8 +19,8 @@ public class UserManager
     public UserManager()
     {
         this.user = new UserData("", "");
-        this.users = new HashMap<String, UserData>();
-        this.ipTable = new HashMap<String, ArrayList<String>>();
+        this.users = new HashMap<>();
+        this.ipTable = new HashMap<>();
 
         this.userCount = 1;
         this.logged = false;

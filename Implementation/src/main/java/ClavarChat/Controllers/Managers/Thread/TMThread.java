@@ -1,40 +1,40 @@
-package ClavarChat.Controllers.Threads;
+package ClavarChat.Controllers.Managers.Thread;
 
-import ClavarChat.Controllers.Managers.EventManager;
+import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Utils.Log.Log;
 
 public class TMThread extends Thread
 {
-    private ThreadRunnable runnable;
+    private ThreadExecutable executable;
     private EventManager eventManager;
     private int id;
 
     public TMThread(int id)
     {
         this.id = id;
-        this.runnable = null;
+        this.executable = null;
         this.eventManager = EventManager.getInstance();
     }
 
-    public TMThread(ThreadRunnable runnable, int id)
+    public TMThread(ThreadExecutable runnable, int id)
     {
         this.id = id;
-        this.runnable = runnable;
+        this.executable = runnable;
         this.eventManager = EventManager.getInstance();
     }
 
-    public void setRunnable(ThreadRunnable runnable)
+    public void setExecutable(ThreadExecutable executable)
     {
-        this.runnable = runnable;
+        this.executable = executable;
     }
 
     @Override
     public void run()
     {
-        if (this.runnable != null)
+        if (this.executable != null)
         {
-            this.runnable.run();
+            this.executable.run();
         }
         else
         {

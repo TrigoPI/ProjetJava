@@ -1,8 +1,7 @@
-package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
+package ClavarChat.Controllers.ThreadExecutable.Network;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.Events.ConnectionEvent;
-import ClavarChat.Models.Events.SocketDataEvent;
 
 import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;

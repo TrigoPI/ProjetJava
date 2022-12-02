@@ -52,4 +52,11 @@ public class PackedArray<T>
 
         return item;
     }
+
+    public void clear()
+    {
+        this.datas.clear();
+        this.datasMap.clear();
+        this.id = 0;
+    }
 }

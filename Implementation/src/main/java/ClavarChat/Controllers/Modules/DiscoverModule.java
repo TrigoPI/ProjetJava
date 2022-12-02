@@ -1,7 +1,7 @@
 package ClavarChat.Controllers.Modules;
 
-import ClavarChat.Controllers.ClavarChatNetwork.ClavarChatNetwork;
-import ClavarChat.Controllers.Managers.UserManager;
+import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Clock.Clock;
@@ -14,7 +14,7 @@ public class DiscoverModule extends Handler
 {
     private int udpPort;
 
-    private ClavarChatNetwork clavarChatNetwork;
+    private NetworkAPI networkAPI;
     private UserManager userManager;
     private Semaphore semaphore;
 
@@ -22,13 +22,13 @@ public class DiscoverModule extends Handler
     private int responseCount;
     private int timeout;
 
-    public DiscoverModule(ClavarChatNetwork clavarChatNetwork, UserManager userManager, int udpPort)
+    public DiscoverModule(NetworkAPI networkAPI, UserManager userManager, int udpPort)
     {
         super();
 
         this.udpPort = udpPort;
 
-        this.clavarChatNetwork = clavarChatNetwork;
+        this.networkAPI = networkAPI;
         this.userManager = userManager;
         this.semaphore = new Semaphore(1);
 
@@ -63,13 +63,13 @@ public class DiscoverModule extends Handler
     {
         this.broadcast();
         this.waitResponses();
-        if (this.succeed() && this.next != null) this.next.handle();
+        if (this.succeed() && this.next != null) super.handle();
     }
 
     private void broadcast()
     {
-        ArrayList<String> broadcast = this.clavarChatNetwork.getBroadcastAddresses();
-        for (String addresse : broadcast) this.clavarChatNetwork.sendUDP(addresse, this.udpPort, new DiscoverMessage());
+        ArrayList<String> broadcast = this.networkAPI.getBroadcastAddresses();
+        for (String addresse : broadcast) this.networkAPI.sendUDP(addresse, this.udpPort, new DiscoverMessage());
     }
 
     private void waitResponses()

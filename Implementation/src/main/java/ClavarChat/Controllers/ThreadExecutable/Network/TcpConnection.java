@@ -1,9 +1,9 @@
-package ClavarChat.Controllers.ClavarChatNetwork.Runnable;
+package ClavarChat.Controllers.ThreadExecutable.Network;
 
-import ClavarChat.Controllers.Managers.NetworkManager;
+import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.Events.ConnectionEvent;
 
-public class TcpConnection extends NetworkRunnable
+public class TcpConnection extends NetworkExecutable
 {
     private String ip;
     private int port;
