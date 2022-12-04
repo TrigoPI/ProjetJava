@@ -2,16 +2,13 @@ package ClavarChat.Models.Events;
 
 public class ThreadEvent extends Event
 {
-    public enum THREAD_STATUS { FINISHED }
+    public static final String THREAD_FINISHED = "THREAD_FINISHED";
 
     public int id;
-    public THREAD_STATUS status;
 
-    public ThreadEvent(THREAD_STATUS status, int id)
+    public ThreadEvent(String event, int id)
     {
-        super(EVENT_TYPE.EVENT_THREAD);
-
+        super(event);
         this.id = id;
-        this.status = status;
     }
 }

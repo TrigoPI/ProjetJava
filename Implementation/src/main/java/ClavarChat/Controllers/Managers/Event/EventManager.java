@@ -1,6 +1,5 @@
 package ClavarChat.Controllers.Managers.Event;
 
-import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Utils.Log.Log;
 
@@ -11,14 +10,14 @@ public class EventManager
 {
     private static EventManager instance = null;
 
-    private HashMap<EVENT_TYPE, ArrayList<Listener>> listenners;
+    private HashMap<String, ArrayList<Listener>> listenners;
 
     private EventManager()
     {
-        this.listenners = new HashMap<EVENT_TYPE, ArrayList<Listener>>();
+        this.listenners = new HashMap<>();
     }
 
-    public void addEvent(EVENT_TYPE eventType)
+    public void addEvent(String eventType)
     {
         if (!this.listenners.containsKey(eventType))
         {
@@ -31,7 +30,7 @@ public class EventManager
         }
     }
 
-    public void addListenner(Listener listener, EVENT_TYPE eventType)
+    public void addListenner(Listener listener, String eventType)
     {
         if (!this.listenners.containsKey(eventType))
         {

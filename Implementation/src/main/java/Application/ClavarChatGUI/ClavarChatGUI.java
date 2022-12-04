@@ -1,6 +1,7 @@
 package Application.ClavarChatGUI;
 
-import ClavarChat.Controllers.GUIControllers.LoginController;
+import GUI.GUIControllers.Controllers.LoginController;
+import GUI.GUIControllers.GUIControllers;
 import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ public class ClavarChatGUI extends Application
 
         ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
         LoginController loginController = new LoginController(clavarChatAPI, fxmlURL2);
+        GUIControllers guiControllers = new GUIControllers(loginController);
 
         FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL);
         fxmlLoader.setController(loginController);

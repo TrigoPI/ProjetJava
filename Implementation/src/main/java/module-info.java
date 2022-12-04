@@ -7,6 +7,8 @@ module Implementation
     opens Application.ClavarChatGUI to javafx.fxml;
     exports Application.ClavarChatGUI;
 
-    opens ClavarChat.Controllers.GUIControllers to javafx.fxml;
-    exports ClavarChat.Controllers.GUIControllers;
+    opens GUI.GUIControllers to javafx.fxml;
+    exports GUI.GUIControllers;
+    exports GUI.GUIControllers.Controllers;
+    opens GUI.GUIControllers.Controllers to javafx.fxml;
 }

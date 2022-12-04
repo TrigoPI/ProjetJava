@@ -57,11 +57,12 @@ public class NetworkAPI implements Listener
         this.tcpIn = new PackedArray<>();
         this.tcpOut = new PackedArray<>();
 
-        this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
-        this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
-        this.eventManager.addEvent(Event.EVENT_TYPE.EVENT_NETWORK_PAQUET);
-        this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_CONNECTION);
-        this.eventManager.addListenner(this, Event.EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
+        this.eventManager.addEvent(ConnectionEvent.CONNECTION_SUCCESS);
+        this.eventManager.addEvent(ConnectionEvent.CONNECTION_FAILED);
+        this.eventManager.addEvent(ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_SUCCESS);
+        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_FAILED);
+        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_ENDED);
     }
 
     public ArrayList<String> getBroadcastAddresses()
@@ -165,24 +166,14 @@ public class NetworkAPI implements Listener
     {
         switch (event.type)
         {
-            case EVENT_NETWORK_CONNECTION:
-                this.onNetworkConnectionEvent((ConnectionEvent)event);
+            case ConnectionEvent.CONNECTION_SUCCESS:
+                this.connectionSuccess((ConnectionEvent)event);
                 break;
-            case EVENT_NETWORK_SOCKET_DATA:
+            case ConnectionEvent.CONNECTION_FAILED:
+                this.connectionFailed((ConnectionEvent)event);
+                break;
+            case SocketDataEvent.SOCKET_DATA:
                 this.onNetworkSocketDataEvent((SocketDataEvent)event);
-                break;
-        }
-    }
-
-    private void onNetworkConnectionEvent(ConnectionEvent event)
-    {
-        switch (event.status)
-        {
-            case SUCCESS:
-                this.connectionSuccess(event.socketID, event.dstIp, event.srcIp, event.dstPort, event.srcPort);
-                break;
-            case FAILED:
-                this.connectionFailed(event.dstIp, event.dstPort);
                 break;
         }
     }
@@ -201,8 +192,14 @@ public class NetworkAPI implements Listener
         }
     }
 
-    private void connectionSuccess(int socketId, String dstIp, String srcIp, int dstPort, int srcPort)
+    private void connectionSuccess(ConnectionEvent event)
     {
+        int socketId = event.socketID;
+        int dstPort = event.dstPort;
+        int srcPort = event.srcPort;
+        String dstIp = event.dstIp;
+        String srcIp = event.srcIp;
+
         int inId = this.threadManager.createThread();
         int outId = this.threadManager.createThread();
 
@@ -230,8 +227,11 @@ public class NetworkAPI implements Listener
         this.flushPendingData(dstIp);
     }
 
-    private void connectionFailed(String dstIp, int dstPort)
+    private void connectionFailed(ConnectionEvent event)
     {
+        String dstIp = event.dstIp;
+        int dstPort = event.dstPort;
+
         if (socketsId.containsKey(dstIp))
         {
             Log.Print(this.getClass().getName() + " Removing socket data to : " + dstIp + ":" + dstPort);

@@ -10,7 +10,6 @@ import ClavarChat.Controllers.Modules.DiscoverModule;
 import ClavarChat.Controllers.Modules.LoginExecutable;
 import ClavarChat.Controllers.Modules.LoginVerifyModule;
 import ClavarChat.Models.Callback.Callback;
-import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.NetworkPaquetEvent;
@@ -49,7 +48,7 @@ public class ClavarChatAPI implements Listener
 
         this.discoverModule.setNext(this.loginVerifyModule);
 
-        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_NETWORK_PAQUET);
+        this.eventManager.addListenner(this, NetworkPaquetEvent.NETWORK_PAQUET);
 
         this.networkAPI.startServer();
     }
@@ -82,7 +81,7 @@ public class ClavarChatAPI implements Listener
     {
         switch (event.type)
         {
-            case EVENT_NETWORK_PAQUET:
+            case NetworkPaquetEvent.NETWORK_PAQUET:
                 this.onNetworkPaquetEvent((NetworkPaquetEvent)event);
                 break;
         }

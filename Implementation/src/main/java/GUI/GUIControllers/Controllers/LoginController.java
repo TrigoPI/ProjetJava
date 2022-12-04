@@ -1,16 +1,14 @@
-package ClavarChat.Controllers.GUIControllers;
+package GUI.GUIControllers.Controllers;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +38,11 @@ public class LoginController implements Initializable
     {
         this.url = url;
         this.api = api;
+    }
+
+    public void onLoginResponse()
+    {
+
     }
 
     @Override

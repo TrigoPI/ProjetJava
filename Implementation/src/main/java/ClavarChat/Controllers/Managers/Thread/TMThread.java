@@ -41,6 +41,6 @@ public class TMThread extends Thread
             Log.Error(this.getClass().getName() + " Cannot start because runnable is null ");
         }
         Log.Print(this.getClass().getName() + " Thread : " + this.id + " finished");
-        this.eventManager.notiy(new ThreadEvent(ThreadEvent.THREAD_STATUS.FINISHED, this.id));
+        this.eventManager.notiy(new ThreadEvent(ThreadEvent.THREAD_FINISHED, this.id));
     }
 }

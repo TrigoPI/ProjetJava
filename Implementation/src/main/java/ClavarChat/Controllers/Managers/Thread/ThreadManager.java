@@ -2,7 +2,6 @@ package ClavarChat.Controllers.Managers.Thread;
 
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Event.EventManager;
-import ClavarChat.Models.Events.Event.EVENT_TYPE;
 import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Models.Events.Event;
@@ -23,8 +22,8 @@ public class ThreadManager implements Listener
         this.eventManager = EventManager.getInstance();
         this.threads = new HashMap<Integer, TMThread>();
 
-        this.eventManager.addEvent(EVENT_TYPE.EVENT_THREAD);
-        this.eventManager.addListenner(this, EVENT_TYPE.EVENT_THREAD);
+        this.eventManager.addEvent(ThreadEvent.THREAD_FINISHED);
+        this.eventManager.addListenner(this, ThreadEvent.THREAD_FINISHED);
 
         this.DEBUG();
     }
@@ -98,24 +97,14 @@ public class ThreadManager implements Listener
     {
         switch (event.type)
         {
-            case EVENT_THREAD:
-                this.onThreadEvent((ThreadEvent)event);
+            case ThreadEvent.THREAD_FINISHED:
+                this.onThreadFinished((ThreadEvent)event);
                 break;
         }
     }
 
-    private void onThreadEvent(ThreadEvent event)
+    private void onThreadFinished(ThreadEvent event)
     {
-        switch (event.status)
-        {
-            case FINISHED:
-                this.onThreadFinished(event.id);
-                break;
-        }
-    }
-
-    private void onThreadFinished(int id)
-    {
-        this.removeThread(id);
+        this.removeThread(event.id);
     }
 }

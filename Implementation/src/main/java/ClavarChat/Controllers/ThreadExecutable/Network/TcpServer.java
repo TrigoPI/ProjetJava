@@ -2,7 +2,6 @@ package ClavarChat.Controllers.ThreadExecutable.Network;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.Events.ConnectionEvent;
-import ClavarChat.Models.Events.ConnectionEvent.CONNECTION_STATUS;
 
 public class TcpServer extends Server
 {
@@ -30,7 +29,7 @@ public class TcpServer extends Server
                     int srcPort = this.networkManager.getLocalSocketPort(socketId);
                     int dstPort = this.networkManager.getDistantSocketPort(socketId);
 
-                    this.eventManager.notiy(new ConnectionEvent(CONNECTION_STATUS.SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
+                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
                 }
             }
         }

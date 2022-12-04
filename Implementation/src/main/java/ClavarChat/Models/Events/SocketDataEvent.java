@@ -4,6 +4,8 @@ import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 
 public class SocketDataEvent extends Event
 {
+    public static final String SOCKET_DATA = "SOCKET_DATA";
+
     public ClavarChatMessage data;
 
     public String srcIp;
@@ -13,7 +15,7 @@ public class SocketDataEvent extends Event
 
     public SocketDataEvent(String srcIp, int srcPort, String dstIp, int dstPort, ClavarChatMessage data)
     {
-        super(EVENT_TYPE.EVENT_NETWORK_SOCKET_DATA);
+        super(SOCKET_DATA);
 
         this.srcIp = srcIp;
         this.dstIp = dstIp;

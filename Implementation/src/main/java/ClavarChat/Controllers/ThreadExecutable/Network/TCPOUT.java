@@ -44,7 +44,7 @@ public class TCPOUT extends TcpMessagin
 
                 if (code == -1)
                 {
-                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_STATUS.FAILED, dstIp, dstPort, this.socketId));
+                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
                 }
             }
         }
