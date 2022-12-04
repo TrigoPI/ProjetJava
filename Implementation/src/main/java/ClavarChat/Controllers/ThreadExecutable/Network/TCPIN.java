@@ -17,17 +17,20 @@ public class TCPIN extends TcpMessagin
     @Override
     protected void runSocket()
     {
+        String dstIp = this.networkManager.getDistantSocketIp(this.socketId);
+        int dstPort = this.networkManager.getDistantSocketPort(this.socketId);
+
         while (this.isRunning())
         {
             NetworkPaquet paquet = this.networkManager.tcpReceive(this.socketId);
 
             if (paquet != null)
             {
-                this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, paquet.dstPort, paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
+                this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, dstPort, dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
             }
             else
             {
-                this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, paquet.dstIp, paquet.dstPort, this.socketId));
+                this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
             }
         }
     }

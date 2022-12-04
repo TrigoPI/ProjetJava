@@ -38,17 +38,27 @@ public class PackedArray<T>
     {
         if (!this.datasMap.containsKey(id)) return null;
 
-        int index = this.datasMap.get(id);
-        int lastIndex = this.datas.size() - 1;
+        if (this.datas.size() > 1)
+        {
+            int index = this.datasMap.get(id);
+            int lastIndex = this.datas.size() - 1;
 
-        T lastItem = this.datas.get(lastIndex);
-        T item = this.datas.get(index);
+            T lastItem = this.datas.get(lastIndex);
+            T item = this.datas.get(index);
 
-        if (!this.datas.isEmpty()) this.datas.set(index, lastItem);
+            this.datas.set(index, lastItem);
 
-        this.datas.remove(lastIndex);
-        this.id = lastIndex;
-        this.datasMap.put(id, index);
+            this.datas.remove(lastIndex);
+            this.id = lastIndex;
+            this.datasMap.put(id, index);
+
+            return item;
+        }
+
+        T item = this.datas.get(0);
+        this.datas.remove(0);
+        this.id = 0;
+        this.datasMap.clear();
 
         return item;
     }
