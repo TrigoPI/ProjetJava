@@ -57,6 +57,8 @@ public class PackedArray<T>
         this.idToIndex.remove(id);
         this.indexToId.remove(indexOfItem);
 
+        this.id = indexOfLastItem;
+
         return item;
     }
 
