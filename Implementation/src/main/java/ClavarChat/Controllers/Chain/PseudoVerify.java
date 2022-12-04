@@ -1,7 +1,9 @@
-package ClavarChat.Controllers.Modules;
+package ClavarChat.Controllers.Chain;
 
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
-import ClavarChat.Models.Callback.Callback;
+import ClavarChat.Models.ChainData.Request.LoginRequest;
+import ClavarChat.Models.ChainData.Request.Request;
+import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage.MESSAGE_TYPE;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Controllers.Managers.User.UserManager;
@@ -10,32 +12,26 @@ import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
 
-public class LoginVerifyModule extends Handler
+public class PseudoVerify extends Handler
 {
-    private int tcpPort;
+    private final int tcpPort;
 
-    private UserManager userManager;
-    private NetworkAPI networkAPI;
-    private Callback callback;
+    private final UserManager userManager;
+    private final NetworkAPI networkAPI;
 
-    public LoginVerifyModule(NetworkAPI networkAPI, UserManager userManager, int tcpPort)
+    public PseudoVerify(NetworkAPI networkAPI, UserManager userManager, int tcpPort)
     {
         this.tcpPort = tcpPort;
 
-        this.callback = null;
         this.userManager = userManager;
         this.networkAPI = networkAPI;
     }
 
-    public void setCallback(Callback callback)
-    {
-        this.callback = callback;
-    }
-
     @Override
-    public void handle()
+    public String handle(Request request)
     {
-        UserData user = this.userManager.getUser();
+        LoginRequest loginRequest = (LoginRequest)request;
+        UserData user = new UserData(loginRequest.pseudo, loginRequest.id);
 
         if (!this.userManager.userExist(user.pseudo))
         {
@@ -47,13 +43,17 @@ public class LoginVerifyModule extends Handler
                 this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));
             }
 
+            this.userManager.setUser(loginRequest.pseudo, loginRequest.id);
             this.userManager.setLogged(true);
-            if (this.callback != null) this.callback.call();
+
+            return Response.VALID_PSEUDO;
         }
         else
         {
             Log.Error(this.getClass().getName() + " Pseudo already used");
             this.userManager.setLogged(false);
         }
+
+        return Response.INVALID_PSEUDO;
     }
 }

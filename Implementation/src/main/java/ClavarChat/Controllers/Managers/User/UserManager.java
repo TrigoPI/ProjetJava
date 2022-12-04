@@ -1,20 +1,19 @@
 package ClavarChat.Controllers.Managers.User;
 
 import ClavarChat.Models.Users.UserData;
-import ClavarChat.Utils.CLI.CLI;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Utils.Log.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UserManager
 {
     private boolean logged;
     private int userCount;
 
-    private UserData user;
-    private HashMap<String, UserData> users;
-    private HashMap<String, ArrayList<String>> ipTable;
+    private final UserData user;
+    private final HashMap<String, UserData> users;
+    private final HashMap<String, ArrayList<String>> ipTable;
 
     public UserManager()
     {
@@ -24,36 +23,6 @@ public class UserManager
 
         this.userCount = 1;
         this.logged = false;
-
-        this.DEBUG();
-    }
-
-    private void DEBUG()
-    {
-        ModuleCLI moduleCLI = new ModuleCLI();
-
-        moduleCLI.addCommand("set-user", () -> {
-            String pseudo = moduleCLI.getUserInput("Pseudo : ");
-            String id = moduleCLI.getUserInput("id : ");
-            this.logged = true;
-
-            this.setUser(pseudo, id);
-        });
-
-        moduleCLI.addCommand("list-user", () -> {
-            for (String key : this.users.keySet())
-            {
-                UserData user = this.users.get(key);
-                System.out.println(this.ipTable.get(user.pseudo) + " --> " + user.pseudo + " " + user.id);
-            }
-        });
-
-        moduleCLI.addCommand("get-user", () -> {
-            System.out.println("User : " + this.user.pseudo);
-            System.out.println("ID : " + this.user.id);
-        });
-
-        CLI.installModule("user", moduleCLI);
     }
 
     public void setLogged(boolean logged)

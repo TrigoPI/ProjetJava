@@ -1,11 +1,9 @@
 package ClavarChat.Controllers.Managers.Network;
 
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
-import ClavarChat.Utils.CLI.CLI;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
-import ClavarChat.Utils.NetworkUtils.NetworkUtils;
-import ClavarChat.Utils.PackedArray.PackedArray;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.NetworkUtils.NetworkUtils;
+import ClavarChat.Models.PackedArray.PackedArray;
 
 import java.io.*;
 import java.net.*;
@@ -13,55 +11,15 @@ import java.util.ArrayList;
 
 public class NetworkManager
 {
-    private PackedArray<Socket> sockets;
-    private PackedArray<ServerSocket> tcpServers;
-    private PackedArray<DatagramSocket> udpServers;
+    private final PackedArray<Socket> sockets;
+    private final PackedArray<ServerSocket> tcpServers;
+    private final PackedArray<DatagramSocket> udpServers;
 
     public NetworkManager()
     {
         this.sockets = new PackedArray<>();
         this.tcpServers = new PackedArray<>();
         this.udpServers = new PackedArray<>();
-
-        this.DEBUG();
-    }
-
-    private void DEBUG()
-    {
-        ModuleCLI moduleCLI = new ModuleCLI();
-
-        moduleCLI.addCommand("get-networks", () -> {
-            ArrayList<String> allIp = this.getUserIp();
-            ArrayList<String> allNetworks = this.getConnectedNetworks();
-            ArrayList<String> allBroadcasts = this.getBroadcastAddresses();
-
-            for (int i = 0; i < allIp.size(); i++)
-            {
-                String ip = allIp.get(i);
-                String network = allNetworks.get(i);
-                String broadcast = allBroadcasts.get(i);
-
-                System.out.println("ip : " + ip + " - network : " + network + " - broadcast : " + broadcast);
-            }
-        });
-
-        moduleCLI.addCommand("get-socket", () -> {
-            ArrayList<String[]> sockets = this.getActiveSockets();
-            for (String[] infos : sockets) System.out.println(infos[0] + ":" + infos[1] + " --> " + infos[2] + ":" + infos[3]);
-        });
-
-        moduleCLI.addCommand("debug", () -> {
-            System.out.println("\n\nSockets");
-            for (Socket socket : this.sockets.getDatas()) System.out.println(socket);
-
-            System.out.println("\n\nTcp server");
-            for (ServerSocket server : this.tcpServers.getDatas()) System.out.println(server);
-
-            System.out.println("\n\nudp server");
-            for (DatagramSocket server : this.udpServers.getDatas()) System.out.println(server);
-        });
-
-        CLI.installModule("network", moduleCLI);
     }
 
     public ArrayList<String[]> getActiveSockets()

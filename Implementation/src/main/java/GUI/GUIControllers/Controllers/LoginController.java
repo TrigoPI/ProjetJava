@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable
 {
-    private ClavarChatAPI api;
+    private final ClavarChatAPI api;
 
     @FXML
     private MFXTextField usernameTextField;
@@ -32,7 +32,7 @@ public class LoginController implements Initializable
     @FXML
     private MFXProgressSpinner spinnerBar;
 
-    private URL url;
+    private final URL url;
 
     public LoginController(ClavarChatAPI api, URL url)
     {
@@ -40,9 +40,13 @@ public class LoginController implements Initializable
         this.api = api;
     }
 
-    public void onLoginResponse()
+    public void onLoginSuccess()
     {
+        this.loginButton.setVisible(true);
+        this.loginButton.setManaged(true);
 
+        this.spinnerBar.setVisible(false);
+        this.spinnerBar.setManaged(false);
     }
 
     @Override
@@ -68,26 +72,20 @@ public class LoginController implements Initializable
     @FXML
     private void handleButtonLogin()
     {
-//        this.loginButton.setVisible(false);
-//        this.loginButton.setManaged(false);
-//
-//        this.spinnerBar.setVisible(true);
-//        this.spinnerBar.setManaged(true);
+        this.loginButton.setVisible(false);
+        this.loginButton.setManaged(false);
+
+        this.spinnerBar.setVisible(true);
+        this.spinnerBar.setManaged(true);
 
         String pseudo = this.usernameTextField.getText().trim();
-        String id = this.idTextField.getText().trim();;
-        String password = this.passwordTextField.getText().trim();;
+        String id = this.idTextField.getText().trim();
+        String password = this.passwordTextField.getText().trim();
 
         if (pseudo.isEmpty()) this.errorInput(usernameTextField);
         if (id.isEmpty()) this.errorInput(idTextField);
         if (password.isEmpty()) this.errorInput(passwordTextField);
 
-//        this.api.login("fdfsdf", "zefdsf", () -> {
-//            this.loginButton.setVisible(true);
-//            this.loginButton.setManaged(true);
-//
-//            this.spinnerBar.setVisible(false);
-//            this.spinnerBar.setManaged(false);
-//        });
+        if (!pseudo.isEmpty() && !id.isEmpty() && !password.isEmpty()) this.api.login(pseudo, id);
     }
 }

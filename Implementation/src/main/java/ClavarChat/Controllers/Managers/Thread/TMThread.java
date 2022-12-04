@@ -7,8 +7,8 @@ import ClavarChat.Utils.Log.Log;
 public class TMThread extends Thread
 {
     private ThreadExecutable executable;
-    private EventManager eventManager;
-    private int id;
+    private final EventManager eventManager;
+    private final int id;
 
     public TMThread(int id)
     {

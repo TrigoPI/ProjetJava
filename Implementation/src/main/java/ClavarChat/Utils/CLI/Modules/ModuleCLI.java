@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class ModuleCLI
 {
-    private HashMap<String, Command> commands;
+    private final HashMap<String, Command> commands;
 
     public ModuleCLI()
     {

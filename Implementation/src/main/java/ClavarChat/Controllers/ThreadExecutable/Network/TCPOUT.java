@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class TCPOUT extends TcpMessagin
 {
-    private LinkedBlockingQueue<Serializable> datas;
+    private final LinkedBlockingQueue<Serializable> datas;
 
     public TCPOUT(NetworkManager networkManager, int socketId)
     {

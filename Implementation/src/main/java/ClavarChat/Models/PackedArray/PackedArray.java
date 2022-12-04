@@ -1,4 +1,4 @@
-package ClavarChat.Utils.PackedArray;
+package ClavarChat.Models.PackedArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 public class PackedArray<T>
 {
     private int id;
-    private ArrayList<T> datas;
-    private HashMap<Integer, Integer> datasMap;
+    private final ArrayList<T> datas;
+    private final HashMap<Integer, Integer> datasMap;
 
     public PackedArray()
     {

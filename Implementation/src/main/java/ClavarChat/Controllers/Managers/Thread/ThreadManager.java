@@ -2,18 +2,16 @@ package ClavarChat.Controllers.Managers.Thread;
 
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Event.EventManager;
-import ClavarChat.Utils.CLI.Modules.ModuleCLI;
 import ClavarChat.Models.Events.ThreadEvent;
 import ClavarChat.Models.Events.Event;
-import ClavarChat.Utils.CLI.CLI;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.HashMap;
 
 public class ThreadManager implements Listener
 {
-    private EventManager eventManager;
-    private HashMap<Integer, TMThread> threads;
+    private final EventManager eventManager;
+    private final HashMap<Integer, TMThread> threads;
     private int currentID;
 
     public ThreadManager()
@@ -24,19 +22,6 @@ public class ThreadManager implements Listener
 
         this.eventManager.addEvent(ThreadEvent.THREAD_FINISHED);
         this.eventManager.addListenner(this, ThreadEvent.THREAD_FINISHED);
-
-        this.DEBUG();
-    }
-
-    private void DEBUG()
-    {
-        ModuleCLI moduleCLI = new ModuleCLI();
-
-        moduleCLI.addCommand("threads", () -> {
-            for (Integer key : this.threads.keySet()) System.out.println(key + " --> " + this.threads.get(key) + "/" + this.threads.get(key).getClass().getName());
-        });
-
-        CLI.installModule("thread", moduleCLI);
     }
 
     public int createThread()

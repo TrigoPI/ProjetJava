@@ -8,7 +8,7 @@ public class Log
 {
     private static boolean active = true;
     private static boolean save = false;
-    private static ArrayList<String> logs = new ArrayList<String>();
+    private static final ArrayList<String> logs = new ArrayList<String>();
 
     public static void savingOn()
     {

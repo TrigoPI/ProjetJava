@@ -8,7 +8,7 @@ public abstract class TcpMessagin extends NetworkExecutable
 {
     protected int socketId;
     private boolean running;
-    private Semaphore semaphore;
+    private final Semaphore semaphore;
 
     protected TcpMessagin(NetworkManager networkManager, int socketId)
     {

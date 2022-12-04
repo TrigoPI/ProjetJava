@@ -10,7 +10,7 @@ public class CLI
 {
     private static CLI instance = null;
 
-    private HashMap<String, ModuleCLI> modules;
+    private final HashMap<String, ModuleCLI> modules;
 
     private CLI()
     {

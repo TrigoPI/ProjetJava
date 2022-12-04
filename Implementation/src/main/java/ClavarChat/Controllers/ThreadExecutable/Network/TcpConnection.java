@@ -5,9 +5,9 @@ import ClavarChat.Models.Events.ConnectionEvent;
 
 public class TcpConnection extends NetworkExecutable
 {
-    private String ip;
-    private int port;
-    private int socketId;
+    private final String ip;
+    private final int port;
+    private final int socketId;
 
     public TcpConnection(NetworkManager networkManager, int socketId, String ip, int port)
     {

@@ -11,7 +11,7 @@ import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.NetworkPaquetEvent;
 import ClavarChat.Models.Events.SocketDataEvent;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.PackedArray.PackedArray;
+import ClavarChat.Models.PackedArray.PackedArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,32 +20,32 @@ import java.util.LinkedList;
 
 public class NetworkAPI implements Listener
 {
-    private int tcpPort;
-    private int udpPort;
+    private final int tcpPort;
+    private final int udpPort;
 
-    private EventManager eventManager;
+    private final EventManager eventManager;
 
-    private ThreadManager threadManager;
-    private NetworkManager networkManager;
+    private final ThreadManager threadManager;
+    private final NetworkManager networkManager;
 
-    private HashMap<String, LinkedList<Serializable>> pendingDatas;
-    private HashMap<String, Integer[]> clientsMap;
-    private HashMap<String, Integer> socketsId;
-    private PackedArray<TCPIN> tcpIn;
-    private PackedArray<TCPOUT> tcpOut;
+    private final HashMap<String, LinkedList<Serializable>> pendingDatas;
+    private final HashMap<String, Integer[]> clientsMap;
+    private final HashMap<String, Integer> socketsId;
+    private final PackedArray<TCPIN> tcpIn;
+    private final PackedArray<TCPOUT> tcpOut;
 
-    private int tcpServerID;
-    private int udpServerID;
+    private final int tcpServerID;
+    private final int udpServerID;
 
-    public NetworkAPI(ThreadManager threadManager, NetworkManager networkManager, int tcpPort, int udpPort)
+    public NetworkAPI(ThreadManager threadManager, int tcpPort, int udpPort)
     {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
         this.eventManager = EventManager.getInstance();
 
+        this.networkManager = new NetworkManager();
         this.threadManager = threadManager;
-        this.networkManager = networkManager;
 
         this.tcpServerID = this.networkManager.createTcpServer();
         this.udpServerID = this.networkManager.createUdpServer();
@@ -60,9 +60,11 @@ public class NetworkAPI implements Listener
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addEvent(SocketDataEvent.SOCKET_DATA);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addListenner(this, SocketDataEvent.SOCKET_DATA);
     }
 
     public ArrayList<String> getBroadcastAddresses()
@@ -205,7 +207,7 @@ public class NetworkAPI implements Listener
 
         Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
 
-        Integer ids[] = new Integer[2];
+        Integer[] ids = new Integer[2];
         TCPIN in = new TCPIN(this.networkManager, socketId);
         TCPOUT out = new TCPOUT(this.networkManager, socketId);
 
@@ -240,7 +242,7 @@ public class NetworkAPI implements Listener
 
         if (this.clientsMap.containsKey(dstIp))
         {
-            Integer ids[] = this.clientsMap.get(dstIp);
+            Integer[] ids = this.clientsMap.get(dstIp);
             TCPIN in = this.tcpIn.get(ids[0]);
             TCPOUT out = this.tcpOut.get(ids[1]);
 

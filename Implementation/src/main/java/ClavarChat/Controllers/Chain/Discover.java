@@ -1,7 +1,9 @@
-package ClavarChat.Controllers.Modules;
+package ClavarChat.Controllers.Chain;
 
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Models.ChainData.Request.Request;
+import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Clock.Clock;
@@ -10,19 +12,19 @@ import ClavarChat.Utils.Log.Log;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-public class DiscoverModule extends Handler
+public class Discover extends Handler
 {
-    private int udpPort;
+    private final int udpPort;
 
-    private NetworkAPI networkAPI;
-    private UserManager userManager;
-    private Semaphore semaphore;
+    private final NetworkAPI networkAPI;
+    private final UserManager userManager;
+    private final Semaphore semaphore;
 
     private int userCount;
     private int responseCount;
-    private int timeout;
+    private final int timeout;
 
-    public DiscoverModule(NetworkAPI networkAPI, UserManager userManager, int udpPort)
+    public Discover(NetworkAPI networkAPI, UserManager userManager, int udpPort)
     {
         super();
 
@@ -59,11 +61,12 @@ public class DiscoverModule extends Handler
     }
 
     @Override
-    public void handle()
+    public String handle(Request request)
     {
         this.broadcast();
         this.waitResponses();
-        if (this.succeed() && this.next != null) super.handle();
+        if (this.succeed() && this.next != null) return this.next.handle(request);
+        return Response.DISCOVER_ERROR;
     }
 
     private void broadcast()

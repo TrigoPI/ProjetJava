@@ -112,7 +112,7 @@ public class NetworkUtils
             InetAddress ipAddr = InetAddress.getByName(ip);
             byte[] adr = ipAddr.getAddress();
             int[] i = new int[4];
-            for (int j = 0; j < 4; j++) i[j] = (int) ((adr[j] < 0) ? (256 + adr[j]) : adr[j]);
+            for (int j = 0; j < 4; j++) i[j] = (adr[j] < 0) ? (256 + adr[j]) : adr[j];
             ipInt =  i[3] + (i[2] << 8) + (i[1] << 16) + (i[0] << 24);
         } catch (UnknownHostException e) { e.printStackTrace(); }
 

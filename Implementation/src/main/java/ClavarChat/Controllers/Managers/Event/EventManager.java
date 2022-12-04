@@ -10,7 +10,7 @@ public class EventManager
 {
     private static EventManager instance = null;
 
-    private HashMap<String, ArrayList<Listener>> listenners;
+    private final HashMap<String, ArrayList<Listener>> listenners;
 
     private EventManager()
     {

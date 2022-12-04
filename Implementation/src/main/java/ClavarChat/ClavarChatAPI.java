@@ -3,33 +3,32 @@ package ClavarChat;
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Event.Listener;
-import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Controllers.Modules.DiscoverModule;
-import ClavarChat.Controllers.Modules.LoginExecutable;
-import ClavarChat.Controllers.Modules.LoginVerifyModule;
-import ClavarChat.Models.Callback.Callback;
+import ClavarChat.Controllers.Chain.Discover;
+import ClavarChat.Controllers.Chain.PseudoVerify;
+import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
+import ClavarChat.Models.ChainData.Request.LoginRequest;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
+import ClavarChat.Models.Events.LoginEvent;
 import ClavarChat.Models.Events.NetworkPaquetEvent;
 import ClavarChat.Models.Users.UserData;
 import ClavarChat.Utils.Log.Log;
 
 public class ClavarChatAPI implements Listener
 {
-    private int tcpPort;
-    private int udpPort;
+    private final int tcpPort;
+    private final int udpPort;
 
-    private EventManager eventManager;
-    private NetworkManager networkManager;
-    private ThreadManager threadManager;
-    private UserManager userManager;
+    private final EventManager eventManager;
+    private final ThreadManager threadManager;
+    private final UserManager userManager;
 
-    private NetworkAPI networkAPI;
+    private final NetworkAPI networkAPI;
 
-    private DiscoverModule discoverModule;
-    private LoginVerifyModule loginVerifyModule;
+    private final Discover discover;
+    private final PseudoVerify pseudoVerify;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
@@ -37,28 +36,29 @@ public class ClavarChatAPI implements Listener
         this.udpPort = udpPort;
 
         this.eventManager = EventManager.getInstance();
-        this.networkManager = new NetworkManager();
         this.threadManager = new ThreadManager();
         this.userManager = new UserManager();
 
-        this.networkAPI = new NetworkAPI(this.threadManager, this.networkManager, this.tcpPort, this.udpPort);
+        this.networkAPI = new NetworkAPI(this.threadManager, this.tcpPort, this.udpPort);
 
-        this.discoverModule = new DiscoverModule(this.networkAPI, this.userManager, this.udpPort);
-        this.loginVerifyModule = new LoginVerifyModule(this.networkAPI, this.userManager, this.tcpPort);
+        this.discover = new Discover(this.networkAPI, this.userManager, this.udpPort);
+        this.pseudoVerify = new PseudoVerify(this.networkAPI, this.userManager, this.tcpPort);
 
-        this.discoverModule.setNext(this.loginVerifyModule);
+        this.discover.setNext(this.pseudoVerify);
 
+        this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
+        this.eventManager.addEvent(LoginEvent.LOGIN_FAILED);
+        this.eventManager.addEvent(NetworkPaquetEvent.NETWORK_PAQUET);
         this.eventManager.addListenner(this, NetworkPaquetEvent.NETWORK_PAQUET);
 
         this.networkAPI.startServer();
     }
 
-    public void login(String pseudo, String id, Callback callback)
+    public void login(String pseudo, String id)
     {
-        this.userManager.setUser(pseudo, id);
-        this.loginVerifyModule.setCallback(callback);
+        Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
 
-        int threadId = this.threadManager.createThread(new LoginExecutable(this.discoverModule));
+        int threadId = this.threadManager.createThread(new LoginExecutable(this.discover, new LoginRequest(pseudo, id, "")));
         this.threadManager.startThread(threadId);
     }
 
@@ -145,7 +145,7 @@ public class ClavarChatAPI implements Listener
     private void onDiscoverResponse(DiscoverMessage data, String src)
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.user.pseudo + " / " + "#" + data.user.id);
-        this.discoverModule.onDiscoverInformation(data, src);
+        this.discover.onDiscoverInformation(data, src);
     }
 
     private void onData(DataMessage data, String src)

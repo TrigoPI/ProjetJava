@@ -1,6 +1,5 @@
 package Application;
 
-import Application.ClavaChatCLI.ClavarChatCLI;
 import Application.ClavarChatGUI.ClavarChatGUI;
 
 public class ClavarChatApplication
