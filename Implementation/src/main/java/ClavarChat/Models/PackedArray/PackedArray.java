@@ -17,11 +17,28 @@ public class PackedArray<T>
         this.indexToId = new HashMap<>();
     }
 
+    public void debug()
+    {
+        System.out.println("ID --> INDEX : ITEM");
+
+        for (int id : this.idToIndex.keySet())
+        {
+            int index = this.idToIndex.get(id);
+            T item = this.datas.get(index);
+
+            System.out.println(id + " --> " + index + " : " + item);
+        }
+    }
+
     public int add(T object)
     {
         this.datas.add(object);
         this.idToIndex.put(this.id, this.datas.size() - 1);
         this.indexToId.put(this.datas.size() - 1, this.id);
+
+        System.out.println("Adding");
+        this.debug();
+
         return this.id++;
     }
 
@@ -41,21 +58,24 @@ public class PackedArray<T>
     {
         if (!this.idToIndex.containsKey(id)) return null;
 
-        int indexOfItem = this.idToIndex.get(id);
+        System.out.println("Removing");
+        this.debug();
+
+        int indexOfRemovingItem = this.idToIndex.get(id);
         int indexOfLastItem = this.datas.size() - 1;
         int idOfLastItem = this.indexToId.get(indexOfLastItem);
 
         T lastItem = this.datas.get(indexOfLastItem);
-        T item = this.datas.get(indexOfItem);
+        T item = this.datas.get(indexOfRemovingItem);
 
-        this.datas.set(indexOfItem, lastItem);
-        this.datas.remove(lastItem);
+        this.datas.set(indexOfRemovingItem, lastItem);
+        this.datas.remove(indexOfLastItem);
 
-        this.idToIndex.put(idOfLastItem, indexOfItem);
-        this.indexToId.put(indexOfItem, idOfLastItem);
+        this.idToIndex.put(idOfLastItem, indexOfRemovingItem);
+        this.indexToId.put(indexOfRemovingItem, idOfLastItem);
 
         this.idToIndex.remove(id);
-        this.indexToId.remove(indexOfItem);
+        this.indexToId.remove(indexOfLastItem);
 
         this.id = indexOfLastItem;
 
