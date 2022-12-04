@@ -7,18 +7,21 @@ public class PackedArray<T>
 {
     private int id;
     private final ArrayList<T> datas;
-    private final HashMap<Integer, Integer> datasMap;
+    private final HashMap<Integer, Integer> idToIndex;
+    private final HashMap<Integer, Integer> indexToId;
 
     public PackedArray()
     {
         this.datas = new ArrayList<>();
-        this.datasMap = new HashMap<>();
+        this.idToIndex = new HashMap<>();
+        this.indexToId = new HashMap<>();
     }
 
     public int add(T object)
     {
         this.datas.add(object);
-        this.datasMap.put(this.id, this.datas.size() - 1);
+        this.idToIndex.put(this.id, this.datas.size() - 1);
+        this.indexToId.put(this.datas.size() - 1, this.id);
         return this.id++;
     }
 
@@ -29,36 +32,30 @@ public class PackedArray<T>
 
     public T get(int id)
     {
-        if (!this.datasMap.containsKey(id)) return null;
-        int index = this.datasMap.get(id);
+        if (!this.idToIndex.containsKey(id)) return null;
+        int index = this.idToIndex.get(id);
         return this.datas.get(index);
     }
 
     public T remove(int id)
     {
-        if (!this.datasMap.containsKey(id)) return null;
+        if (!this.idToIndex.containsKey(id)) return null;
 
-        if (this.datas.size() > 1)
-        {
-            int index = this.datasMap.get(id);
-            int lastIndex = this.datas.size() - 1;
+        int indexOfItem = this.idToIndex.get(id);
+        int indexOfLastItem = this.datas.size() - 1;
+        int idOfLastItem = this.indexToId.get(indexOfLastItem);
 
-            T lastItem = this.datas.get(lastIndex);
-            T item = this.datas.get(index);
+        T lastItem = this.datas.get(indexOfLastItem);
+        T item = this.datas.get(indexOfItem);
 
-            this.datas.set(index, lastItem);
+        this.datas.set(indexOfItem, lastItem);
+        this.datas.remove(lastItem);
 
-            this.datas.remove(lastIndex);
-            this.id = lastIndex;
-            this.datasMap.put(id, index);
+        this.idToIndex.put(idOfLastItem, indexOfItem);
+        this.indexToId.put(indexOfItem, idOfLastItem);
 
-            return item;
-        }
-
-        T item = this.datas.get(0);
-        this.datas.remove(0);
-        this.id = 0;
-        this.datasMap.clear();
+        this.idToIndex.remove(id);
+        this.indexToId.remove(indexOfItem);
 
         return item;
     }
@@ -66,7 +63,8 @@ public class PackedArray<T>
     public void clear()
     {
         this.datas.clear();
-        this.datasMap.clear();
+        this.indexToId.clear();
+        this.idToIndex.clear();
         this.id = 0;
     }
 }
