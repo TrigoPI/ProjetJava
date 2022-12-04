@@ -21,7 +21,7 @@ public class ClavarChatGUI extends Application
 
         ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
         LoginController loginController = new LoginController(clavarChatAPI, fxmlURL2);
-        GUIControllers guiControllers = new GUIControllers(loginController);
+        GUIControllers guiControllers = new GUIControllers(clavarChatAPI, loginController);
 
         FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL);
         fxmlLoader.setController(loginController);

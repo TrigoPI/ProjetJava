@@ -1,5 +1,6 @@
 package GUI.GUIControllers;
 
+import ClavarChat.ClavarChatAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Models.Events.LoginEvent;
 import ClavarChat.Utils.Log.Log;
@@ -11,9 +12,11 @@ public class GUIControllers implements Listener
 {
     private final LoginController loginController;
     private EventManager eventManager;
+    private ClavarChatAPI api;
 
-    public GUIControllers(LoginController loginController)
+    public GUIControllers(ClavarChatAPI api, LoginController loginController)
     {
+        this.api = api;
         this.loginController = loginController;
         this.eventManager = EventManager.getInstance();
 
@@ -24,16 +27,28 @@ public class GUIControllers implements Listener
     @Override
     public void onEvent(Event event)
     {
+        Log.Info(this.getClass().getName() + " ---> " + event.type);
+
         switch (event.type)
         {
             case LoginEvent.LOGIN_SUCCESS:
                 this.onLoginSucces();
                 break;
+            case LoginEvent.LOGIN_FAILED:
+                this.onLoginFailed();
+                break;
         }
+    }
+
+    private void onLoginFailed()
+    {
+        this.loginController.onLoginFailed();
+        this.api.closeAllConnection();
     }
 
     private void onLoginSucces()
     {
         this.loginController.onLoginSuccess();
+        this.api.closeAllConnection();
     }
 }

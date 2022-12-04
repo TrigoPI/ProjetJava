@@ -40,6 +40,15 @@ public class LoginController implements Initializable
         this.api = api;
     }
 
+    public void onLoginFailed()
+    {
+        this.loginButton.setVisible(true);
+        this.loginButton.setManaged(true);
+
+        this.spinnerBar.setVisible(false);
+        this.spinnerBar.setManaged(false);
+    }
+
     public void onLoginSuccess()
     {
         this.loginButton.setVisible(true);
@@ -72,12 +81,6 @@ public class LoginController implements Initializable
     @FXML
     private void handleButtonLogin()
     {
-        this.loginButton.setVisible(false);
-        this.loginButton.setManaged(false);
-
-        this.spinnerBar.setVisible(true);
-        this.spinnerBar.setManaged(true);
-
         String pseudo = this.usernameTextField.getText().trim();
         String id = this.idTextField.getText().trim();
         String password = this.passwordTextField.getText().trim();
@@ -86,6 +89,15 @@ public class LoginController implements Initializable
         if (id.isEmpty()) this.errorInput(idTextField);
         if (password.isEmpty()) this.errorInput(passwordTextField);
 
-        if (!pseudo.isEmpty() && !id.isEmpty() && !password.isEmpty()) this.api.login(pseudo, id);
+        if (!pseudo.isEmpty() && !id.isEmpty() && !password.isEmpty())
+        {
+            this.loginButton.setVisible(false);
+            this.loginButton.setManaged(false);
+
+            this.spinnerBar.setVisible(true);
+            this.spinnerBar.setManaged(true);
+
+            this.api.login(pseudo, id);
+        }
     }
 }

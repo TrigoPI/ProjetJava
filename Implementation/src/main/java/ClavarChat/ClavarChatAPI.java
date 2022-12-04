@@ -76,6 +76,11 @@ public class ClavarChatAPI implements Listener
         }
     }
 
+    public void closeAllConnection()
+    {
+        this.networkAPI.closeAll();
+    }
+
     @Override
     public void onEvent(Event event)
     {
