@@ -63,6 +63,10 @@ public class LoginController implements Initializable
     {
         Log.Print(this.getClass().getName() + " Initialized");
 
+        this.usernameTextField.setText("user");
+        this.idTextField.setText("090909");
+        this.passwordTextField.setText("qsdfjsdfji");
+
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
     }
