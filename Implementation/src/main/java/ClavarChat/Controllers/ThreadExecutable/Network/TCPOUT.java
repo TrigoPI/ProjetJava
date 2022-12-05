@@ -2,6 +2,7 @@ package ClavarChat.Controllers.ThreadExecutable.Network;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.Events.ConnectionEvent;
+import ClavarChat.Utils.Log.Log;
 
 import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,6 +45,7 @@ public class TCPOUT extends TcpMessagin
 
                 if (code == -1)
                 {
+                    Log.Error(this.getClass().getName() + " Error in TCP Send " + dstIp + ":" + dstPort);
                     this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
                 }
             }
