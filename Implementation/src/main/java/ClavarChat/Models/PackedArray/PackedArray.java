@@ -36,9 +36,6 @@ public class PackedArray<T>
         this.idToIndex.put(this.id, this.datas.size() - 1);
         this.indexToId.put(this.datas.size() - 1, this.id);
 
-        System.out.println("Adding");
-        this.debug();
-
         return this.id++;
     }
 
@@ -57,9 +54,6 @@ public class PackedArray<T>
     public T remove(int id)
     {
         if (!this.idToIndex.containsKey(id)) return null;
-
-        System.out.println("Removing");
-        this.debug();
 
         int indexOfRemovingItem = this.idToIndex.get(id);
         int indexOfLastItem = this.datas.size() - 1;
