@@ -117,7 +117,7 @@ public class ClavarChatAPI implements Listener
         switch (data.discoverType)
         {
             case REQUEST:
-                this.onDiscoverRequest(data, src);
+                this.onDiscoverRequest(src);
                 break;
             case RESPONSE:
                 this.onDiscoverResponse(data, src);
@@ -130,7 +130,7 @@ public class ClavarChatAPI implements Listener
         this.userManager.addUser(data.user, src);
     }
 
-    private void onDiscoverRequest(DiscoverMessage data, String src)
+    private void onDiscoverRequest(String src)
     {
         Log.Print(this.getClass().getName() + " Discover from : " + src);
 

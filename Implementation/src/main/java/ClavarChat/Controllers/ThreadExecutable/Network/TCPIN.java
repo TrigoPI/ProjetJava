@@ -19,7 +19,9 @@ public class TCPIN extends TcpMessagin
     protected void runSocket()
     {
         String dstIp = this.networkManager.getDistantSocketIp(this.socketId);
+        String srcIp = this.networkManager.getLocalSocketIp(this.socketId);
         int dstPort = this.networkManager.getDistantSocketPort(this.socketId);
+        int srcPort = this.networkManager.getLocalSocketPort(this.socketId);
 
         while (this.isRunning())
         {
@@ -27,8 +29,8 @@ public class TCPIN extends TcpMessagin
 
             if (paquet != null)
             {
-                Log.Error(this.getClass().getName() + " New TCP paquet " + paquet.srcIp + ":" + paquet.dstPort + " <-- " + dstIp + ":" + dstPort);
-                this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, dstPort, dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
+                Log.Info(this.getClass().getName() + " New TCP paquet " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+                this.eventManager.notiy(new SocketDataEvent(dstIp, dstPort, srcIp, srcPort, (ClavarChatMessage)paquet.data));
             }
             else
             {

@@ -28,11 +28,7 @@ public class NetworkAPI implements Listener
     private final ThreadManager threadManager;
     private final NetworkManager networkManager;
 
-    private final HashMap<String, LinkedList<Serializable>> pendingDatas;
-    private final HashMap<String, Integer[]> clientsMap;
-    private final HashMap<String, Integer> socketsId;
-    private final PackedArray<TCPIN> tcpIn;
-    private final PackedArray<TCPOUT> tcpOut;
+    private final HashMap<String, Client> clients;
 
     private final int tcpServerID;
     private final int udpServerID;
@@ -50,12 +46,7 @@ public class NetworkAPI implements Listener
         this.tcpServerID = this.networkManager.createTcpServer();
         this.udpServerID = this.networkManager.createUdpServer();
 
-        this.pendingDatas = new HashMap<>();
-        this.clientsMap = new HashMap<>();
-        this.socketsId = new HashMap<>();
-
-        this.tcpIn = new PackedArray<>();
-        this.tcpOut = new PackedArray<>();
+        this.clients = new HashMap<>();
 
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_FAILED);
@@ -80,46 +71,46 @@ public class NetworkAPI implements Listener
 
     public void closeAll()
     {
-        for (String key : this.socketsId.keySet())
-        {
-            int socketId = this.socketsId.get(key);
-            Integer[] client = this.clientsMap.get(key);
-
-            TCPIN tcpin = this.tcpIn.get(client[0]);
-            TCPOUT tcpout = this.tcpOut.get(client[1]);
-
-            tcpin.stop();
-            tcpout.stop();
-
-            this.networkManager.closeTcpSocket(socketId);
-        }
-
-        this.socketsId.clear();
-        this.clientsMap.clear();
-        this.tcpIn.clear();
-        this.tcpOut.clear();
+//        for (String key : this.socketsId.keySet())
+//        {
+//            int socketId = this.socketsId.get(key);
+//            Integer[] client = this.clientsMap.get(key);
+//
+//            TCPIN tcpin = this.tcpIn.get(client[0]);
+//            TCPOUT tcpout = this.tcpOut.get(client[1]);
+//
+//            tcpin.stop();
+//            tcpout.stop();
+//
+//            this.networkManager.closeTcpSocket(socketId);
+//        }
+//
+//        this.socketsId.clear();
+//        this.clientsMap.clear();
+//        this.tcpIn.clear();
+//        this.tcpOut.clear();
     }
 
     public void close(String ip)
     {
-        if (this.socketsId.containsKey(ip))
-        {
-            int socketId = this.socketsId.get(ip);
-            Integer[] client = this.clientsMap.get(ip);
-
-            TCPIN tcpin = this.tcpIn.get(client[0]);
-            TCPOUT tcpout = this.tcpOut.get(client[1]);
-
-            tcpin.stop();
-            tcpout.stop();
-
-            this.socketsId.remove(ip);
-            this.clientsMap.remove(ip);
-            this.tcpIn.remove(client[0]);
-            this.tcpOut.remove(client[1]);
-
-            this.networkManager.closeTcpSocket(socketId);
-        }
+//        if (this.socketsId.containsKey(ip))
+//        {
+//            int socketId = this.socketsId.get(ip);
+//            Integer[] client = this.clientsMap.get(ip);
+//
+//            TCPIN tcpin = this.tcpIn.get(client[0]);
+//            TCPOUT tcpout = this.tcpOut.get(client[1]);
+//
+//            tcpin.stop();
+//            tcpout.stop();
+//
+//            this.socketsId.remove(ip);
+//            this.clientsMap.remove(ip);
+//            this.tcpIn.remove(client[0]);
+//            this.tcpOut.remove(client[1]);
+//
+//            this.networkManager.closeTcpSocket(socketId);
+//        }
     }
 
     public void sendUDP(String ip, int port, ClavarChatMessage data)
@@ -129,28 +120,27 @@ public class NetworkAPI implements Listener
 
     public void sendTCP(String ip, int port, ClavarChatMessage data)
     {
-        if (this.socketsId.containsKey(ip))
+        if (!this.clients.containsKey(ip))
         {
-            if (this.clientsMap.containsKey(ip))
-            {
-                int outId = this.clientsMap.get(ip)[1];
-                TCPOUT out = this.tcpOut.get(outId);
-                out.put(data);
-            }
-            else
-            {
-                this.pendingDatas.get(ip).push(data);
-            }
+            int socketId = this.networkManager.createSocket();
+            int threadId = this.threadManager.createThread();
+
+            Client client = new Client(socketId);
+
+            this.clients.put(ip, client);
+            this.threadManager.setThreadRunnable(threadId, new TcpConnection(this.networkManager, socketId, ip, port));
+            this.threadManager.startThread(threadId);
+        }
+
+        Client client = this.clients.get(ip);
+
+        if (!client.connected)
+        {
+            client.pendingDatasBuffer.push(data);
         }
         else
         {
-            int socketId = this.networkManager.createSocket();
-            int threadId = this.threadManager.createThread(new TcpConnection(this.networkManager, socketId, ip, port));
-
-            this.socketsId.put(ip, socketId);
-            this.pendingDatas.put(ip, new LinkedList<>());
-            this.pendingDatas.get(ip).push(data);
-            this.threadManager.startThread(threadId);
+            client.out.put(data);
         }
     }
 
@@ -196,87 +186,84 @@ public class NetworkAPI implements Listener
 
     private void connectionSuccess(ConnectionEvent event)
     {
-        int socketId = event.socketID;
         int dstPort = event.dstPort;
         int srcPort = event.srcPort;
+
         String dstIp = event.dstIp;
         String srcIp = event.srcIp;
 
-        int inId = this.threadManager.createThread();
-        int outId = this.threadManager.createThread();
+        Client client = this.clients.get(event.dstIp);
 
-        Log.Print(this.getClass().getName() + " Creating TCP IN/OUT thread");
+        int threadInId  = this.threadManager.createThread();
+        int threadOutId = this.threadManager.createThread();
 
-        Integer[] ids = new Integer[2];
-        TCPIN in = new TCPIN(this.networkManager, socketId);
-        TCPOUT out = new TCPOUT(this.networkManager, socketId);
+        TCPIN  in  = new TCPIN(this.networkManager, client.socketId);
+        TCPOUT out = new TCPOUT(this.networkManager, client.socketId);
 
-        ids[0] = this.tcpIn.add(in);
-        ids[1] = this.tcpOut.add(out);
+        client.srcIp = event.srcIp;
+        client.dstIp = event.dstIp;
 
-        this.threadManager.setThreadRunnable(inId, in);
-        this.threadManager.setThreadRunnable(outId, out);
+        client.srcPort = event.srcPort;
+        client.dstPort = event.dstPort;
 
-        this.threadManager.startThread(inId);
-        this.threadManager.startThread(outId);
+        client.in  = in;
+        client.out = out;
 
-        this.clientsMap.put(dstIp, ids);
-        this.socketsId.put(dstIp, socketId);
+        client.connected = true;
 
-        Log.Print(this.getClass().getName() + " TCPIN id : " + ids[0] + " / " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
-        Log.Print(this.getClass().getName() + " TCPOUT id : " + ids[1] + " / " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+        this.threadManager.setThreadRunnable(threadInId, in);
+        this.threadManager.setThreadRunnable(threadOutId, out);
 
-        this.flushPendingData(dstIp);
+        this.threadManager.startThread(threadInId);
+        this.threadManager.startThread(threadOutId);
+
+        Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+        Log.Print(this.getClass().getName() + " TCPOUT : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+
+        this.flushPendingData(client);
     }
 
     private void connectionFailed(ConnectionEvent event)
     {
-        String dstIp = event.dstIp;
-        int dstPort = event.dstPort;
+        Log.Print(this.getClass().getName() + " Removing client : " + event.srcIp + ":" + event.srcPort + " --> " + event.dstIp + event.dstPort);
+        this.clients.remove(event.dstIp);
+    }
 
-        if (socketsId.containsKey(dstIp))
+    private void flushPendingData(Client client)
+    {
+        if (client.pendingDatasBuffer.size() > 0)
         {
-            Log.Print(this.getClass().getName() + " Removing socket data to : " + dstIp + ":" + dstPort);
-            this.socketsId.remove(dstIp);
-        }
-
-        if (this.clientsMap.containsKey(dstIp))
-        {
-            Integer[] ids = this.clientsMap.get(dstIp);
-            TCPIN in = this.tcpIn.get(ids[0]);
-            TCPOUT out = this.tcpOut.get(ids[1]);
-
-            Log.Print(this.getClass().getName() + " Stopping TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
-
-            in.stop();
-            out.stop();
-
-            Log.Print(this.getClass().getName() + " Removing TCP IN --> " + ids[0] + " / OUT --> " + ids[1]);
-
-            this.tcpIn.remove(ids[0]);
-            this.tcpOut.remove(ids[1]);
-
-            this.clientsMap.remove(dstIp);
-        }
-
-        if (this.pendingDatas.containsKey(dstIp))
-        {
-            Log.Print(this.getClass().getName() + " Removing pending data to : " + dstIp + ":" + dstPort);
-            this.pendingDatas.remove(dstIp);
+            Log.Print(this.getClass().getName() + " Flushing data to TCP Out : ");
+            while (!client.pendingDatasBuffer.isEmpty()) client.out.put(client.pendingDatasBuffer.removeLast());
         }
     }
 
-    private void flushPendingData(String ip)
-    {
-        if (this.pendingDatas.containsKey(ip))
+    private class Client {
+        public boolean connected;
+
+        public int socketId;
+
+        public String srcIp;
+        public String dstIp;
+
+        public int srcPort;
+        public int dstPort;
+
+        public TCPIN in;
+        public TCPOUT out;
+
+        public LinkedList<Serializable> pendingDatasBuffer;
+
+        public Client(int socketId)
         {
-            int outId = this.clientsMap.get(ip)[1];
-            TCPOUT out = this.tcpOut.get(outId);
-            LinkedList<Serializable> list = this.pendingDatas.get(ip);
+            this.socketId = socketId;
 
-            Log.Print(this.getClass().getName() + " Flushing data to TCP Out : " + outId + " --> " + ip);
+            this.connected = false;
 
-            while (!list.isEmpty()) out.put(list.removeLast());
+            this.in = null;
+            this.out = null;
+
+            this.pendingDatasBuffer = new LinkedList<>();
         }
     }
 }

@@ -248,7 +248,7 @@ public class NetworkManager
                 int srcPort = NetworkUtils.getSocketLocalPort(socket);
                 int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
-                NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, srcPort, data);
+                NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, dstPort, data);
 
                 Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
 
