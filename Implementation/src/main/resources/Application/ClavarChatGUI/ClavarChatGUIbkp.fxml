@@ -56,7 +56,58 @@
                   </HBox>
                </children>
             </VBox>
-            <VBox fx:id="userPreviewContainer" spacing="10.0" />
+            <VBox fx:id="userPreviewContainer" spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="clvc-american-river" />
+                        <String fx:value="clvc-user-preview-container" />
+                     </styleClass>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="15.0" styleClass="clvc-user-preview-container">
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="120.0" spacing="20.0">
+                           <children>
+                              <Label styleClass="clvc-font-bold" text="Name" />
+                              <Label styleClass="clvc-font-12px" text="name: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">

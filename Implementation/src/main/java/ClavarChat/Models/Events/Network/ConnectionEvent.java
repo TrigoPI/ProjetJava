@@ -1,4 +1,6 @@
-package ClavarChat.Models.Events;
+package ClavarChat.Models.Events.Network;
+
+import ClavarChat.Models.Events.Event;
 
 public class ConnectionEvent extends Event
 {

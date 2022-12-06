@@ -4,14 +4,17 @@ import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
-import ClavarChat.Controllers.ThreadExecutable.Network.*;
+import ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection;
+import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN;
+import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT;
+import ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer;
+import ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Models.Events.ConnectionEvent;
+import ClavarChat.Models.Events.Network.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
-import ClavarChat.Models.Events.NetworkPaquetEvent;
-import ClavarChat.Models.Events.SocketDataEvent;
+import ClavarChat.Models.Events.Network.NetworkPacketEvent;
+import ClavarChat.Models.Events.Network.SocketDataEvent;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Models.PackedArray.PackedArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -165,7 +168,7 @@ public class NetworkAPI implements Listener
 
         if (!ips.contains(event.srcIp))
         {
-            this.eventManager.notiy(new NetworkPaquetEvent(event.srcIp, event.srcPort, event.data));
+            this.eventManager.notiy(new NetworkPacketEvent(event.srcIp, event.srcPort, event.data));
         }
         else
         {
@@ -186,7 +189,7 @@ public class NetworkAPI implements Listener
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
 
-        TCPIN  in  = new TCPIN(this.networkManager, client.socketId);
+        TCPIN in  = new TCPIN(this.networkManager, client.socketId);
         TCPOUT out = new TCPOUT(this.networkManager, client.socketId);
 
         client.srcIp = dstIp;
@@ -251,12 +254,15 @@ public class NetworkAPI implements Listener
 
     private void connectionFailed(ConnectionEvent event)
     {
-        Log.Print(this.getClass().getName() + " Removing client : " + event.srcIp + ":" + event.srcPort + " --> " + event.dstIp + event.dstPort);
+        Log.Print(this.getClass().getName() + " Removing client : " + event.dstIp);
 
         Client client = this.clients.get(event.dstIp);
 
-        client.in.stop();
-        client.out.stop();
+        if (client.connected)
+        {
+            client.in.stop();
+            client.out.stop();
+        }
 
         this.clients.remove(event.dstIp);
     }

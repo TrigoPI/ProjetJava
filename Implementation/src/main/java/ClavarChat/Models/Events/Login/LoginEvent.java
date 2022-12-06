@@ -1,4 +1,6 @@
-package ClavarChat.Models.Events;
+package ClavarChat.Models.Events.Login;
+
+import ClavarChat.Models.Events.Event;
 
 public class LoginEvent extends Event
 {

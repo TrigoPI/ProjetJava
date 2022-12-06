@@ -1,7 +1,7 @@
-package ClavarChat.Controllers.ThreadExecutable.Network;
+package ClavarChat.Controllers.ThreadExecutable.Network.Server;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
-import ClavarChat.Models.Events.ConnectionEvent;
+import ClavarChat.Models.Events.Network.ConnectionEvent;
 
 public class TcpServer extends Server
 {

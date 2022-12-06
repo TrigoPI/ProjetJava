@@ -1,6 +1,6 @@
 package ClavarChat.Models.ClavarChatMessage;
 
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Users.User;
 
 public class DiscoverMessage extends ClavarChatMessage
 {
@@ -17,7 +17,7 @@ public class DiscoverMessage extends ClavarChatMessage
         this.count = -1;
     }
 
-    public DiscoverMessage(UserData user, int count)
+    public DiscoverMessage(User user, int count)
     {
         super(user, MESSAGE_TYPE.DISCOVER);
 

@@ -1,6 +1,7 @@
-package ClavarChat.Models.Events;
+package ClavarChat.Models.Events.Network;
 
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
+import ClavarChat.Models.Events.Event;
 
 public class SocketDataEvent extends Event
 {

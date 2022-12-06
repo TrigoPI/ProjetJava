@@ -1,6 +1,7 @@
-package ClavarChat.Controllers.ThreadExecutable.Network;
+package ClavarChat.Controllers.ThreadExecutable.Network.Messagin;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
+import ClavarChat.Controllers.ThreadExecutable.Network.NetworkExecutable;
 
 import java.util.concurrent.Semaphore;
 

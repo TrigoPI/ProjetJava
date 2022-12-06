@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Managers.User;
 
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ public class UserManager
     private boolean logged;
     private int userCount;
 
-    private final UserData user;
-    private final HashMap<String, UserData> users;
+    private final User user;
+    private final HashMap<String, User> users;
     private final HashMap<String, ArrayList<String>> ipTable;
 
     public UserManager()
     {
-        this.user = new UserData("", "");
+        this.user = new User("", "");
         this.users = new HashMap<>();
         this.ipTable = new HashMap<>();
 
@@ -25,12 +25,23 @@ public class UserManager
         this.logged = false;
     }
 
+    public void reset()
+    {
+        this.user.pseudo = "";
+        this.user.id = "";
+
+        this.users.clear();
+        this.ipTable.clear();
+
+        this.userCount = 1;
+    }
+
     public void setLogged(boolean logged)
     {
         this.logged = logged;
     }
 
-    public void addUser(UserData user, String src)
+    public void addUser(User user, String src)
     {
         Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
 
@@ -51,9 +62,9 @@ public class UserManager
         this.user.id = id;
     }
 
-    public ArrayList<UserData> getUsers()
+    public ArrayList<User> getUsers()
     {
-        ArrayList<UserData> users = new ArrayList<UserData>();
+        ArrayList<User> users = new ArrayList<User>();
         for (String key : this.users.keySet()) users.add(this.users.get(key));
         return users;
     }
@@ -79,7 +90,7 @@ public class UserManager
         return userCount;
     }
 
-    public UserData getUser()
+    public User getUser()
     {
         return this.user;
     }

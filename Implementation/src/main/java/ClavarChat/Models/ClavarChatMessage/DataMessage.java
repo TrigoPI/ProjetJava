@@ -1,6 +1,6 @@
 package ClavarChat.Models.ClavarChatMessage;
 
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Users.User;
 
 public class DataMessage extends ClavarChatMessage
 {
@@ -8,7 +8,7 @@ public class DataMessage extends ClavarChatMessage
 
     public DATA_TYPE dataType;
 
-    public DataMessage(DATA_TYPE dataType, UserData user)
+    public DataMessage(DATA_TYPE dataType, User user)
     {
         super(user, MESSAGE_TYPE.DATA);
         this.dataType = dataType;

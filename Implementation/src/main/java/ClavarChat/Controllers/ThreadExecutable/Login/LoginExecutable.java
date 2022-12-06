@@ -5,13 +5,13 @@ import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadExecutable;
 import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
-import ClavarChat.Models.Events.LoginEvent;
+import ClavarChat.Models.Events.Login.LoginEvent;
 
 public class LoginExecutable implements ThreadExecutable
 {
     private final Discover discover;
-    private Request request;
-    private EventManager eventManager;
+    private final Request request;
+    private final EventManager eventManager;
 
     public LoginExecutable(Discover discover, Request request)
     {

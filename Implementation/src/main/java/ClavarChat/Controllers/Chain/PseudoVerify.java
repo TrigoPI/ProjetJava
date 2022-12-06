@@ -7,7 +7,7 @@ import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage.MESSAGE_TYPE;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
@@ -31,13 +31,13 @@ public class PseudoVerify extends Handler
     public String handle(Request request)
     {
         LoginRequest loginRequest = (LoginRequest)request;
-        UserData user = new UserData(loginRequest.pseudo, loginRequest.id);
+        User user = new User(loginRequest.pseudo, loginRequest.id);
 
         if (!this.userManager.userExist(user.pseudo))
         {
-            ArrayList<UserData> users = this.userManager.getUsers();
+            ArrayList<User> users = this.userManager.getUsers();
 
-            for (UserData other : users)
+            for (User other : users)
             {
                 ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
                 this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));

@@ -1,4 +1,6 @@
-package ClavarChat.Models.Events;
+package ClavarChat.Models.Events.Thread;
+
+import ClavarChat.Models.Events.Event;
 
 public class ThreadEvent extends Event
 {

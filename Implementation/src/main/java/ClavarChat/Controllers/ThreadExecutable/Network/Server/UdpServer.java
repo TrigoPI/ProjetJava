@@ -1,8 +1,8 @@
-package ClavarChat.Controllers.ThreadExecutable.Network;
+package ClavarChat.Controllers.ThreadExecutable.Network.Server;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Models.Events.SocketDataEvent;
+import ClavarChat.Models.Events.Network.SocketDataEvent;
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 
 public class UdpServer extends Server

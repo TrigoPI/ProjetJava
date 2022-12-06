@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Managers.Thread;
 
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Event.EventManager;
-import ClavarChat.Models.Events.ThreadEvent;
+import ClavarChat.Models.Events.Thread.ThreadEvent;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Utils.Log.Log;
 

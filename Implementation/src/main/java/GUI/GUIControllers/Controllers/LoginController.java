@@ -1,10 +1,6 @@
 package GUI.GUIControllers.Controllers;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
@@ -17,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -46,14 +41,33 @@ public class LoginController implements Initializable
     private MFXButton loginButton;
 
     @FXML
+    private MFXButton startButton;
+
+    @FXML
     private MFXProgressSpinner spinnerBar;
 
-    private final URL url;
+    private final FXMLLoader clavarChat;
 
-    public LoginController(ClavarChatAPI api, URL url)
+    public LoginController(ClavarChatAPI api, FXMLLoader clavarChat)
     {
-        this.url = url;
+        this.clavarChat = clavarChat;
         this.api = api;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
+        Log.Print(this.getClass().getName() + " Initialized");
+
+        this.usernameTextField.setText("user");
+        this.idTextField.setText("090909");
+        this.passwordTextField.setText("qsdfjsdfji");
+
+        this.startButton.setVisible(false);
+        this.startButton.setManaged(false);
+
+        this.spinnerBar.setVisible(false);
+        this.spinnerBar.setManaged(false);
     }
 
     public void onLoginFailed()
@@ -67,44 +81,8 @@ public class LoginController implements Initializable
 
     public void onLoginSuccess()
     {
-
-//        try
-//        {
-            this.loginButton.setVisible(true);
-            this.loginButton.setManaged(true);
-
-            this.spinnerBar.setVisible(false);
-            this.spinnerBar.setManaged(false);
-
-//            Parent root =  FXMLLoader.load(this.url);
-//            Scene scene = loginButton.getScene();
-//            root.translateXProperty().set(scene.getHeight());
-//
-//            this.parentContainerLogin.getChildren().add(root);
-//
-//            Timeline timeline = new Timeline();
-//            KeyValue kv = new KeyValue(root.translateYProperty(), 0, Interpolator.EASE_IN);
-//            KeyFrame kf = new KeyFrame(Duration.seconds(1), kv);
-//            timeline.getKeyFrames().add(kf);
-//            timeline.setOnFinished(t -> {
-//                this.parentContainerLogin.getChildren().remove(vboxRoot);
-//            });
-//            timeline.play();
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
-    {
-        Log.Print(this.getClass().getName() + " Initialized");
-
-        this.usernameTextField.setText("user");
-        this.idTextField.setText("090909");
-        this.passwordTextField.setText("qsdfjsdfji");
+        this.startButton.setVisible(true);
+        this.startButton.setManaged(true);
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
@@ -142,5 +120,14 @@ public class LoginController implements Initializable
 
             this.api.login(pseudo, id);
         }
+    }
+
+    @FXML
+    private void handleButtonStart() throws IOException
+    {
+        Parent root =  this.clavarChat.load();
+        Scene scene = startButton.getScene();
+
+        scene.setRoot(root);
     }
 }

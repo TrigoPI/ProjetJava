@@ -1,5 +1,6 @@
 package Application.ClavarChatGUI;
 
+import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
 import GUI.GUIControllers.GUIControllers;
 import javafx.application.Application;
@@ -16,22 +17,26 @@ public class ClavarChatGUI extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        URL loginFXML = ClavarChatGUI.class.getResource("LoginGUI.fxml");
-        URL ClavarChatFXML = ClavarChatGUI.class.getResource("ClavarChatGUI.fxml");
-
         ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
 
-        LoginController loginController = new LoginController(clavarChatAPI, ClavarChatFXML);
-        GUIControllers guiControllers = new GUIControllers(clavarChatAPI, loginController);
+        URL loginFXML = ClavarChatGUI.class.getResource("LoginGUI.fxml");
+        URL clavarChatFXML = ClavarChatGUI.class.getResource("ClavarChatGUI.fxml");
 
-        FXMLLoader fxmlLoader = new FXMLLoader(loginFXML);
-        fxmlLoader.setController(loginController);
+        ClavarChatController clavarChatController = new ClavarChatController(clavarChatAPI);
+        FXMLLoader fxmlLoaderClavarChat = new FXMLLoader(clavarChatFXML);
+        fxmlLoaderClavarChat.setController(clavarChatController);
 
-        Scene scene = new Scene(fxmlLoader.load(), 1080, 720);
+        LoginController loginController = new LoginController(clavarChatAPI, fxmlLoaderClavarChat);
+        FXMLLoader fxmlLoaderLogin = new FXMLLoader(loginFXML);
+        fxmlLoaderLogin.setController(loginController);
+
+        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
         stage.setScene(scene);
         stage.show();
+
+        new GUIControllers(clavarChatAPI, loginController, clavarChatController);
     }
 
     public void run()

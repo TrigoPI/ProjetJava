@@ -49,6 +49,7 @@
             </VBox>
             <MFXButton fx:id="loginButton" buttonType="RAISED" onAction="#handleButtonLogin" prefHeight="60.0" prefWidth="200.0" styleClass="clvc-login-button" text="LOGIN" />
             <MFXProgressSpinner fx:id="spinnerBar" />
+            <MFXButton fx:id="startButton" buttonType="RAISED" onAction="#handleButtonStart" prefHeight="60.0" prefWidth="200.0" styleClass="clvc-login-button" text="START" />
          </children>
          <styleClass>
             <String fx:value="clvc-american-river" />

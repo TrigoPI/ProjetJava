@@ -2,8 +2,10 @@ package GUI.GUIControllers;
 
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
-import ClavarChat.Models.Events.LoginEvent;
+import ClavarChat.Models.Events.Login.LoginEvent;
+import ClavarChat.Models.Events.Login.NewUserEvent;
 import ClavarChat.Utils.Log.Log;
+import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Models.Events.Event;
@@ -11,17 +13,23 @@ import ClavarChat.Models.Events.Event;
 public class GUIControllers implements Listener
 {
     private final LoginController loginController;
-    private EventManager eventManager;
-    private ClavarChatAPI api;
+    private final ClavarChatController clavarChatController;
 
-    public GUIControllers(ClavarChatAPI api, LoginController loginController)
+    private final EventManager eventManager;
+    private final ClavarChatAPI api;
+
+    public GUIControllers(ClavarChatAPI api, LoginController loginController, ClavarChatController clavarChatController)
     {
         this.api = api;
+
         this.loginController = loginController;
+        this.clavarChatController = clavarChatController;
+
         this.eventManager = EventManager.getInstance();
 
         eventManager.addListenner(this, LoginEvent.LOGIN_SUCCESS);
         eventManager.addListenner(this, LoginEvent.LOGIN_FAILED);
+        eventManager.addListenner(this, NewUserEvent.NEW_USER);
     }
 
     @Override
@@ -37,6 +45,10 @@ public class GUIControllers implements Listener
             case LoginEvent.LOGIN_FAILED:
                 this.onLoginFailed();
                 break;
+            case NewUserEvent.NEW_USER:
+                NewUserEvent newUserEvent = (NewUserEvent)event;
+                this.onNewUser(newUserEvent.pseudo, newUserEvent.id);
+                break;
         }
     }
 
@@ -50,5 +62,10 @@ public class GUIControllers implements Listener
     {
         this.loginController.onLoginSuccess();
         this.api.closeAllConnection();
+    }
+
+    private void onNewUser(String pseudo, String id)
+    {
+        this.clavarChatController.onNewUser(pseudo, id);
     }
 }

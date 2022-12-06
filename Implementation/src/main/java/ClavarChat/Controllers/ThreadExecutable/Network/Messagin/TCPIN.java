@@ -1,9 +1,9 @@
-package ClavarChat.Controllers.ThreadExecutable.Network;
+package ClavarChat.Controllers.ThreadExecutable.Network.Messagin;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
-import ClavarChat.Models.Events.ConnectionEvent;
-import ClavarChat.Models.Events.SocketDataEvent;
+import ClavarChat.Models.Events.Network.ConnectionEvent;
+import ClavarChat.Models.Events.Network.SocketDataEvent;
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
 

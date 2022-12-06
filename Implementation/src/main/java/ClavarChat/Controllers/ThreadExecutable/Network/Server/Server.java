@@ -1,6 +1,7 @@
-package ClavarChat.Controllers.ThreadExecutable.Network;
+package ClavarChat.Controllers.ThreadExecutable.Network.Server;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
+import ClavarChat.Controllers.ThreadExecutable.Network.NetworkExecutable;
 
 public abstract class Server extends NetworkExecutable
 {

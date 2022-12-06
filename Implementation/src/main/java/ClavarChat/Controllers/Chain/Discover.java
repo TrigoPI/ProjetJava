@@ -5,7 +5,7 @@ import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 
@@ -36,7 +36,7 @@ public class Discover extends Handler
 
         this.userCount = 0;
         this.responseCount = -1;
-        this.timeout = 10;
+        this.timeout = 3;
     }
 
     public void onDiscoverInformation(DiscoverMessage data, String src)
@@ -88,7 +88,7 @@ public class Discover extends Handler
         {
             Log.Info(this.getClass().getName() + " Success Discover");
             if (this.responseCount == -1) Log.Info(this.getClass().getName() + " No response, alone on the network");
-            for (UserData user : this.userManager.getUsers()) Log.Info(this.getClass().getName() + " Discovered " + this.userManager.getUserIP(user.pseudo) + " --> " + user.pseudo + " / #" + user.id);
+            for (User user : this.userManager.getUsers()) Log.Info(this.getClass().getName() + " Discovered " + this.userManager.getUserIP(user.pseudo) + " --> " + user.pseudo + " / #" + user.id);
 
             return true;
         }

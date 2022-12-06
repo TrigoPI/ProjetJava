@@ -11,9 +11,10 @@ import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
 import ClavarChat.Models.ChainData.Request.LoginRequest;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
-import ClavarChat.Models.Events.LoginEvent;
-import ClavarChat.Models.Events.NetworkPaquetEvent;
-import ClavarChat.Models.Users.UserData;
+import ClavarChat.Models.Events.Login.LoginEvent;
+import ClavarChat.Models.Events.Login.NewUserEvent;
+import ClavarChat.Models.Events.Network.NetworkPacketEvent;
+import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
 
 public class ClavarChatAPI implements Listener
@@ -48,10 +49,21 @@ public class ClavarChatAPI implements Listener
 
         this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
         this.eventManager.addEvent(LoginEvent.LOGIN_FAILED);
-        this.eventManager.addEvent(NetworkPaquetEvent.NETWORK_PAQUET);
-        this.eventManager.addListenner(this, NetworkPaquetEvent.NETWORK_PAQUET);
+        this.eventManager.addEvent(NewUserEvent.NEW_USER);
+        this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
+        this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
+    }
+
+    public String getPseudo()
+    {
+        return this.userManager.getUser().pseudo;
+    }
+
+    public String getId()
+    {
+        return this.userManager.getUser().id;
     }
 
     public void login(String pseudo, String id)
@@ -66,7 +78,7 @@ public class ClavarChatAPI implements Listener
     {
         if (this.userManager.isLogged())
         {
-            UserData user = this.userManager.getUser();
+            User user = this.userManager.getUser();
             TextMessage mgs = new TextMessage(user, message);
             this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
         }
@@ -86,13 +98,13 @@ public class ClavarChatAPI implements Listener
     {
         switch (event.type)
         {
-            case NetworkPaquetEvent.NETWORK_PAQUET:
-                this.onNetworkPaquetEvent((NetworkPaquetEvent)event);
+            case NetworkPacketEvent.NETWORK_PACKET:
+                this.onNetworkPacketEvent((NetworkPacketEvent)event);
                 break;
         }
     }
 
-    private void onNetworkPaquetEvent(NetworkPaquetEvent event)
+    private void onNetworkPacketEvent(NetworkPacketEvent event)
     {
         ClavarChatMessage data = event.data;
 
@@ -128,6 +140,7 @@ public class ClavarChatAPI implements Listener
     private void onLogin(ClavarChatMessage data, String src)
     {
         this.userManager.addUser(data.user, src);
+        this.eventManager.notiy(new NewUserEvent(data.user.pseudo, data.user.id));
     }
 
     private void onDiscoverRequest(String src)
@@ -137,7 +150,7 @@ public class ClavarChatAPI implements Listener
         if (this.userManager.isLogged())
         {
             int count = this.userManager.getUserCount();
-            UserData user = this.userManager.getUser();
+            User user = this.userManager.getUser();
             DiscoverMessage informationMessage = new DiscoverMessage(user, count);
             this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
         }
