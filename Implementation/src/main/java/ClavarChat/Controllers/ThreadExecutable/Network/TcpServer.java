@@ -29,7 +29,7 @@ public class TcpServer extends Server
                     int srcPort = this.networkManager.getLocalSocketPort(socketId);
                     int dstPort = this.networkManager.getDistantSocketPort(socketId);
 
-                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_SUCCESS, dstIp, dstPort, srcIp, srcPort, socketId));
+                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_NEW, srcIp, srcPort, dstIp, dstPort, socketId));
                 }
             }
         }

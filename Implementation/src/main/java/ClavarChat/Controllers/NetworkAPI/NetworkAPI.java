@@ -51,10 +51,12 @@ public class NetworkAPI implements Listener
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addEvent(ConnectionEvent.CONNECTION_NEW);
         this.eventManager.addEvent(SocketDataEvent.SOCKET_DATA);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_NEW);
         this.eventManager.addListenner(this, SocketDataEvent.SOCKET_DATA);
     }
 
@@ -71,46 +73,22 @@ public class NetworkAPI implements Listener
 
     public void closeAll()
     {
-//        for (String key : this.socketsId.keySet())
-//        {
-//            int socketId = this.socketsId.get(key);
-//            Integer[] client = this.clientsMap.get(key);
-//
-//            TCPIN tcpin = this.tcpIn.get(client[0]);
-//            TCPOUT tcpout = this.tcpOut.get(client[1]);
-//
-//            tcpin.stop();
-//            tcpout.stop();
-//
-//            this.networkManager.closeTcpSocket(socketId);
-//        }
-//
-//        this.socketsId.clear();
-//        this.clientsMap.clear();
-//        this.tcpIn.clear();
-//        this.tcpOut.clear();
+        for (String key : this.clients.keySet())
+        {
+            Client client = this.clients.get(key);
+
+            client.out.stop();
+            client.in.stop();
+
+            this.networkManager.closeTcpSocket(client.socketId);
+        }
+
+        this.clients.clear();
     }
 
     public void close(String ip)
     {
-//        if (this.socketsId.containsKey(ip))
-//        {
-//            int socketId = this.socketsId.get(ip);
-//            Integer[] client = this.clientsMap.get(ip);
-//
-//            TCPIN tcpin = this.tcpIn.get(client[0]);
-//            TCPOUT tcpout = this.tcpOut.get(client[1]);
-//
-//            tcpin.stop();
-//            tcpout.stop();
-//
-//            this.socketsId.remove(ip);
-//            this.clientsMap.remove(ip);
-//            this.tcpIn.remove(client[0]);
-//            this.tcpOut.remove(client[1]);
-//
-//            this.networkManager.closeTcpSocket(socketId);
-//        }
+
     }
 
     public void sendUDP(String ip, int port, ClavarChatMessage data)
@@ -120,8 +98,13 @@ public class NetworkAPI implements Listener
 
     public void sendTCP(String ip, int port, ClavarChatMessage data)
     {
+        Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
+
         if (!this.clients.containsKey(ip))
         {
+            Log.Print(this.getClass().getName() + " No client with ip : " + ip);
+            Log.Print(this.getClass().getName() + " Creating client : " + ip);
+
             int socketId = this.networkManager.createSocket();
             int threadId = this.threadManager.createThread();
 
@@ -132,14 +115,17 @@ public class NetworkAPI implements Listener
             this.threadManager.startThread(threadId);
         }
 
+        Log.Print(this.getClass().getName() + " Getting client : " + ip);
         Client client = this.clients.get(ip);
 
         if (!client.connected)
         {
+            Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
             client.pendingDatasBuffer.push(data);
         }
         else
         {
+            Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
             client.out.put(data);
         }
     }
@@ -159,7 +145,10 @@ public class NetworkAPI implements Listener
         switch (event.type)
         {
             case ConnectionEvent.CONNECTION_SUCCESS:
-                this.connectionSuccess((ConnectionEvent)event);
+                this.onConnectionSuccess((ConnectionEvent)event);
+                break;
+            case ConnectionEvent.CONNECTION_NEW:
+                this.onConnectionNew((ConnectionEvent)event);
                 break;
             case ConnectionEvent.CONNECTION_FAILED:
                 this.connectionFailed((ConnectionEvent)event);
@@ -184,7 +173,44 @@ public class NetworkAPI implements Listener
         }
     }
 
-    private void connectionSuccess(ConnectionEvent event)
+    private void onConnectionNew(ConnectionEvent event)
+    {
+        int dstPort = event.dstPort;
+        int srcPort = event.srcPort;
+
+        String dstIp = event.dstIp;
+        String srcIp = event.srcIp;
+
+        Client client = new Client(event.socketID);
+
+        int threadInId  = this.threadManager.createThread();
+        int threadOutId = this.threadManager.createThread();
+
+        TCPIN  in  = new TCPIN(this.networkManager, client.socketId);
+        TCPOUT out = new TCPOUT(this.networkManager, client.socketId);
+
+        client.srcIp = dstIp;
+        client.dstIp = srcIp;
+
+        client.srcPort = dstPort;
+        client.dstPort = srcPort;
+
+        client.in  = in;
+        client.out = out;
+
+        client.connected = true;
+
+        this.threadManager.setThreadRunnable(threadInId, in);
+        this.threadManager.setThreadRunnable(threadOutId, out);
+
+        this.threadManager.startThread(threadInId);
+        this.threadManager.startThread(threadOutId);
+
+        Log.Print(this.getClass().getName() + " TCPIN  : " + dstIp + ":" + dstPort + " <-- " + srcIp + ":" + srcPort);
+        Log.Print(this.getClass().getName() + " TCPOUT : " + dstIp + ":" + dstPort + " --> " + srcIp + ":" + srcPort);
+    }
+
+    private void onConnectionSuccess(ConnectionEvent event)
     {
         int dstPort = event.dstPort;
         int srcPort = event.srcPort;

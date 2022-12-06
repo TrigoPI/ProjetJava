@@ -5,6 +5,7 @@ public class ConnectionEvent extends Event
     public static final String CONNECTION_SUCCESS = "CONNECTION_SUCCESS";
     public static final String CONNECTION_FAILED  = "CONNECTION_FAILED";
     public static final String CONNECTION_ENDED   = "CONNECTION_ENDED";
+    public static final String CONNECTION_NEW     = "CONNECTION_NEW";
 
     public int socketID;
     public String dstIp;
