@@ -252,6 +252,12 @@ public class NetworkAPI implements Listener
     private void connectionFailed(ConnectionEvent event)
     {
         Log.Print(this.getClass().getName() + " Removing client : " + event.srcIp + ":" + event.srcPort + " --> " + event.dstIp + event.dstPort);
+
+        Client client = this.clients.get(event.dstIp);
+
+        client.in.stop();
+        client.out.stop();
+
         this.clients.remove(event.dstIp);
     }
 
