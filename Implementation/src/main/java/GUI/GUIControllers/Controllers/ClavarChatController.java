@@ -2,8 +2,10 @@ package GUI.GUIControllers.Controllers;
 
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,23 +48,40 @@ public class ClavarChatController implements Initializable
 
     public void onNewUser(String pseudo, String id)
     {
-        HBox container = new HBox();
-        Circle avatar = new Circle();
-        VBox desContainer = new VBox();
-        Label userName = new Label(pseudo);
-        Label userId = new Label(id);
+        VBox mainContainer = this.userPreviewContainer;
 
-        avatar.setFill(Color.BLUE);
+        Platform.runLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                HBox container = new HBox();
+                Circle avatar = new Circle();
+                VBox desContainer = new VBox();
+                Label userName = new Label(pseudo);
+                Label userId = new Label(id);
 
-        desContainer.getChildren().add(userName);
-        desContainer.getChildren().add(userId);
+                container.setSpacing(15);
+                container.setAlignment(Pos.CENTER_LEFT);
 
-        container.getChildren().add(avatar);
-        container.getChildren().add(desContainer);
+                desContainer.setAlignment(Pos.CENTER_LEFT);
+                desContainer.setPrefSize(120, 80);
+                desContainer.setSpacing(20);
 
-        container.getStyleClass().add("clvc-american-river");
-        container.getStyleClass().add("clvc-user-preview-container");
+                avatar.setFill(Color.BLUE);
+                avatar.setRadius(25);
 
-        this.userPreviewContainer.getChildren().add(container);
+                desContainer.getChildren().add(userName);
+                desContainer.getChildren().add(userId);
+
+                container.getChildren().add(avatar);
+                container.getChildren().add(desContainer);
+
+                container.getStyleClass().add("clvc-american-river");
+                container.getStyleClass().add("clvc-user-preview-container");
+
+                mainContainer.getChildren().add(container);
+            }
+        });
     }
 }

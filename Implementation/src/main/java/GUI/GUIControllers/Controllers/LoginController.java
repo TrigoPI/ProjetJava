@@ -40,8 +40,6 @@ public class LoginController implements Initializable
     @FXML
     private MFXButton loginButton;
 
-    @FXML
-    private MFXButton startButton;
 
     @FXML
     private MFXProgressSpinner spinnerBar;
@@ -59,12 +57,9 @@ public class LoginController implements Initializable
     {
         Log.Print(this.getClass().getName() + " Initialized");
 
-        this.usernameTextField.setText("user");
-        this.idTextField.setText("090909");
+        this.usernameTextField.setText("Bastien");
+        this.idTextField.setText("2222");
         this.passwordTextField.setText("qsdfjsdfji");
-
-        this.startButton.setVisible(false);
-        this.startButton.setManaged(false);
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
@@ -81,11 +76,21 @@ public class LoginController implements Initializable
 
     public void onLoginSuccess()
     {
-        this.startButton.setVisible(true);
-        this.startButton.setManaged(true);
 
-        this.spinnerBar.setVisible(false);
-        this.spinnerBar.setManaged(false);
+        try
+        {
+            this.spinnerBar.setVisible(false);
+            this.spinnerBar.setManaged(false);
+
+            Parent root  = this.clavarChat.load();
+            Scene scene = loginButton.getScene();
+
+            scene.setRoot(root);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void errorInput(Node node)
@@ -125,9 +130,6 @@ public class LoginController implements Initializable
     @FXML
     private void handleButtonStart() throws IOException
     {
-        Parent root =  this.clavarChat.load();
-        Scene scene = startButton.getScene();
 
-        scene.setRoot(root);
     }
 }

@@ -78,6 +78,8 @@ public class NetworkAPI implements Listener
     {
         for (String key : this.clients.keySet())
         {
+            Log.Info(this.getClass().getName() + " Closing " + key);
+
             Client client = this.clients.get(key);
 
             client.out.stop();
@@ -209,6 +211,8 @@ public class NetworkAPI implements Listener
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
 
+        this.clients.put(srcIp, client);
+
         Log.Print(this.getClass().getName() + " TCPIN  : " + dstIp + ":" + dstPort + " <-- " + srcIp + ":" + srcPort);
         Log.Print(this.getClass().getName() + " TCPOUT : " + dstIp + ":" + dstPort + " --> " + srcIp + ":" + srcPort);
     }
@@ -254,17 +258,20 @@ public class NetworkAPI implements Listener
 
     private void connectionFailed(ConnectionEvent event)
     {
-        Log.Print(this.getClass().getName() + " Removing client : " + event.dstIp);
-
-        Client client = this.clients.get(event.dstIp);
-
-        if (client.connected)
+        if (clients.containsKey(event.dstIp))
         {
-            client.in.stop();
-            client.out.stop();
-        }
+            Log.Print(this.getClass().getName() + " Removing client : " + event.dstIp);
 
-        this.clients.remove(event.dstIp);
+            Client client = this.clients.get(event.dstIp);
+
+            if (client.connected)
+            {
+                client.in.stop();
+                client.out.stop();
+            }
+
+            this.clients.remove(event.dstIp);
+        }
     }
 
     private void flushPendingData(Client client)

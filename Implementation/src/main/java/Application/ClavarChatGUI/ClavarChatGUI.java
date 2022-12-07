@@ -1,10 +1,12 @@
 package Application.ClavarChatGUI;
 
+import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
 import GUI.GUIControllers.GUIControllers;
 import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -17,6 +19,8 @@ public class ClavarChatGUI extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
+        Log.clearLogFile();
+
         ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
 
         URL loginFXML = ClavarChatGUI.class.getResource("LoginGUI.fxml");
