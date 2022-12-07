@@ -1,99 +1,52 @@
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event THREAD_FINISHED
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_SUCCESS
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_FAILED
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_ENDED
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_NEW
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event SOCKET_DATA
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event LOGIN_SUCCESS
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event LOGIN_FAILED
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event NEW_USER
-[12:07:08] ClavarChat.Controllers.Managers.Event.EventManager Event NETWORK_PAQUET
-[12:07:08] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer
-[12:07:08] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 1 --> ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer
-[12:07:08] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
-[12:07:08] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 1
-[12:07:08] ClavarChat.Controllers.Managers.Network.NetworkManager Start TCP server on port : 8080
-[12:07:08] ClavarChat.Controllers.Managers.Network.NetworkManager Start UDP server on port : 7070
-[12:07:09] GUI.GUIControllers.Controllers.LoginController Initialized
-[12:07:10] ClavarChat.ClavarChatAPI Trying to login with : Bastien/#2222
-[12:07:10] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 2 --> ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable
-[12:07:10] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 2
-[12:07:11] ClavarChat.Controllers.Chain.Discover Waiting...
-[12:07:11] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.1:61091
-[12:07:11] ClavarChat.Controllers.NetworkAPI.NetworkAPI Dropping paquet from 192.168.1.1:61091
-[12:07:11] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.208.147:61092
-[12:07:11] ClavarChat.Controllers.NetworkAPI.NetworkAPI Dropping paquet from 10.188.208.147:61092
-[12:07:14] ClavarChat.Controllers.Chain.Discover Success Discover
-[12:07:14] ClavarChat.Controllers.Chain.Discover No response, alone on the network
-[12:07:14] ClavarChat.Controllers.Managers.User.UserManager Register main user : Bastien / #2222
-[12:07:14] GUI.GUIControllers.GUIControllers ---> LOGIN_SUCCESS
-[12:07:14] GUI.GUIControllers.Controllers.ClavarChatController Initialized
-[12:07:14] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 2 finished
-[12:07:14] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 2
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.2:50890
-[12:07:33] ClavarChat.ClavarChatAPI Discover from : 192.168.1.2
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Trying to send data to : 192.168.1.2:8080
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI No client with ip : 192.168.1.2
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Creating client : 192.168.1.2
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 3
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection to thread : 3
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 3
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Getting client : 192.168.1.2
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI client : 192.168.1.2 not connected, adding data to pending buffer
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.203.231:50887
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 192.168.1.2:8080 --> socket id : 0
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Connection success with : 192.168.1.2:8080 --> socket id : 0
-[12:07:33] ClavarChat.ClavarChatAPI Discover from : 10.188.203.231
-[12:07:33] ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection Connection success with : 192.168.1.2:8080
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Trying to send data to : 10.188.203.231:8080
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 4
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI No client with ip : 10.188.203.231
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 5
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Creating client : 10.188.203.231
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 6
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection to thread : 6
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN to thread : 4
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 6
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT to thread : 5
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Getting client : 10.188.203.231
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 4
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 10.188.203.231:8080 --> socket id : 1
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI client : 10.188.203.231 not connected, adding data to pending buffer
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 5
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPIN  : 192.168.1.1:5222 <-- 192.168.1.2:8080
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPOUT : 192.168.1.1:5222 --> 192.168.1.2:8080
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI Flushing data to TCP Out : 
-[12:07:33] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 3 finished
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager Send data : 192.168.1.1:5222 --> 192.168.1.2:8080
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 3
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager New TCP client : 192.168.1.1:8080 <-- 192.168.1.2:48482
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 7
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 8
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN to thread : 7
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT to thread : 8
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 7
-[12:07:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 8
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPIN  : 192.168.1.1:8080 <-- 192.168.1.2:48482
-[12:07:33] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPOUT : 192.168.1.1:8080 --> 192.168.1.2:48482
-[12:07:33] ClavarChat.Controllers.Managers.Network.NetworkManager data from 192.168.1.1:8080 <-- 192.168.1.2:48482
-[12:07:33] ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN New TCP paquet 192.168.1.1:8080 <-- 192.168.1.2:48482
-[12:07:33] ClavarChat.Controllers.Managers.User.UserManager Adding new user : Alexis / #1111
-[12:07:33] GUI.GUIControllers.GUIControllers ---> NEW_USER
-[12:07:38] ClavarChat.Controllers.Managers.Network.NetworkManager Cannot connect to : 10.188.203.231:8080
-[12:07:38] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket with id : 1
-[12:07:38] ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection Connection failed with : 10.188.203.231:8080
-[12:07:38] ClavarChat.Controllers.NetworkAPI.NetworkAPI Removing client : 10.188.203.231
-[12:07:38] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 6 finished
-[12:07:38] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 6
-[12:07:41] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP receive
-[12:07:41] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP receive
-[12:07:41] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket : 2
-[12:07:41] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket : 0
-[12:07:41] ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN Error in TCP Receive 192.168.1.2:48482
-[12:07:41] ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN Error in TCP Receive 192.168.1.2:8080
-[12:07:41] ClavarChat.Controllers.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
-[12:07:41] ClavarChat.Controllers.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
-[12:07:41] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 7 finished
-[12:07:41] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 8 finished
-[12:07:41] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 7
-[12:07:41] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 8
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event THREAD_FINISHED
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_SUCCESS
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_FAILED
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_ENDED
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event CONNECTION_NEW
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event SOCKET_DATA
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event LOGIN_SUCCESS
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event LOGIN_FAILED
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event NEW_USER
+[12:39:03] ClavarChat.Controllers.Managers.Event.EventManager Event NETWORK_PAQUET
+[12:39:03] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer
+[12:39:03] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 1 --> ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer
+[12:39:03] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
+[12:39:03] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 1
+[12:39:03] ClavarChat.Controllers.Managers.Network.NetworkManager Start TCP server on port : 8080
+[12:39:03] ClavarChat.Controllers.Managers.Network.NetworkManager Start UDP server on port : 7070
+[12:39:03] GUI.GUIControllers.Controllers.LoginController Initialized
+[12:39:05] ClavarChat.ClavarChatAPI Trying to login with : Bastien/#2222
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 2 --> ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 2
+[12:39:05] ClavarChat.Controllers.Chain.Discover Waiting...
+[12:39:05] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.1:63902
+[12:39:05] ClavarChat.Controllers.NetworkAPI.NetworkAPI Dropping paquet from 192.168.1.1:63902
+[12:39:05] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.208.147:63903
+[12:39:05] ClavarChat.Controllers.NetworkAPI.NetworkAPI Dropping paquet from 10.188.208.147:63903
+[12:39:05] ClavarChat.Controllers.Managers.Network.NetworkManager New TCP client : 192.168.1.1:8080 <-- 192.168.1.2:48691
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 3
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 4
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN to thread : 3
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager Adding ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT to thread : 4
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 3
+[12:39:05] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 4
+[12:39:05] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPIN  : 192.168.1.1:8080 <-- 192.168.1.2:48691
+[12:39:05] ClavarChat.Controllers.NetworkAPI.NetworkAPI TCPOUT : 192.168.1.1:8080 --> 192.168.1.2:48691
+[12:39:05] ClavarChat.Controllers.Managers.Network.NetworkManager data from 192.168.1.1:8080 <-- 192.168.1.2:48691
+[12:39:05] ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN New TCP paquet 192.168.1.1:8080 <-- 192.168.1.2:48691
+[12:39:05] ClavarChat.ClavarChatAPI Discover information from user : Alexis / #1111
+[12:39:05] ClavarChat.Controllers.Chain.Discover Waiting for 2 responses
+[12:39:05] ClavarChat.Controllers.Managers.User.UserManager Adding new user : Alexis / #1111
+[12:39:08] ClavarChat.Controllers.Chain.Discover ERROR Discover timeout
+[12:39:08] GUI.GUIControllers.GUIControllers ---> LOGIN_FAILED
+[12:39:08] ClavarChat.Controllers.NetworkAPI.NetworkAPI Closing 192.168.1.2
+[12:39:08] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 4 finished
+[12:39:08] ClavarChat.Controllers.Managers.Network.NetworkManager Closing Socket with id : 192.168.1.1:8080 --> 192.168.1.2:48691
+[12:39:08] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 4
+[12:39:08] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP receive
+[12:39:08] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 2 finished
+[12:39:08] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 2
+[12:39:08] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket : 0
+[12:39:08] ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN Error in TCP Receive 192.168.1.2:48691
+[12:39:08] ClavarChat.Controllers.Managers.Thread.TMThread Thread : 3 finished
+[12:39:08] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 3

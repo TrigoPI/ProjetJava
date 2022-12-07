@@ -12,67 +12,28 @@ public class UserManager
     private int userCount;
 
     private final User user;
-    private final HashMap<String, User> users;
-    private final HashMap<String, ArrayList<String>> ipTable;
+    private final HashMap<String, UserData> users;
 
     public UserManager()
     {
         this.user = new User("", "");
         this.users = new HashMap<>();
-        this.ipTable = new HashMap<>();
 
         this.userCount = 1;
         this.logged = false;
     }
 
-    public void reset()
-    {
-        this.user.pseudo = "";
-        this.user.id = "";
-
-        this.users.clear();
-        this.ipTable.clear();
-
-        this.userCount = 1;
-    }
-
-    public void setLogged(boolean logged)
-    {
-        this.logged = logged;
-    }
-
-    public void addUser(User user, String src)
-    {
-        Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
-
-        if (!this.ipTable.containsKey(user))
-        {
-            this.ipTable.put(user.pseudo, new ArrayList<String>());
-            this.users.put(user.pseudo, user);
-        }
-
-        this.ipTable.get(user.pseudo).add(src);
-        this.userCount++;
-    }
-
-    public void setUser(String pseudo, String id)
-    {
-        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
-        this.user.pseudo = pseudo;
-        this.user.id = id;
-    }
-
     public ArrayList<User> getUsers()
     {
-        ArrayList<User> users = new ArrayList<User>();
-        for (String key : this.users.keySet()) users.add(this.users.get(key));
+        ArrayList<User> users = new ArrayList<>();
+        for (String key : this.users.keySet()) users.add(this.users.get(key).user);
         return users;
     }
 
     public ArrayList<String> getUserIP(String pseudo)
     {
-        if (!this.userExist(pseudo)) return new ArrayList<>();
-        return this.ipTable.get(pseudo);
+        if (!this.userExist(pseudo)) return null;
+        return this.users.get(pseudo).addresses;
     }
 
     public boolean isLogged()
@@ -93,5 +54,53 @@ public class UserManager
     public User getUser()
     {
         return this.user;
+    }
+
+    public void reset()
+    {
+        this.user.pseudo = "";
+        this.user.id = "";
+        this.users.clear();
+        this.userCount = 1;
+    }
+
+    public void setLogged(boolean logged)
+    {
+        this.logged = logged;
+    }
+
+    public void addUser(User user, String ip)
+    {
+
+        if (!this.userExist(user.pseudo))
+        {
+            Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
+            this.users.put(user.pseudo, new UserData(user));
+            this.userCount++;
+        }
+
+        Log.Info(this.getClass().getName() + " Adding ip : " + ip + " to user : " + user.pseudo + " / #" + user.id);
+
+        UserData userData = this.users.get(user.pseudo);
+        userData.addresses.add(ip);
+    }
+
+    public void setUser(String pseudo, String id)
+    {
+        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
+        this.user.pseudo = pseudo;
+        this.user.id = id;
+    }
+
+    private class UserData
+    {
+        public User user;
+        public ArrayList<String> addresses;
+
+        public UserData(User user)
+        {
+            this.user = user;
+            this.addresses = new ArrayList<>();
+        }
     }
 }

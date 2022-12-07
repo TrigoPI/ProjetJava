@@ -17,6 +17,8 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
 
+import java.util.ArrayList;
+
 public class ClavarChatAPI implements Listener
 {
     private final int tcpPort;
@@ -64,6 +66,11 @@ public class ClavarChatAPI implements Listener
     public String getId()
     {
         return this.userManager.getUser().id;
+    }
+
+    public ArrayList<User> getUsers()
+    {
+        return this.userManager.getUsers();
     }
 
     public void login(String pseudo, String id)
