@@ -72,6 +72,8 @@ public class LoginController implements Initializable
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
+
+        this.errorInput(this.usernameTextField);
     }
 
     public void onLoginSuccess()
@@ -95,7 +97,7 @@ public class LoginController implements Initializable
 
     private void errorInput(Node node)
     {
-        node.getParent().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(232, 65, 24, 0.2), 12, 0.5, 0, 0)");
+        node.getParent().getStyleClass().add("clvc-input-field-error");
     }
 
     @FXML
@@ -125,11 +127,5 @@ public class LoginController implements Initializable
 
             this.api.login(pseudo, id);
         }
-    }
-
-    @FXML
-    private void handleButtonStart() throws IOException
-    {
-
     }
 }

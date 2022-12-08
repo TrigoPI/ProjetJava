@@ -2,20 +2,22 @@ package GUI.GUIControllers.Controllers;
 
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.Users.User;
+import ClavarChat.Utils.Animation.FadeColor.FadeColor;
 import ClavarChat.Utils.Log.Log;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ClavarChatController implements Initializable
@@ -70,6 +72,9 @@ public class ClavarChatController implements Initializable
         Label userName = new Label(pseudo);
         Label userId = new Label(id);
 
+        container.setOnMouseEntered(this::onMouseEntered);
+        container.setOnMouseExited(this::onMouseExited);
+        container.setOnMouseClicked(this::onMouseClick);
         container.setSpacing(15);
         container.setAlignment(Pos.CENTER_LEFT);
 
@@ -86,9 +91,37 @@ public class ClavarChatController implements Initializable
         container.getChildren().add(avatar);
         container.getChildren().add(desContainer);
 
-        container.getStyleClass().add("clvc-american-river");
         container.getStyleClass().add("clvc-user-preview-container");
+        container.getStyleClass().add("clvc-cursor-hand");
 
         this.userPreviewContainer.getChildren().add(container);
+    }
+
+    private void onMouseExited(MouseEvent event)
+    {
+        HBox hBox = (HBox)event.getSource();
+
+        Color startColor = (Color)hBox.getBackground().getFills().get(0).getFill();
+        Color finalColor = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
+
+        FadeColor fadeColor = new FadeColor(startColor, finalColor, hBox, 400);
+        fadeColor.playFromStart();
+    }
+
+    private void onMouseEntered(MouseEvent event)
+    {
+        HBox hBox = (HBox)event.getSource();
+
+        Color startColor = (Color)hBox.getBackground().getFills().get(0).getFill();
+        Color finalColor = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
+
+        FadeColor fadeColor = new FadeColor(startColor, finalColor, hBox, 400);
+        fadeColor.playFromStart();
+    }
+
+    private void onMouseClick(MouseEvent event)
+    {
+        HBox hBox = (HBox)event.getSource();
+        hBox.getStyleClass().add("clvc-american-river");
     }
 }

@@ -68,6 +68,20 @@
     -fx-background-color: transparent;
 }
 
+.clvc-input-field > .mfx-text-field:floating .floating-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #dfe6e9;
+}
+
+.clvc-input-field-error > .mfx-text-field .floating-text {
+    -fx-text-fill: #d63031;
+}
+
+.clvc-input-field-error > VBox > Button  {
+    -fx-background-color: #d63031;
+}
+
+
 .clvc-search-icon {
     -fx-shape: "M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"
 }
@@ -82,4 +96,8 @@
 
 .clvc-password-icon {
     -fx-shape: "M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17v80c0 13.3 10.7 24 24 24h80c13.3 0 24-10.7 24-24V448h40c13.3 0 24-10.7 24-24V384h40c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zm40-176c-22.1 0-40-17.9-40-40s17.9-40 40-40s40 17.9 40 40s-17.9 40-40 40z"
+}
+
+.clvc-cursor-hand {
+    -fx-cursor: hand;
 }

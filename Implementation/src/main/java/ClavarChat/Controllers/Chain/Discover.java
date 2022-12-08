@@ -4,7 +4,8 @@ import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
-import ClavarChat.Models.ClavarChatMessage.DiscoverMessage;
+import ClavarChat.Models.ClavarChatMessage.DiscoverRequestMessage;
+import ClavarChat.Models.ClavarChatMessage.DiscoverResponseMessage;
 import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
@@ -39,7 +40,7 @@ public class Discover extends Handler
         this.timeout = 3;
     }
 
-    public void onDiscoverInformation(DiscoverMessage data, String src)
+    public void onDiscoverInformation(DiscoverResponseMessage data, String src)
     {
         try
         {
@@ -52,7 +53,6 @@ public class Discover extends Handler
                 this.userCount = data.count;
             }
 
-            this.userManager.addUser(data.user, src);
             this.responseCount++;
 
             semaphore.release();
@@ -65,14 +65,21 @@ public class Discover extends Handler
     {
         this.broadcast();
         this.waitResponses();
-        if (this.succeed() && this.next != null) return this.next.handle(request);
+
+        if (this.succeed() && this.next != null)
+        {
+            this.reset();
+            return this.next.handle(request);
+        }
+
+        this.reset();
         return Response.DISCOVER_ERROR;
     }
 
     private void broadcast()
     {
         ArrayList<String> broadcast = this.networkAPI.getBroadcastAddresses();
-        for (String addresse : broadcast) this.networkAPI.sendUDP(addresse, this.udpPort, new DiscoverMessage());
+        for (String addresse : broadcast) this.networkAPI.sendUDP(addresse, this.udpPort, new DiscoverRequestMessage());
     }
 
     private void waitResponses()
@@ -80,6 +87,14 @@ public class Discover extends Handler
         Log.Info(this.getClass().getName() + " Waiting...");
         Clock clock = new Clock();
         while (this.validUserCount() && clock.timeSecond() < this.timeout) {}
+    }
+
+    private void reset()
+    {
+        Log.Print(this.getClass().getName() + " Resetting discover");
+
+        this.userCount = 0;
+        this.responseCount = -1;
     }
 
     private boolean succeed()
@@ -94,6 +109,7 @@ public class Discover extends Handler
         }
 
         Log.Error(this.getClass().getName() + " ERROR Discover timeout");
+        this.userManager.reset();
 
         return false;
     }

@@ -30,8 +30,8 @@ public class ClavarChatAPI implements Listener
 
     private final NetworkAPI networkAPI;
 
-    private final Discover discover;
-    private final PseudoVerify pseudoVerify;
+    private Discover discover;
+    private PseudoVerify pseudoVerify;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
@@ -56,7 +56,16 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
+
+//        this.userManager.addUser(new User("User1", "1111"), "192.168.1.3");
+//        this.userManager.addUser(new User("User2", "2222"), "192.168.1.4");
+//        this.userManager.addUser(new User("User3", "3333"), "192.168.1.5");
+//        this.userManager.addUser(new User("User4", "4444"), "192.168.1.6");
+//        this.userManager.addUser(new User("User5", "5555"), "192.168.1.7");
+//        this.userManager.addUser(new User("User6", "6666"), "192.168.1.8");
+//        this.userManager.addUser(new User("User7", "7777"), "192.168.1.9");
     }
+
 
     public String getPseudo()
     {
@@ -76,8 +85,7 @@ public class ClavarChatAPI implements Listener
     public void login(String pseudo, String id)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
-
-        int threadId = this.threadManager.createThread(new LoginExecutable(this.discover, new LoginRequest(pseudo, id, "")));
+        int threadId = this.threadManager.createThread(new LoginExecutable(discover, new LoginRequest(pseudo, id, "")));
         this.threadManager.startThread(threadId);
     }
 
@@ -86,8 +94,8 @@ public class ClavarChatAPI implements Listener
         if (this.userManager.isLogged())
         {
             User user = this.userManager.getUser();
-            TextMessage mgs = new TextMessage(user, message);
-            this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
+//            TextMessage mgs = new TextMessage(user, message);
+//            this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
         }
         else
         {
@@ -117,37 +125,26 @@ public class ClavarChatAPI implements Listener
 
         switch (data.type)
         {
-            case LOGIN:
-                this.onLogin(data, event.ip);
+            case LoginMessage.LOGIN:
+                this.onLogin((LoginMessage)data, event.ip);
                 break;
-            case LOGOUT:
+            case LoginMessage.LOGOUT:
                 break;
-            case DISCOVER:
-                this.onDiscover((DiscoverMessage)data, event.ip);
+            case DiscoverRequestMessage.DISCOVER_REQUEST:
+                this.onDiscoverRequest(event.ip);
                 break;
-            case DATA:
-                this.onData((DataMessage)data, event.ip);
-                break;
+            case DiscoverResponseMessage.DISCOVER_RESPONSE:
+                this.onDiscoverResponse((DiscoverResponseMessage)data, event.ip);
+//            case DATA:
+//                this.onData((DataMessage)data, event.ip);
+//                break;
         }
     }
 
-    private void onDiscover(DiscoverMessage data, String src)
+    private void onLogin(LoginMessage data, String src)
     {
-        switch (data.discoverType)
-        {
-            case REQUEST:
-                this.onDiscoverRequest(src);
-                break;
-            case RESPONSE:
-                this.onDiscoverResponse(data, src);
-                break;
-        }
-    }
-
-    private void onLogin(ClavarChatMessage data, String src)
-    {
-        this.userManager.addUser(data.user, src);
-        this.eventManager.notiy(new NewUserEvent(data.user.pseudo, data.user.id));
+        this.userManager.addUser(new User(data.pseudo, data.id), src);
+        this.eventManager.notiy(new NewUserEvent(data.pseudo, data.id));
     }
 
     private void onDiscoverRequest(String src)
@@ -158,7 +155,7 @@ public class ClavarChatAPI implements Listener
         {
             int count = this.userManager.getUserCount();
             User user = this.userManager.getUser();
-            DiscoverMessage informationMessage = new DiscoverMessage(user, count);
+            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, count);
             this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
         }
         else
@@ -167,26 +164,26 @@ public class ClavarChatAPI implements Listener
         }
     }
 
-    private void onDiscoverResponse(DiscoverMessage data, String src)
+    private void onDiscoverResponse(DiscoverResponseMessage data, String src)
     {
-        Log.Info(this.getClass().getName() + " Discover information from user : " + data.user.pseudo + " / " + "#" + data.user.id);
+        Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
+        this.userManager.addUser(new User(data.pseudo, data.id), src);
         this.discover.onDiscoverInformation(data, src);
     }
 
-    private void onData(DataMessage data, String src)
-    {
-        switch (data.dataType)
-        {
-            case TEXT:
-                this.onTextMessage((TextMessage)data, src);
-                break;
-            case FILE:
-                break;
-        }
-    }
+
+//    private void onData(DataMessage data, String src)
+//    {
+//        switch (data.dataType)
+//        {
+//            case TEXT:
+//                this.onTextMessage((TextMessage)data, src);
+//                break;
+//        }
+//    }
 
     private void onTextMessage(TextMessage data, String src)
     {
-        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
+//        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
     }
 }

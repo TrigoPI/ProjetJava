@@ -51,15 +51,19 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="usernameTextField" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" />
+                        <MFXTextField fx:id="usernameTextField" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" styleClass="clvc-font-12px" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <VBox fx:id="userPreviewContainer" spacing="10.0" />
+            <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid">
+               <content>
+                  <VBox fx:id="userPreviewContainer" spacing="10.0" />
+               </content>
+            </MFXScrollPane>
          </children>
       </VBox>
-      <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
                <children>
@@ -100,7 +104,7 @@
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                      </children>
                   </VBox>
-                  <MFXTextField fx:id="usernameTextField1" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" />
+                  <MFXTextField fx:id="usernameTextField1" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="625.0" styleClass="clvc-font-12px" />
                </children>
             </HBox>
          </children>

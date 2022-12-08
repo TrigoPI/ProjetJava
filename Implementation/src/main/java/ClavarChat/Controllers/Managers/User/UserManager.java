@@ -9,7 +9,6 @@ import java.util.HashMap;
 public class UserManager
 {
     private boolean logged;
-    private int userCount;
 
     private final User user;
     private final HashMap<String, UserData> users;
@@ -19,7 +18,6 @@ public class UserManager
         this.user = new User("", "");
         this.users = new HashMap<>();
 
-        this.userCount = 1;
         this.logged = false;
     }
 
@@ -48,7 +46,7 @@ public class UserManager
 
     public int getUserCount()
     {
-        return userCount;
+        return this.users.size() + 1;
     }
 
     public User getUser()
@@ -58,10 +56,11 @@ public class UserManager
 
     public void reset()
     {
+        Log.Print(this.getClass().getName() + " Resetting User Manager");
+
         this.user.pseudo = "";
         this.user.id = "";
         this.users.clear();
-        this.userCount = 1;
     }
 
     public void setLogged(boolean logged)
@@ -76,7 +75,6 @@ public class UserManager
         {
             Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
             this.users.put(user.pseudo, new UserData(user));
-            this.userCount++;
         }
 
         Log.Info(this.getClass().getName() + " Adding ip : " + ip + " to user : " + user.pseudo + " / #" + user.id);

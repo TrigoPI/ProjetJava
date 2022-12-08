@@ -450,16 +450,20 @@ public class NetworkManager
         {
             try
             {
-                String srcIp = NetworkUtils.getSocketLocalIp(socket);
-                String dstIp = NetworkUtils.getSocketDistantIp(socket);
+                if (socket.isConnected())
+                {
+                    String srcIp = NetworkUtils.getSocketLocalIp(socket);
+                    String dstIp = NetworkUtils.getSocketDistantIp(socket);
 
-                int srcPort = NetworkUtils.getSocketLocalPort(socket);
-                int dstPort = NetworkUtils.getSocketDistantPort(socket);
+                    int srcPort = NetworkUtils.getSocketLocalPort(socket);
+                    int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
-                socket.close();
+                    socket.close();
+                    Log.Info(this.getClass().getName() + " Closing Socket : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+                }
 
+                Log.Info(this.getClass().getName() + " removing socket with id : " + socketId);
                 this.sockets.remove(socketId);
-                Log.Info(this.getClass().getName() + " Closing Socket with id : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
             }
             catch (IOException e)
             {

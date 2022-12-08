@@ -27,7 +27,6 @@ public class NetworkAPI implements Listener
     private final int udpPort;
 
     private final EventManager eventManager;
-
     private final ThreadManager threadManager;
     private final NetworkManager networkManager;
 
@@ -82,8 +81,11 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(key);
 
-            client.out.stop();
-            client.in.stop();
+            if (client.connected)
+            {
+                client.out.stop();
+                    client.in.stop();
+            }
 
             this.networkManager.closeTcpSocket(client.socketId);
         }

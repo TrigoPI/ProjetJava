@@ -4,9 +4,8 @@ import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Models.ChainData.Request.LoginRequest;
 import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
-import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage.MESSAGE_TYPE;
-import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
 import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Models.ClavarChatMessage.LoginMessage;
 import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
 
@@ -33,6 +32,8 @@ public class PseudoVerify extends Handler
         LoginRequest loginRequest = (LoginRequest)request;
         User user = new User(loginRequest.pseudo, loginRequest.id);
 
+        Log.Print(this.getClass().getName() + " Checking if pseudo exist");
+
         if (!this.userManager.userExist(user.pseudo))
         {
             ArrayList<User> users = this.userManager.getUsers();
@@ -40,7 +41,7 @@ public class PseudoVerify extends Handler
             for (User other : users)
             {
                 ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
-                this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new ClavarChatMessage(user, MESSAGE_TYPE.LOGIN));
+                this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id));
             }
 
             this.userManager.setUser(loginRequest.pseudo, loginRequest.id);
@@ -51,7 +52,9 @@ public class PseudoVerify extends Handler
         else
         {
             Log.Error(this.getClass().getName() + " Pseudo already used");
+
             this.userManager.setLogged(false);
+            this.userManager.reset();
         }
 
         return Response.INVALID_PSEUDO;
