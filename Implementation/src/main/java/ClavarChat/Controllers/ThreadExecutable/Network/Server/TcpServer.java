@@ -14,10 +14,11 @@ public class TcpServer extends Server
     protected void runServer()
     {
         int code = this.networkManager.startTcpServer(this.serverId, this.port);
+        boolean running = true;
 
         if (code == 0)
         {
-            while (true)
+            while (running)
             {
                 int socketId = this.networkManager.accept(this.serverId);
 
@@ -30,6 +31,10 @@ public class TcpServer extends Server
                     int dstPort = this.networkManager.getDistantSocketPort(socketId);
 
                     this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_NEW, srcIp, srcPort, dstIp, dstPort, socketId));
+                }
+                else
+                {
+                    running = false;
                 }
             }
         }

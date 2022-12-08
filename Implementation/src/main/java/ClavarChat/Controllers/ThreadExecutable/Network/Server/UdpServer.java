@@ -16,16 +16,21 @@ public class UdpServer extends Server
     protected void runServer()
     {
         int code = this.networkManager.startUdpServer(this.serverId, port);
+        boolean running = true;
 
         if (code == 0)
         {
-            while (true)
+            while (running)
             {
                 NetworkPaquet paquet = this.networkManager.udpReceive(this.serverId);
 
                 if (paquet != null)
                 {
                     this.eventManager.notiy(new SocketDataEvent(paquet.srcIp, paquet.srcPort, paquet.dstIp, paquet.dstPort, (ClavarChatMessage)paquet.data));
+                }
+                else
+                {
+                    running = false;
                 }
             }
         }

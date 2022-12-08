@@ -8,6 +8,7 @@ public abstract class Server extends NetworkExecutable
     protected int port;
     protected int serverId;
 
+
     protected Server(NetworkManager networkManager, int serverId, int port)
     {
         super(networkManager);

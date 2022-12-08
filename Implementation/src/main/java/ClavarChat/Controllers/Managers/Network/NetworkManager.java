@@ -51,7 +51,7 @@ public class NetworkManager
 
     public ArrayList<String> getConnectedNetworks()
     {
-        ArrayList<String> networks = new ArrayList<String>();
+        ArrayList<String> networks = new ArrayList<>();
         ArrayList<String> ips = NetworkUtils.getAllIp();
 
         for (String ip : ips)
@@ -134,12 +134,12 @@ public class NetworkManager
                 }
                 catch (IOException | ClassNotFoundException e)
                 {
-                    e.printStackTrace();
+                    Log.Error(this.getClass().getName() + " ERROR UDP server closed");
                 }
             }
             else
             {
-                Log.Error(this.getClass().getName() + " ERROR TCP server not bound");
+                Log.Error(this.getClass().getName() + " ERROR UDP server not bound");
             }
         }
         else
@@ -332,7 +332,7 @@ public class NetworkManager
                 }
                 catch (IOException e)
                 {
-                    e.printStackTrace();
+                    Log.Error(this.getClass().getName() + " ERROR TCP server closed");
                 }
             }
             else

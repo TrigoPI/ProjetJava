@@ -4,6 +4,7 @@ import ClavarChat.ClavarChatAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Models.Events.Login.LoginEvent;
 import ClavarChat.Models.Events.Login.NewUserEvent;
+import ClavarChat.Models.Events.Login.RemoveUserEvent;
 import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
@@ -30,6 +31,7 @@ public class GUIControllers implements Listener
         eventManager.addListenner(this, LoginEvent.LOGIN_SUCCESS);
         eventManager.addListenner(this, LoginEvent.LOGIN_FAILED);
         eventManager.addListenner(this, NewUserEvent.NEW_USER);
+        eventManager.addListenner(this, RemoveUserEvent.REMOVE_USER);
     }
 
     @Override
@@ -49,19 +51,28 @@ public class GUIControllers implements Listener
                 NewUserEvent newUserEvent = (NewUserEvent)event;
                 this.onNewUser(newUserEvent.pseudo, newUserEvent.id);
                 break;
+            case RemoveUserEvent.REMOVE_USER:
+                RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
+                this.onRemoveUser(removeUserEvent.pseudo);
+                break;
         }
     }
 
     private void onLoginFailed()
     {
         this.loginController.onLoginFailed();
-        this.api.closeAllConnection();
+        this.api.closeAllClient();
     }
 
     private void onLoginSucces()
     {
         this.loginController.onLoginSuccess();
-        this.api.closeAllConnection();
+        this.api.closeAllClient();
+    }
+
+    private void onRemoveUser(String pseudo)
+    {
+        this.clavarChatController.onRemoveUser(pseudo);
     }
 
     private void onNewUser(String pseudo, String id)

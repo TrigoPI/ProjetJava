@@ -73,7 +73,7 @@ public class NetworkAPI implements Listener
         this.networkManager.closeTcpServer(this.tcpServerID);
     }
 
-    public void closeAll()
+    public void closeAllClients()
     {
         for (String key : this.clients.keySet())
         {
@@ -84,7 +84,7 @@ public class NetworkAPI implements Listener
             if (client.connected)
             {
                 client.out.stop();
-                    client.in.stop();
+                client.in.stop();
             }
 
             this.networkManager.closeTcpSocket(client.socketId);

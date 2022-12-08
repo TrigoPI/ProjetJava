@@ -13,6 +13,7 @@ import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Login.LoginEvent;
 import ClavarChat.Models.Events.Login.NewUserEvent;
+import ClavarChat.Models.Events.Login.RemoveUserEvent;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Users.User;
 import ClavarChat.Utils.Log.Log;
@@ -52,18 +53,11 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
         this.eventManager.addEvent(LoginEvent.LOGIN_FAILED);
         this.eventManager.addEvent(NewUserEvent.NEW_USER);
+        this.eventManager.addEvent(RemoveUserEvent.REMOVE_USER);
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
-
-//        this.userManager.addUser(new User("User1", "1111"), "192.168.1.3");
-//        this.userManager.addUser(new User("User2", "2222"), "192.168.1.4");
-//        this.userManager.addUser(new User("User3", "3333"), "192.168.1.5");
-//        this.userManager.addUser(new User("User4", "4444"), "192.168.1.6");
-//        this.userManager.addUser(new User("User5", "5555"), "192.168.1.7");
-//        this.userManager.addUser(new User("User6", "6666"), "192.168.1.8");
-//        this.userManager.addUser(new User("User7", "7777"), "192.168.1.9");
     }
 
 
@@ -89,6 +83,18 @@ public class ClavarChatAPI implements Listener
         this.threadManager.startThread(threadId);
     }
 
+    public void logout()
+    {
+        User me = this.userManager.getUser();
+
+        for (User user : this.userManager.getUsers())
+        {
+            String ip = this.userManager.getUserIP(user.pseudo).get(0);
+            LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
+            this.networkAPI.sendTCP(ip, this.tcpPort, message);
+        }
+    }
+
     public void sendMessage(String message, String ip)
     {
         if (this.userManager.isLogged())
@@ -103,9 +109,14 @@ public class ClavarChatAPI implements Listener
         }
     }
 
-    public void closeAllConnection()
+    public void closeServers()
     {
-        this.networkAPI.closeAll();
+        this.networkAPI.closeServer();
+    }
+
+    public void closeAllClient()
+    {
+        this.networkAPI.closeAllClients();
     }
 
     @Override
@@ -129,6 +140,7 @@ public class ClavarChatAPI implements Listener
                 this.onLogin((LoginMessage)data, event.ip);
                 break;
             case LoginMessage.LOGOUT:
+                this.onLogout((LoginMessage)data);
                 break;
             case DiscoverRequestMessage.DISCOVER_REQUEST:
                 this.onDiscoverRequest(event.ip);
@@ -145,6 +157,12 @@ public class ClavarChatAPI implements Listener
     {
         this.userManager.addUser(new User(data.pseudo, data.id), src);
         this.eventManager.notiy(new NewUserEvent(data.pseudo, data.id));
+    }
+
+    private void onLogout(LoginMessage data)
+    {
+        this.userManager.removeUser(data.pseudo);
+        this.eventManager.notiy(new RemoveUserEvent(data.pseudo));
     }
 
     private void onDiscoverRequest(String src)

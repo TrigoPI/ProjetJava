@@ -83,6 +83,19 @@ public class UserManager
         userData.addresses.add(ip);
     }
 
+    public void removeUser(String pseudo)
+    {
+        if (this.userExist(pseudo))
+        {
+            Log.Print(this.getClass().getName() + " Removing user : " + pseudo);
+            this.users.remove(pseudo);
+        }
+        else
+        {
+            Log.Print(this.getClass().getName() + " No user with pseudo : " + pseudo);
+        }
+    }
+
     public void setUser(String pseudo, String id)
     {
         Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);

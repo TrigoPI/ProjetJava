@@ -10,18 +10,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ClavarChatController implements Initializable
 {
+    private final ClavarChatAPI api;
+    private final HashMap<String, HBox> usersGUI;
+
     @FXML
     private Label userName;
 
@@ -31,11 +35,11 @@ public class ClavarChatController implements Initializable
     @FXML
     private VBox userPreviewContainer;
 
-    ClavarChatAPI api;
 
     public ClavarChatController(ClavarChatAPI api)
     {
         this.api = api;
+        this.usersGUI = new HashMap<>();
     }
 
     @Override
@@ -52,11 +56,15 @@ public class ClavarChatController implements Initializable
         this.addDiscoveredUser();
     }
 
+    public void onRemoveUser(String pseudo)
+    {
+        HBox container = this.usersGUI.get(pseudo);
+        Platform.runLater(() -> this.userPreviewContainer.getChildren().remove(container));
+    }
+
     public void onNewUser(String pseudo, String id)
     {
-        Platform.runLater(() -> {
-            this.createUserDescription(pseudo, id);
-        });
+        Platform.runLater(() -> this.createUserDescription(pseudo, id));
     }
 
     private void addDiscoveredUser()
@@ -94,6 +102,7 @@ public class ClavarChatController implements Initializable
         container.getStyleClass().add("clvc-user-preview-container");
         container.getStyleClass().add("clvc-cursor-hand");
 
+        this.usersGUI.put(pseudo, container);
         this.userPreviewContainer.getChildren().add(container);
     }
 

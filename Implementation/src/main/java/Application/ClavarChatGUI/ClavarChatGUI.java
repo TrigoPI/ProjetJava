@@ -6,7 +6,6 @@ import GUI.GUIControllers.Controllers.LoginController;
 import GUI.GUIControllers.GUIControllers;
 import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -16,21 +15,23 @@ import java.net.URL;
 
 public class ClavarChatGUI extends Application
 {
+    ClavarChatAPI clavarChatAPI;
+
     @Override
     public void start(Stage stage) throws IOException
     {
         Log.clearLogFile();
 
-        ClavarChatAPI clavarChatAPI = new ClavarChatAPI(8080, 7070);
+        this.clavarChatAPI = new ClavarChatAPI(8080, 7070);
 
         URL loginFXML = ClavarChatGUI.class.getResource("LoginGUI.fxml");
         URL clavarChatFXML = ClavarChatGUI.class.getResource("ClavarChatGUI.fxml");
 
-        ClavarChatController clavarChatController = new ClavarChatController(clavarChatAPI);
+        ClavarChatController clavarChatController = new ClavarChatController(this.clavarChatAPI);
         FXMLLoader fxmlLoaderClavarChat = new FXMLLoader(clavarChatFXML);
         fxmlLoaderClavarChat.setController(clavarChatController);
 
-        LoginController loginController = new LoginController(clavarChatAPI, fxmlLoaderClavarChat);
+        LoginController loginController = new LoginController(this.clavarChatAPI, fxmlLoaderClavarChat);
         FXMLLoader fxmlLoaderLogin = new FXMLLoader(loginFXML);
         fxmlLoaderLogin.setController(loginController);
 
@@ -40,7 +41,15 @@ public class ClavarChatGUI extends Application
         stage.setScene(scene);
         stage.show();
 
-        new GUIControllers(clavarChatAPI, loginController, clavarChatController);
+        new GUIControllers(this.clavarChatAPI, loginController, clavarChatController);
+    }
+
+    @Override
+    public void stop() throws Exception
+    {
+        this.clavarChatAPI.logout();
+        this.clavarChatAPI.closeAllClient();
+        this.clavarChatAPI.closeServers();
     }
 
     public void run()
