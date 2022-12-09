@@ -16,7 +16,7 @@ public class DataBaseManager
     {
         this.path = "./src/main/resources/BDD/Connect/ClavarDataBase.db";
         this.url="jdbc:sqlite:" + path;
-        this.conn=null;
+        this.connect();
     }
     public void connect()
     {
@@ -26,14 +26,6 @@ public class DataBaseManager
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
         }
     }
 
@@ -41,7 +33,6 @@ public class DataBaseManager
     {
         String sql = "CREATE TABLE IF NOT EXISTS " + name + fields;
         try{
-            conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -59,7 +50,6 @@ public class DataBaseManager
     {
         String sql = "INSERT INTO " + name_arguments + " " + values;
         try {
-            conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -70,11 +60,10 @@ public class DataBaseManager
     INSERT INTO messages(id_msg,id_conv,id_user,msg,date) VALUES(?,?,?,?,?)
      */
 
-    public void update(String name, String field_value, String id)
+    public void update(String name, String field_value, String name_primary_key, String primary_key_value, String new_value)
     {
-        String sql = "UPDATE " + name + " SET " + field_value + " WHERE " + id;
+        String sql = "UPDATE " + name + " SET " + field_value + " = " + new_value + " WHERE " + name_primary_key + " = " + primary_key_value;
         try {
-            conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -90,7 +79,6 @@ public class DataBaseManager
     {
         String sql = "DELETE FROM " + name + " WHERE " + id;
         try {
-            conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
         } catch (SQLException e) {
@@ -101,13 +89,12 @@ public class DataBaseManager
     DELETE FROM warehouses WHERE id = ?
      */
 
-    public ResultSet select(String field, String name)
+    public ResultSet select(String field, String name, String filter)
     {
-        String sql = "SELECT " + field + " FROM " + name;
+        String sql = "SELECT " + field + " FROM " + name + filter;
         try {
-            conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
-            ResultSet rs    = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
