@@ -8,6 +8,7 @@ import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Chain.Discover;
 import ClavarChat.Controllers.Chain.PseudoVerify;
 import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
+import ClavarChat.Models.ByteImage.ByteImage;
 import ClavarChat.Models.ChainData.Request.LoginRequest;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
@@ -20,6 +21,7 @@ import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import javafx.scene.image.Image;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ClavarChatAPI implements Listener
@@ -132,12 +134,15 @@ public class ClavarChatAPI implements Listener
 
     public void logout()
     {
-        User me = this.userManager.getUser();
-
-        for (String ip : this.networkAPI.getBroadcastAddresses())
+        if (this.userManager.isLogged())
         {
-            LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
-            this.networkAPI.sendUDP(ip, this.udpPort, message);
+            User me = this.userManager.getUser();
+
+            for (String ip : this.networkAPI.getBroadcastAddresses())
+            {
+                LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
+                this.networkAPI.sendUDP(ip, this.udpPort, message);
+            }
         }
     }
 
@@ -220,11 +225,22 @@ public class ClavarChatAPI implements Listener
 
         if (this.userManager.isLogged())
         {
-            int count = this.userManager.getUserCount();
-            User user = this.userManager.getUser();
-            Image img = this.userManager.getAvatar();
-            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, img, count);
-            this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
+            try
+            {
+                int count = this.userManager.getUserCount();
+                User user = this.userManager.getUser();
+                Image img = this.userManager.getAvatar();
+
+                ByteImage byteImage = new ByteImage(img.getUrl(), "jpg");
+
+                DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, byteImage, count);
+                this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
         }
         else
         {
@@ -236,8 +252,11 @@ public class ClavarChatAPI implements Listener
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(new User(data.pseudo, data.id), src);
-        this.userManager.setAvatar(data.pseudo, data.avatar);
-        this.discover.onDiscoverInformation(data, src);
+
+        System.out.println(data.avatar);
+
+//        this.userManager.setAvatar(data.pseudo, data.avatar);
+//        this.discover.onDiscoverInformation(data, src);
     }
 
     private void onTextMessage(TextMessage data, String src)

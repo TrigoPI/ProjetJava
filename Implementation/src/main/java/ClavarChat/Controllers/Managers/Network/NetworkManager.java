@@ -3,7 +3,7 @@ package ClavarChat.Controllers.Managers.Network;
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
-import ClavarChat.Models.PackedArray.PackedArray;
+import ClavarChat.Utils.PackedArray.PackedArray;
 
 import java.io.*;
 import java.net.*;
@@ -96,6 +96,7 @@ public class NetworkManager
             catch (IOException | ClassNotFoundException e)
             {
                 Log.Error(this.getClass().getName() + " ERROR in TCP receive");
+                e.printStackTrace();
             }
         }
         else
@@ -261,6 +262,7 @@ public class NetworkManager
             catch (IOException e)
             {
                 Log.Error(this.getClass().getName() + " ERROR in TCP Send");
+                e.printStackTrace();
             }
         }
         else

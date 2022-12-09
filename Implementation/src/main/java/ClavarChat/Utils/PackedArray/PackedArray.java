@@ -1,4 +1,4 @@
-package ClavarChat.Models.PackedArray;
+package ClavarChat.Utils.PackedArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
