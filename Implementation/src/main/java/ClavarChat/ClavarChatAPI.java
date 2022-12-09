@@ -14,6 +14,7 @@ import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Login.LoginEvent;
 import ClavarChat.Models.Events.Login.NewUserEvent;
 import ClavarChat.Models.Events.Login.RemoveUserEvent;
+import ClavarChat.Models.Events.Message.MessageEvent;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
@@ -51,11 +52,13 @@ public class ClavarChatAPI implements Listener
 
         this.discover.setNext(this.pseudoVerify);
 
+        this.eventManager.addEvent(MessageEvent.TEXT_MESSAGE);
         this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
         this.eventManager.addEvent(LoginEvent.LOGIN_FAILED);
         this.eventManager.addEvent(NewUserEvent.NEW_USER);
         this.eventManager.addEvent(RemoveUserEvent.REMOVE_USER);
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
+
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
@@ -192,6 +195,7 @@ public class ClavarChatAPI implements Listener
                 break;
             case DiscoverResponseMessage.DISCOVER_RESPONSE:
                 this.onDiscoverResponse((DiscoverResponseMessage)data, event.ip);
+                break;
             case TextMessage.TEXT_MESSAGE:
                 this.onTextMessage((TextMessage)data, event.ip);
                 break;

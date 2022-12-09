@@ -5,6 +5,7 @@ import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Models.Events.Login.LoginEvent;
 import ClavarChat.Models.Events.Login.NewUserEvent;
 import ClavarChat.Models.Events.Login.RemoveUserEvent;
+import ClavarChat.Models.Events.Message.MessageEvent;
 import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
@@ -28,6 +29,7 @@ public class GUIControllers implements Listener
 
         this.eventManager = EventManager.getInstance();
 
+        eventManager.addListenner(this, MessageEvent.TEXT_MESSAGE);
         eventManager.addListenner(this, LoginEvent.LOGIN_SUCCESS);
         eventManager.addListenner(this, LoginEvent.LOGIN_FAILED);
         eventManager.addListenner(this, NewUserEvent.NEW_USER);
@@ -55,6 +57,8 @@ public class GUIControllers implements Listener
                 RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
                 this.onRemoveUser(removeUserEvent.pseudo);
                 break;
+            case MessageEvent.TEXT_MESSAGE:
+                break;
         }
     }
 
@@ -68,6 +72,11 @@ public class GUIControllers implements Listener
     {
         this.loginController.onLoginSuccess();
         this.api.closeAllClient();
+    }
+
+    private void onTextMessage(String pseudo, String message)
+    {
+        this.clavarChatController.onTextMessage(pseudo, message);
     }
 
     private void onRemoveUser(String pseudo)

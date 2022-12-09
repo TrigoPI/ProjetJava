@@ -106,6 +106,11 @@ public class ClavarChatController implements Initializable
         Platform.runLater(() -> this.createUserDescription(pseudo, id));
     }
 
+    public void onTextMessage(String pseudo, String message)
+    {
+        this.createMessage(message, true);
+    }
+
     private String getSelectedUserPseudo()
     {
         if (this.selectedUser == null) return null;
