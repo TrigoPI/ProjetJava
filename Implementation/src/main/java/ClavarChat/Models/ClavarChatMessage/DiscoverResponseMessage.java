@@ -1,7 +1,6 @@
 package ClavarChat.Models.ClavarChatMessage;
 
 import ClavarChat.Models.ByteImage.ByteImage;
-import javafx.scene.image.Image;
 
 public class DiscoverResponseMessage extends ClavarChatMessage
 {

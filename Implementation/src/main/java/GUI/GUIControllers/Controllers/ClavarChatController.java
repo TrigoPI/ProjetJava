@@ -18,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -77,7 +78,15 @@ public class ClavarChatController implements Initializable
         this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
         this.americanRiver = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
 
-        this.api.setAvatar("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+        try
+        {
+            String currentPath = new java.io.File(".").getCanonicalPath();
+            this.api.setAvatar(currentPath + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
