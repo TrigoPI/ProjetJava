@@ -50,6 +50,7 @@ public class ClavarChatGUI extends Application
     {
         this.clavarChatAPI.logout();
         this.clavarChatAPI.closeServers();
+        this.clavarChatAPI.closeAllClient();
     }
 
     public void run()

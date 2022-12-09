@@ -58,6 +58,8 @@ public class GUIControllers implements Listener
                 this.onRemoveUser(removeUserEvent.pseudo);
                 break;
             case MessageEvent.TEXT_MESSAGE:
+                MessageEvent messageEvent = (MessageEvent)event;
+                this.onTextMessage(messageEvent.pseudo, messageEvent.message);
                 break;
         }
     }
