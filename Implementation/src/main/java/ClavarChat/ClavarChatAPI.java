@@ -231,6 +231,7 @@ public class ClavarChatAPI implements Listener
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(new User(data.pseudo, data.id), src);
+        this.userManager.setAvatar(data.pseudo, new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
         this.discover.onDiscoverInformation(data, src);
     }
 
