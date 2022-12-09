@@ -81,7 +81,7 @@ public class ClavarChatController implements Initializable
         try
         {
             String currentPath = new java.io.File(".").getCanonicalPath();
-            this.api.setAvatar(currentPath + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
+            this.api.setAvatar(currentPath + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
         }
         catch (IOException e)
         {

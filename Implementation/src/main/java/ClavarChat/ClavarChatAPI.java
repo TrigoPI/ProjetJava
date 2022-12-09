@@ -225,21 +225,14 @@ public class ClavarChatAPI implements Listener
 
         if (this.userManager.isLogged())
         {
-            try
-            {
-                int count = this.userManager.getUserCount();
-                User user = this.userManager.getUser();
-                Image img = this.userManager.getAvatar();
+            int count = this.userManager.getUserCount();
+            User user = this.userManager.getUser();
+            Image img = this.userManager.getAvatar();
 
-                ByteImage byteImage = new ByteImage(img.getUrl(), "jpg");
+            ByteImage byteImage = this.imageToByte(img);
 
-                DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, byteImage, count);
-                this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, count);
+            this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
 
         }
         else
@@ -253,15 +246,27 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(new User(data.pseudo, data.id), src);
 
-        System.out.println(data.avatar);
-
-//        this.userManager.setAvatar(data.pseudo, data.avatar);
-//        this.discover.onDiscoverInformation(data, src);
+        this.userManager.setAvatar(data.pseudo, new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
+        this.discover.onDiscoverInformation(data, src);
     }
 
     private void onTextMessage(TextMessage data, String src)
     {
         Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
         this.eventManager.notiy(new MessageEvent(data.pseudo, data.id, data.message));
+    }
+
+    private ByteImage imageToByte(Image img)
+    {
+        try
+        {
+            String path = img.getUrl();
+            System.out.println(path);
+            return new ByteImage(path, "jpg");
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
     }
 }

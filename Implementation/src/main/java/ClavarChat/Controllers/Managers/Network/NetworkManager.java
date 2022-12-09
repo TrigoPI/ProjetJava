@@ -8,6 +8,7 @@ import ClavarChat.Utils.PackedArray.PackedArray;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class NetworkManager
 {

@@ -14,6 +14,7 @@ import ClavarChat.Models.Events.Network.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Events.Network.SocketDataEvent;
+import ClavarChat.Models.Events.Network.SocketSendingEndEvent;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.Serializable;
@@ -50,11 +51,14 @@ public class NetworkAPI implements Listener
 
         this.clients = new HashMap<>();
 
+        this.eventManager.addEvent(SocketSendingEndEvent.FINISHED_SENDING);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_ENDED);
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_NEW);
         this.eventManager.addEvent(SocketDataEvent.SOCKET_DATA);
+
+        this.eventManager.addListenner(this, SocketSendingEndEvent.FINISHED_SENDING);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_SUCCESS);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_FAILED);
         this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_ENDED);
@@ -81,7 +85,7 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(key);
 
-            if (client.connected)
+            if (client.status == Client.STATUS.CONNECTED)
             {
                 client.out.stop();
                 client.in.stop();
@@ -116,6 +120,7 @@ public class NetworkAPI implements Listener
             int threadId = this.threadManager.createThread();
 
             Client client = new Client(socketId);
+            client.status = Client.STATUS.CONNECTING;
 
             this.clients.put(ip, client);
             this.threadManager.setThreadRunnable(threadId, new TcpConnection(this.networkManager, socketId, ip, port));
@@ -125,7 +130,7 @@ public class NetworkAPI implements Listener
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
         Client client = this.clients.get(ip);
 
-        if (!client.connected)
+        if (client.status == Client.STATUS.CONNECTING)
         {
             Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
             client.pendingDatasBuffer.push(data);
@@ -161,12 +166,21 @@ public class NetworkAPI implements Listener
                 this.connectionFailed((ConnectionEvent)event);
                 break;
             case SocketDataEvent.SOCKET_DATA:
-                this.onNetworkSocketDataEvent((SocketDataEvent)event);
+                this.onNetworkSocketData((SocketDataEvent)event);
+                break;
+            case SocketSendingEndEvent.FINISHED_SENDING:
+                this.onFinisedSending((SocketSendingEndEvent)event);
                 break;
         }
     }
 
-    private void onNetworkSocketDataEvent(SocketDataEvent event)
+    private void onFinisedSending(SocketSendingEndEvent event)
+    {
+        Log.Warning(this.getClass().getName() + " Socket id : " + event.socketId + " finished sending");
+//        Client client = this.clients.get(event.socketId);
+    }
+
+    private void onNetworkSocketData(SocketDataEvent event)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
 
@@ -205,7 +219,7 @@ public class NetworkAPI implements Listener
         client.in  = in;
         client.out = out;
 
-        client.connected = true;
+        client.status = Client.STATUS.CONNECTED;
 
         this.threadManager.setThreadRunnable(threadInId, in);
         this.threadManager.setThreadRunnable(threadOutId, out);
@@ -244,7 +258,7 @@ public class NetworkAPI implements Listener
         client.in  = in;
         client.out = out;
 
-        client.connected = true;
+        client.status = Client.STATUS.CONNECTED;
 
         this.threadManager.setThreadRunnable(threadInId, in);
         this.threadManager.setThreadRunnable(threadOutId, out);
@@ -266,7 +280,7 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(event.dstIp);
 
-            if (client.connected)
+            if (client.status == Client.STATUS.CONNECTED)
             {
                 client.in.stop();
                 client.out.stop();
@@ -285,8 +299,13 @@ public class NetworkAPI implements Listener
         }
     }
 
-    private class Client {
-        public boolean connected;
+    private class Client
+    {
+        public enum STATE { IDLE, SENDING }
+        public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT }
+
+        private STATUS status;
+        public STATE state;
 
         public int socketId;
 
@@ -303,9 +322,10 @@ public class NetworkAPI implements Listener
 
         public Client(int socketId)
         {
-            this.socketId = socketId;
+            this.state = STATE.IDLE;
+            this.status = STATUS.IDLE;
 
-            this.connected = false;
+            this.socketId = socketId;
 
             this.in = null;
             this.out = null;

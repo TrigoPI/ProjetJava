@@ -8,25 +8,28 @@ import java.util.concurrent.Semaphore;
 public abstract class TcpMessagin extends NetworkExecutable
 {
     protected int socketId;
+
     private boolean running;
-    private final Semaphore semaphore;
+    private final Semaphore runningSemaphore;
 
     protected TcpMessagin(NetworkManager networkManager, int socketId)
     {
         super(networkManager);
-        this.semaphore = new Semaphore(1);
+
         this.running = true;
         this.socketId = socketId;
+        this.runningSemaphore = new Semaphore(1);
     }
 
     protected boolean isRunning()
     {
         boolean running = true;
+
         try
         {
-            semaphore.acquire();
+            this.runningSemaphore.acquire();
             running = this.running;
-            semaphore.release();
+            this.runningSemaphore.release();
         }
         catch (InterruptedException e)
         {
@@ -40,11 +43,12 @@ public abstract class TcpMessagin extends NetworkExecutable
     {
         try
         {
-            semaphore.acquire();
+            runningSemaphore.acquire();
             this.running = false;
-            semaphore.release();
+            runningSemaphore.release();
         }
-        catch (InterruptedException e) {
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
     }
