@@ -6,23 +6,21 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="clvc-dracula-orchid" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" spacing="20.0" styleClass="clvc-control-container">
          <children>
-            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" spacing="20.0" styleClass="clvc-user-avatar-container">
+            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" styleClass="clvc-user-avatar-container">
                <children>
-                  <AnchorPane>
+                  <HBox fx:id="userAvatarContainer" alignment="CENTER">
                      <children>
-                        <Circle fill="DODGERBLUE" layoutX="50.0" layoutY="84.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Circle fill="#7bed9f" layoutX="76.0" layoutY="122.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="userAvatarImg" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
-                  </AnchorPane>
+                  </HBox>
                   <VBox alignment="CENTER_LEFT" spacing="3.0">
                      <children>
                         <Label fx:id="userName" text="User">
@@ -63,38 +61,31 @@
             </MFXScrollPane>
          </children>
       </VBox>
-      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
+      <VBox styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
                <children>
-                  <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0">
+                  <HBox fx:id="otherAvatarContainer" alignment="CENTER">
                      <children>
-                        <Circle fill="DODGERBLUE" layoutX="100.0" layoutY="50.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Circle fill="#7bed9f" layoutX="130.0" layoutY="91.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="otherAvatarImg" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
-                  </AnchorPane>
+                  </HBox>
                   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
-                        <Label text="Name">
+                        <Label fx:id="otherUserName" text="Name">
                            <styleClass>
                               <String fx:value="clvlc-font-24px" />
                               <String fx:value="clvc-font-bold" />
                            </styleClass>
                         </Label>
-                        <Label styleClass="clvc-font-12px" text="#1111" />
+                        <Label fx:id="otherUserId" styleClass="clvc-font-12px" text="#1111" />
                      </children>
                   </VBox>
                </children>
             </VBox>
-            <MFXScrollPane styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
+            <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0" />
-                        <HBox prefHeight="100.0" prefWidth="200.0" />
-                        <HBox prefHeight="100.0" prefWidth="200.0" />
-                     </children>
-                  </VBox>
+                  <VBox fx:id="messagesContainer" spacing="10.0" />
                </content>
             </MFXScrollPane>
             <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
@@ -104,7 +95,7 @@
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                      </children>
                   </VBox>
-                  <MFXTextField fx:id="usernameTextField1" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="625.0" styleClass="clvc-font-12px" />
+                  <MFXTextField fx:id="messageInput" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" prefHeight="40.0" prefWidth="625.0" styleClass="clvc-font-12px" />
                </children>
             </HBox>
          </children>

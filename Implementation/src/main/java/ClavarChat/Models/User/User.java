@@ -1,4 +1,6 @@
-package ClavarChat.Models.Users;
+package ClavarChat.Models.User;
+
+import javafx.scene.image.Image;
 
 import java.io.Serializable;
 

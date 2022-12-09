@@ -1,21 +1,25 @@
 package ClavarChat.Controllers.Managers.User;
 
-import ClavarChat.Models.Users.User;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserManager
 {
-    private boolean logged;
+    private User user;
+    private Image avatar;
 
-    private final User user;
     private final HashMap<String, UserData> users;
+
+    private boolean logged;
 
     public UserManager()
     {
-        this.user = new User("", "");
+        this.user = null;
+        this.avatar = null;
         this.users = new HashMap<>();
 
         this.logged = false;
@@ -54,18 +58,42 @@ public class UserManager
         return this.user;
     }
 
-    public void reset()
+    public User getUser(String pseudo)
     {
-        Log.Print(this.getClass().getName() + " Resetting User Manager");
+        return (!this.users.containsKey(pseudo))?null:this.users.get(pseudo).user;
+    }
 
-        this.user.pseudo = "";
-        this.user.id = "";
-        this.users.clear();
+    public Image getAvatar()
+    {
+        return this.avatar;
+    }
+
+    public Image getAvatar(String pseudo)
+    {
+        return (!this.users.containsKey(pseudo))?null:this.users.get(pseudo).avatar;
     }
 
     public void setLogged(boolean logged)
     {
         this.logged = logged;
+    }
+
+    public void setUser(String pseudo, String id)
+    {
+        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
+        this.user = new User(pseudo, id);
+    }
+
+    public void setAvatar(String path)
+    {
+        Log.Print(this.getClass().getName() + " Set avatar : " + path + " to user");
+        this.avatar = new Image(path);
+    }
+
+    public void setAvatar(String pseudo, Image image)
+    {
+        Log.Print(this.getClass().getName() + " Set avatar to user : " + pseudo);
+        if (this.users.containsKey(pseudo)) this.users.get(pseudo).avatar = image;
     }
 
     public void addUser(User user, String ip)
@@ -96,21 +124,25 @@ public class UserManager
         }
     }
 
-    public void setUser(String pseudo, String id)
+    public void reset()
     {
-        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
-        this.user.pseudo = pseudo;
-        this.user.id = id;
+        Log.Print(this.getClass().getName() + " Resetting User Manager");
+
+        this.user.pseudo = "";
+        this.user.id = "";
+        this.users.clear();
     }
 
     private class UserData
     {
         public User user;
+        public Image avatar;
         public ArrayList<String> addresses;
 
         public UserData(User user)
         {
             this.user = user;
+            this.avatar = null;
             this.addresses = new ArrayList<>();
         }
     }

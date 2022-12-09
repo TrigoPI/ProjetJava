@@ -6,7 +6,7 @@ import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Models.ClavarChatMessage.DiscoverRequestMessage;
 import ClavarChat.Models.ClavarChatMessage.DiscoverResponseMessage;
-import ClavarChat.Models.Users.User;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 

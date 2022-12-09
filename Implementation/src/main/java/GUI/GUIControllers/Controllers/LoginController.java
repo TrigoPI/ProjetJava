@@ -40,7 +40,6 @@ public class LoginController implements Initializable
     @FXML
     private MFXButton loginButton;
 
-
     @FXML
     private MFXProgressSpinner spinnerBar;
 
@@ -78,7 +77,6 @@ public class LoginController implements Initializable
 
     public void onLoginSuccess()
     {
-
         try
         {
             this.spinnerBar.setVisible(false);

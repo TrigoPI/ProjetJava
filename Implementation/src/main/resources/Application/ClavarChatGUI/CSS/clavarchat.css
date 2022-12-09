@@ -5,7 +5,6 @@
 }
 
 .clvc-user-preview-container {
-    -fx-background-color: clvc-dracula-orchid;
     -fx-background-radius: 30px;
     -fx-border-radius: 30px;
     -fx-padding: 0px 20px
@@ -17,4 +16,10 @@
 
 .clvc-chat-container {
     -fx-padding: 20px 10px;
+}
+
+.clvc-chat-bubble {
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
 }

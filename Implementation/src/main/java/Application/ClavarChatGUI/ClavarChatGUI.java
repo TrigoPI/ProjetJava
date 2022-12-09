@@ -36,6 +36,7 @@ public class ClavarChatGUI extends Application
         fxmlLoaderLogin.setController(loginController);
 
         Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
+//        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
         stage.setScene(scene);
@@ -48,7 +49,6 @@ public class ClavarChatGUI extends Application
     public void stop() throws Exception
     {
         this.clavarChatAPI.logout();
-        this.clavarChatAPI.closeAllClient();
         this.clavarChatAPI.closeServers();
     }
 

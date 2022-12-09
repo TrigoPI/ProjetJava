@@ -6,7 +6,7 @@ import ClavarChat.Models.ChainData.Request.Request;
 import ClavarChat.Models.ChainData.Response.Response;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClavarChatMessage.LoginMessage;
-import ClavarChat.Models.Users.User;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;

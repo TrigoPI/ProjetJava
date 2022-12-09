@@ -15,8 +15,9 @@ import ClavarChat.Models.Events.Login.LoginEvent;
 import ClavarChat.Models.Events.Login.NewUserEvent;
 import ClavarChat.Models.Events.Login.RemoveUserEvent;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
-import ClavarChat.Models.Users.User;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,28 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
+
+//        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
+//        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
+//        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
+//        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
+//        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
+//        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
+//        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
+//
+//        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+//        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
+//
+//        this.userManager.setAvatar("user1", img1);
+//        this.userManager.setAvatar("user2", img2);
+//        this.userManager.setAvatar("user3", img1);
+//        this.userManager.setAvatar("user4", img1);
+//        this.userManager.setAvatar("user5", img1);
+//        this.userManager.setAvatar("user6", img1);
+//        this.userManager.setAvatar("user7", img1);
+//
+//        this.userManager.setUser("Alexis", "0000");
+//        this.userManager.setLogged(true);
     }
 
 
@@ -71,9 +94,30 @@ public class ClavarChatAPI implements Listener
         return this.userManager.getUser().id;
     }
 
+    public String getId(String pseudo)
+    {
+        User user = this.userManager.getUser(pseudo);
+        return (user == null)?null:user.id;
+    }
+
     public ArrayList<User> getUsers()
     {
         return this.userManager.getUsers();
+    }
+
+    public Image getAvatar()
+    {
+        return this.userManager.getAvatar();
+    }
+
+    public Image getAvatar(String pseudo)
+    {
+        return this.userManager.getAvatar(pseudo);
+    }
+
+    public void setAvatar(String path)
+    {
+        this.userManager.setAvatar(path);
     }
 
     public void login(String pseudo, String id)
@@ -87,21 +131,22 @@ public class ClavarChatAPI implements Listener
     {
         User me = this.userManager.getUser();
 
-        for (User user : this.userManager.getUsers())
+        for (String ip : this.networkAPI.getBroadcastAddresses())
         {
-            String ip = this.userManager.getUserIP(user.pseudo).get(0);
             LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
-            this.networkAPI.sendTCP(ip, this.tcpPort, message);
+            this.networkAPI.sendUDP(ip, this.udpPort, message);
         }
     }
 
-    public void sendMessage(String message, String ip)
+    public void sendMessage(String pseudo, String message)
     {
         if (this.userManager.isLogged())
         {
             User user = this.userManager.getUser();
-//            TextMessage mgs = new TextMessage(user, message);
-//            this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
+            String ip = this.userManager.getUserIP(pseudo).get(0);
+
+            TextMessage mgs = new TextMessage(user.pseudo, user.id, message);
+            this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
         }
         else
         {
@@ -147,9 +192,9 @@ public class ClavarChatAPI implements Listener
                 break;
             case DiscoverResponseMessage.DISCOVER_RESPONSE:
                 this.onDiscoverResponse((DiscoverResponseMessage)data, event.ip);
-//            case DATA:
-//                this.onData((DataMessage)data, event.ip);
-//                break;
+            case TextMessage.TEXT_MESSAGE:
+                this.onTextMessage((TextMessage)data, event.ip);
+                break;
         }
     }
 
@@ -189,19 +234,8 @@ public class ClavarChatAPI implements Listener
         this.discover.onDiscoverInformation(data, src);
     }
 
-
-//    private void onData(DataMessage data, String src)
-//    {
-//        switch (data.dataType)
-//        {
-//            case TEXT:
-//                this.onTextMessage((TextMessage)data, src);
-//                break;
-//        }
-//    }
-
     private void onTextMessage(TextMessage data, String src)
     {
-//        Log.Info(this.getClass().getName() + " Message from " + src + " : " + data.message);
+        Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
     }
 }
