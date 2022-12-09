@@ -61,7 +61,7 @@
             </MFXScrollPane>
          </children>
       </VBox>
-      <VBox styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
+      <VBox fx:id="chatContainer" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
                <children>

@@ -46,6 +46,9 @@ public class ClavarChatController implements Initializable
     private VBox messagesContainer;
 
     @FXML
+    private VBox chatContainer;
+
+    @FXML
     private Label userName;
 
     @FXML
@@ -103,7 +106,15 @@ public class ClavarChatController implements Initializable
 
     public void onNewUser(String pseudo, String id)
     {
-        Platform.runLater(() -> this.createUserDescription(pseudo, id));
+        Platform.runLater(() -> {
+            this.createUserDescription(pseudo, id);
+
+            if (!this.chatContainer.isVisible())
+            {
+                this.chatContainer.setVisible(true);
+                this.selectUser(this.usersGUI.get(pseudo));
+            }
+        });
     }
 
     public void onTextMessage(String pseudo, String message)
@@ -142,7 +153,15 @@ public class ClavarChatController implements Initializable
     private void addDiscoveredUser()
     {
         for (User user : this.api.getUsers()) this.createUserDescription(user.pseudo, user.id);
-        if (!this.userPreviewContainer.getChildren().isEmpty()) this.selectUser((HBox)this.userPreviewContainer.getChildren().get(0));
+
+        if (!this.userPreviewContainer.getChildren().isEmpty())
+        {
+            this.selectUser((HBox)this.userPreviewContainer.getChildren().get(0));
+        }
+        else
+        {
+            this.chatContainer.setVisible(false);
+        }
     }
 
     private void createUserDescription(String pseudo, String id)
@@ -200,6 +219,7 @@ public class ClavarChatController implements Initializable
     private void createMessage(String message, boolean other)
     {
         Pos pos = (other)?Pos.CENTER_LEFT:Pos.CENTER_RIGHT;
+        String color = (other)?"clvc-american-river":"clvc-shy-moment";
 
         HBox container = new HBox();
         HBox messageContainer = new HBox();
@@ -220,7 +240,7 @@ public class ClavarChatController implements Initializable
         messageContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         messageContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         messageContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        messageContainer.getStyleClass().add("clvc-shy-moment");
+        messageContainer.getStyleClass().add(color);
         messageContainer.getStyleClass().add("clvc-chat-bubble");
 
         avatarContainer.setAlignment(pos);
