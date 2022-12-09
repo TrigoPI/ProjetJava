@@ -222,7 +222,8 @@ public class ClavarChatAPI implements Listener
         {
             int count = this.userManager.getUserCount();
             User user = this.userManager.getUser();
-            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, count);
+            Image img = this.userManager.getAvatar();
+            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, img, count);
             this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
         }
         else
@@ -235,7 +236,7 @@ public class ClavarChatAPI implements Listener
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(new User(data.pseudo, data.id), src);
-        this.userManager.setAvatar(data.pseudo, new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
+        this.userManager.setAvatar(data.pseudo, data.avatar);
         this.discover.onDiscoverInformation(data, src);
     }
 

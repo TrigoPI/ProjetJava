@@ -1,13 +1,12 @@
 package GUI.GUIControllers.Controllers;
 
+import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
-import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Animation.FadeColor.FadeColor;
 import ClavarChat.Utils.Log.Log;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -78,7 +77,7 @@ public class ClavarChatController implements Initializable
         this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
         this.americanRiver = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
 
-        this.api.setAvatar("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
+        this.api.setAvatar("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
     }
 
     @Override
