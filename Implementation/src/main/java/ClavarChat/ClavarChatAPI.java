@@ -242,5 +242,6 @@ public class ClavarChatAPI implements Listener
     private void onTextMessage(TextMessage data, String src)
     {
         Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
+        this.eventManager.notiy(new MessageEvent(data.pseudo, data.id, data.message));
     }
 }
