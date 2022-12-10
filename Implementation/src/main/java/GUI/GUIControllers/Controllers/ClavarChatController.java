@@ -128,6 +128,7 @@ public class ClavarChatController implements Initializable
             if (selectedPseudo.equals(pseudo)) Platform.runLater(() -> this.createMessage(message, true));
         }
 
+        if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
         this.api.saveMessage(pseudo, pseudo, message);
     }
 
@@ -344,14 +345,8 @@ public class ClavarChatController implements Initializable
         String otherPseudo = this.getPseudoFromHbox(this.selectedUser);
         String userPseudo  = this.api.getPseudo();
 
-        if (this.api.conversationExist(otherPseudo))
-        {
-            this.createConversation(otherPseudo, userPseudo);
-        }
-        else
-        {
-            this.api.createConversation(otherPseudo);
-        }
+        if (!this.api.conversationExist(otherPseudo)) this.api.createConversation(otherPseudo);
+        this.createConversation(otherPseudo, userPseudo);
     }
 
     private void createConversation(String otherPseudo, String userPseudo)
