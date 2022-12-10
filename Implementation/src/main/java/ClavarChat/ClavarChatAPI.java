@@ -139,11 +139,6 @@ public class ClavarChatAPI implements Listener
         {
             User me = this.userManager.getUser();
 
-//            for (String ip : this.networkAPI.getBroadcastAddresses())
-//            {
-//                LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
-//                this.networkAPI.sendUDP(ip, this.udpPort, message);
-//            }
             for (User user : this.userManager.getUsers())
             {
                 LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
@@ -219,7 +214,7 @@ public class ClavarChatAPI implements Listener
 
         this.userManager.addUser(new User(data.pseudo, data.id), src);
         this.userManager.setAvatar(data.pseudo, avatar);
-        this.eventManager.notiy(new NewUserEvent(data.pseudo, data.id));
+        this.eventManager.notiy(new NewUserEvent(data.pseudo));
     }
 
     private void onLogout(LoginMessage data)

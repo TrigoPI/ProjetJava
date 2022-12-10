@@ -51,7 +51,7 @@ public class GUIControllers implements Listener
                 break;
             case NewUserEvent.NEW_USER:
                 NewUserEvent newUserEvent = (NewUserEvent)event;
-                this.onNewUser(newUserEvent.pseudo, newUserEvent.id);
+                this.onNewUser(newUserEvent.pseudo);
                 break;
             case RemoveUserEvent.REMOVE_USER:
                 RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
@@ -86,8 +86,8 @@ public class GUIControllers implements Listener
         this.clavarChatController.onRemoveUser(pseudo);
     }
 
-    private void onNewUser(String pseudo, String id)
+    private void onNewUser(String pseudo)
     {
-        this.clavarChatController.onNewUser(pseudo, id);
+        this.clavarChatController.onNewUser(pseudo);
     }
 }

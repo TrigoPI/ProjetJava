@@ -103,10 +103,10 @@ public class ClavarChatController implements Initializable
         Platform.runLater(() -> this.userPreviewContainer.getChildren().remove(container));
     }
 
-    public void onNewUser(String pseudo, String id)
+    public void onNewUser(String pseudo)
     {
         Platform.runLater(() -> {
-            this.createUserDescription(pseudo, id);
+            this.createUserDescription(pseudo, this.api.getId(pseudo));
 
             if (!this.chatContainer.isVisible())
             {

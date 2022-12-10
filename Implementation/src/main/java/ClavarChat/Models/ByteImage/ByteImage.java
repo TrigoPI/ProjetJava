@@ -1,5 +1,6 @@
 package ClavarChat.Models.ByteImage;
 
+import ClavarChat.Utils.Path.Path;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import javax.imageio.ImageIO;
@@ -41,6 +42,14 @@ public class ByteImage implements Serializable
     public static Image decode(ByteImage img)
     {
         byte[] buffer = new byte[img.size];
+
+        try {
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(buffer));
+            ImageIO.write(image, "jpg", new File(Path.getWorkingPath() + "src\\main\\resources\\test.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return new Image(new ByteArrayInputStream(buffer));
     }
 }
