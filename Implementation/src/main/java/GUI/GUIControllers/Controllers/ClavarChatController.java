@@ -100,19 +100,23 @@ public class ClavarChatController implements Initializable
     public void onRemoveUser(String pseudo)
     {
         HBox container = this.usersGUI.get(pseudo);
-        Platform.runLater(() -> this.userPreviewContainer.getChildren().remove(container));
+        Platform.runLater(() ->
+        {
+            if (this.selectedUser != null)
+            {
+                String selectedPseudo = this.getPseudoFromHbox(this.selectedUser);
+                if (selectedPseudo.equals(pseudo)) this.chatContainer.setVisible(false);
+            }
+
+            this.userPreviewContainer.getChildren().remove(container);
+        });
     }
 
     public void onNewUser(String pseudo)
     {
         Platform.runLater(() -> {
             this.createUserDescription(pseudo, this.api.getId(pseudo));
-
-            if (!this.chatContainer.isVisible())
-            {
-                this.chatContainer.setVisible(true);
-                this.selectUser(this.usersGUI.get(pseudo));
-            }
+            this.selectUser(this.usersGUI.get(pseudo));
         });
     }
 
@@ -120,18 +124,18 @@ public class ClavarChatController implements Initializable
     {
         if (this.selectedUser != null)
         {
-            String selectedPseudo = this.getSelectedUserPseudo();
+            String selectedPseudo = this.getPseudoFromHbox(this.selectedUser);
             if (selectedPseudo.equals(pseudo)) Platform.runLater(() -> this.createMessage(message, true));
         }
 
         this.api.saveMessage(pseudo, pseudo, message);
     }
 
-    private String getSelectedUserPseudo()
+    private String getPseudoFromHbox(HBox hBox)
     {
         if (this.selectedUser == null) return null;
 
-        VBox vBox = (VBox)this.selectedUser.getChildren().get(1);
+        VBox vBox = (VBox)hBox.getChildren().get(1);
         Label label = (Label)vBox.getChildren().get(0);
 
         return label.getText();
@@ -278,11 +282,15 @@ public class ClavarChatController implements Initializable
 
     private void selectUser(HBox hBox)
     {
+        if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
+
         if (this.selectedUser != null)
         {
             this.selectedUser.getStyleClass().remove("clvc-american-river");
             this.selectedUser.getStyleClass().add("clvc-dracula-orchid");
             this.selectedUser.setBackground(new Background(new BackgroundFill(this.draculaOrchid, CornerRadii.EMPTY, Insets.EMPTY)));
+
+            this.messagesContainer.getChildren().clear();
         }
 
         this.selectedUser = hBox;
@@ -290,7 +298,9 @@ public class ClavarChatController implements Initializable
         this.selectedUser.getStyleClass().remove("clvc-dracula-orchid");
         this.selectedUser.getStyleClass().add("clvc-american-river");
 
-        this.updateChatContainer(this.getSelectedUserPseudo());
+        String pseudo = this.getPseudoFromHbox(this.selectedUser);
+
+        this.updateChatContainer(pseudo);
         this.clip(this.otherAvatarImg, 50);
     }
 
@@ -329,15 +339,13 @@ public class ClavarChatController implements Initializable
 
     private void onMouseClick(MouseEvent event)
     {
-        if (this.selectedUser != null) this.messagesContainer.getChildren().clear();
         this.selectUser((HBox)event.getSource());
 
-        String otherPseudo = this.getSelectedUserPseudo();
+        String otherPseudo = this.getPseudoFromHbox(this.selectedUser);
         String userPseudo  = this.api.getPseudo();
 
         if (this.api.conversationExist(otherPseudo))
         {
-            ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
             this.createConversation(otherPseudo, userPseudo);
         }
         else
@@ -361,7 +369,7 @@ public class ClavarChatController implements Initializable
     private void onSendMessage()
     {
         String message = this.messageInput.getText().trim();
-        String pseudo = this.getSelectedUserPseudo();
+        String pseudo = this.getPseudoFromHbox(this.selectedUser);
         String from = this.api.getPseudo();
 
         if (!message.isEmpty())
