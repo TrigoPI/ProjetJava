@@ -215,9 +215,10 @@ public class ClavarChatAPI implements Listener
 
     private void onLogin(LoginMessage data, String src)
     {
-        System.out.println(data.img);
+        Image avatar = ByteImage.decode(data.img);
 
         this.userManager.addUser(new User(data.pseudo, data.id), src);
+        this.userManager.setAvatar(data.pseudo, avatar);
         this.eventManager.notiy(new NewUserEvent(data.pseudo, data.id));
     }
 

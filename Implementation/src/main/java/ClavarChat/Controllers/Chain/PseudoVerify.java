@@ -37,7 +37,7 @@ public class PseudoVerify extends Handler
 
         User user = new User(loginRequest.pseudo, loginRequest.id);
         Image avatar = this.userManager.getAvatar();
-        ByteImage img = ByteImage.createByteImage(avatar.getUrl());
+        ByteImage img = ByteImage.encode(avatar.getUrl());
 
         ArrayList<User> users = this.userManager.getUsers();
 
