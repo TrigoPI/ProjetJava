@@ -51,7 +51,7 @@ public class LoginController implements Initializable
         this.api = api;
         this.clavarChat = clavarChat;
 
-        this.api.setAvatar(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+        this.api.setAvatar(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
     }
 
     @Override

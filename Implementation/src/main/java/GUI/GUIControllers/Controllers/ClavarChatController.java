@@ -1,6 +1,5 @@
 package GUI.GUIControllers.Controllers;
 
-import ClavarChat.Utils.Path.Path;
 import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.User.User;
@@ -19,7 +18,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
