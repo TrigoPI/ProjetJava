@@ -127,9 +127,7 @@ public class UserManager
     public void reset()
     {
         Log.Print(this.getClass().getName() + " Resetting User Manager");
-
-        this.user.pseudo = "";
-        this.user.id = "";
+        this.user = null;
         this.users.clear();
     }
 
