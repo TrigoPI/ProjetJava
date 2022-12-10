@@ -17,8 +17,8 @@ public class ByteImage implements Serializable
     {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
 
-        BufferedImage image = ImageIO.read(new File("path"));
-        ImageIO.write(image, "jpg", byteArrayOutputStream);
+        BufferedImage image = ImageIO.read(new File(path));
+        ImageIO.write(image, extension, byteArrayOutputStream);
 
         this.size = this.byteArrayOutputStream.size();
     }
