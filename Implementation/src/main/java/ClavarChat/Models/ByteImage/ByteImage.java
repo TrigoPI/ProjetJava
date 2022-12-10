@@ -39,13 +39,6 @@ public class ByteImage implements Serializable
 
     public static Image decode(ByteImage img)
     {
-        try {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(img.buffer));
-            ImageIO.write(image, "jpg", new File(Path.getWorkingPath() + "src\\main\\resources\\test.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return new Image(new ByteArrayInputStream(img.buffer));
     }
 }
