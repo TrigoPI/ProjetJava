@@ -19,6 +19,7 @@ import ClavarChat.Models.Events.Message.MessageEvent;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.Path.Path;
 import javafx.scene.image.Image;
 
 import java.io.IOException;
@@ -65,27 +66,27 @@ public class ClavarChatAPI implements Listener
 
         this.networkAPI.startServer();
 
-        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
-        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
-        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
-        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
-        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
-        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
-        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
-
-        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
-        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
-
-        this.userManager.setAvatar("user1", img1);
-        this.userManager.setAvatar("user2", img2);
-        this.userManager.setAvatar("user3", img1);
-        this.userManager.setAvatar("user4", img1);
-        this.userManager.setAvatar("user5", img1);
-        this.userManager.setAvatar("user6", img1);
-        this.userManager.setAvatar("user7", img1);
-
-        this.userManager.setUser("Alexis", "0000");
-        this.userManager.setLogged(true);
+//        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
+//        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
+//        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
+//        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
+//        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
+//        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
+//        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
+//
+//        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+//        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
+//
+//        this.userManager.setAvatar("user1", img1);
+//        this.userManager.setAvatar("user2", img2);
+//        this.userManager.setAvatar("user3", img1);
+//        this.userManager.setAvatar("user4", img1);
+//        this.userManager.setAvatar("user5", img1);
+//        this.userManager.setAvatar("user6", img1);
+//        this.userManager.setAvatar("user7", img1);
+//
+//        this.userManager.setUser("Alexis", "0000");
+//        this.userManager.setLogged(true);
     }
 
 
@@ -138,10 +139,15 @@ public class ClavarChatAPI implements Listener
         {
             User me = this.userManager.getUser();
 
-            for (String ip : this.networkAPI.getBroadcastAddresses())
+//            for (String ip : this.networkAPI.getBroadcastAddresses())
+//            {
+//                LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
+//                this.networkAPI.sendUDP(ip, this.udpPort, message);
+//            }
+            for (User user : this.userManager.getUsers())
             {
                 LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
-                this.networkAPI.sendUDP(ip, this.udpPort, message);
+                this.networkAPI.sendTCP(this.userManager.getUserIP(user.pseudo).get(0), this.tcpPort, message);
             }
         }
     }
@@ -209,6 +215,8 @@ public class ClavarChatAPI implements Listener
 
     private void onLogin(LoginMessage data, String src)
     {
+        System.out.println(data.img);
+
         this.userManager.addUser(new User(data.pseudo, data.id), src);
         this.eventManager.notiy(new NewUserEvent(data.pseudo, data.id));
     }
@@ -227,9 +235,6 @@ public class ClavarChatAPI implements Listener
         {
             int count = this.userManager.getUserCount();
             User user = this.userManager.getUser();
-            Image img = this.userManager.getAvatar();
-
-            ByteImage byteImage = this.imageToByte(img);
 
             DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, count);
             this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
@@ -246,7 +251,7 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(new User(data.pseudo, data.id), src);
 
-        this.userManager.setAvatar(data.pseudo, new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
+        this.userManager.setAvatar(data.pseudo, new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
         this.discover.onDiscoverInformation(data, src);
     }
 
@@ -254,19 +259,5 @@ public class ClavarChatAPI implements Listener
     {
         Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
         this.eventManager.notiy(new MessageEvent(data.pseudo, data.id, data.message));
-    }
-
-    private ByteImage imageToByte(Image img)
-    {
-        try
-        {
-            String path = img.getUrl();
-            System.out.println(path);
-            return new ByteImage(path, "jpg");
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
     }
 }

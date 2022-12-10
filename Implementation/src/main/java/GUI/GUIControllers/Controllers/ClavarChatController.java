@@ -1,5 +1,6 @@
 package GUI.GUIControllers.Controllers;
 
+import ClavarChat.Utils.Path.Path;
 import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.User.User;
@@ -77,16 +78,6 @@ public class ClavarChatController implements Initializable
 
         this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
         this.americanRiver = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
-
-        try
-        {
-            String currentPath = new java.io.File(".").getCanonicalPath();
-            this.api.setAvatar(currentPath + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     @Override

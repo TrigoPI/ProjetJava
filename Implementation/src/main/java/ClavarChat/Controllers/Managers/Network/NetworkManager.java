@@ -8,7 +8,6 @@ import ClavarChat.Utils.PackedArray.PackedArray;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class NetworkManager
 {
@@ -75,81 +74,80 @@ public class NetworkManager
     public NetworkPaquet tcpReceive(int socketId)
     {
         Socket socket = this.sockets.get(socketId);
+        NetworkPaquet data = null;
 
-        if (socket != null)
-        {
-            try
-            {
-                String srcIp = NetworkUtils.getSocketLocalIp(socket);
-                String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-                int srcPort = NetworkUtils.getSocketLocalPort(socket);
-                int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
-                InputStream in = socket.getInputStream();
-                ObjectInputStream iin = new ObjectInputStream(in);
-                NetworkPaquet data = (NetworkPaquet)iin.readObject();
-
-                Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
-
-                return data;
-            }
-            catch (IOException | ClassNotFoundException e)
-            {
-                Log.Error(this.getClass().getName() + " ERROR in TCP receive");
-                e.printStackTrace();
-            }
-        }
-        else
+        if (socket == null)
         {
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
+            return null;
         }
 
-        Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
-        this.sockets.remove(socketId);
+        try
+        {
+            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+            String dstIp = NetworkUtils.getSocketDistantIp(socket);
 
-        return null;
+            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+            InputStream in = socket.getInputStream();
+            ObjectInputStream iin = new ObjectInputStream(in);
+            data = (NetworkPaquet)iin.readObject();
+
+            Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+        }
+        catch (IOException | ClassNotFoundException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR in TCP receive");
+            Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
+            this.sockets.remove(socketId);
+        }
+
+        return data;
     }
 
     public NetworkPaquet udpReceive(int serverId)
     {
-        DatagramSocket server =  this.udpServers.get(serverId);
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
 
-        if (server != null)
-        {
-            if (server.isBound() && !server.isClosed())
-            {
-                try
-                {
-                    int bufferSize = 1024;
-                    byte[] buffer = new byte[bufferSize];
+        NetworkPaquet data = null;
+        DatagramSocket server = this.udpServers.get(serverId);
 
-                    DatagramPacket datagramPacket = new DatagramPacket(buffer, bufferSize);
-                    server.receive(datagramPacket);
-
-                    ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-                    NetworkPaquet data = (NetworkPaquet)iStream.readObject();
-
-                    Log.Print(this.getClass().getName() + " Paquet from UDP " + data.srcIp + ":" + data.srcPort);
-
-                    return data;
-                }
-                catch (IOException | ClassNotFoundException e)
-                {
-                    Log.Error(this.getClass().getName() + " ERROR UDP server closed");
-                }
-            }
-            else
-            {
-                Log.Error(this.getClass().getName() + " ERROR UDP server not bound");
-            }
-        }
-        else
+        if (server == null)
         {
             Log.Error(this.getClass().getName() + " ERROR TCP server is null ");
+            return null;
         }
 
-        return null;
+        if (!server.isBound())
+        {
+            Log.Error(this.getClass().getName() + " ERROR UDP server not bound");
+            return null;
+        }
+
+        if (server.isClosed())
+        {
+            Log.Error(this.getClass().getName() + " ERROR UDP server closed");
+            return null;
+        }
+
+        try
+        {
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, bufferSize);
+            server.receive(datagramPacket);
+
+            ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
+            data = (NetworkPaquet)iStream.readObject();
+
+            Log.Print(this.getClass().getName() + " Paquet from UDP " + data.srcIp + ":" + data.srcPort);
+        }
+        catch (IOException | ClassNotFoundException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR UDP server closed");
+        }
+
+        return data;
     }
 
     public String getLocalSocketIp(int socketId)
@@ -184,7 +182,7 @@ public class NetworkManager
     {
         int id = -1;
         try { id = this.tcpServers.add(new ServerSocket()); }
-        catch (IOException e) {e.printStackTrace();}
+        catch (IOException e) { e.printStackTrace(); }
         return id;
     }
 
@@ -192,7 +190,7 @@ public class NetworkManager
     {
         int id = -1;
         try { id = this.udpServers.add(new DatagramSocket(null)); }
-        catch (IOException e) {e.printStackTrace();}
+        catch (IOException e) { e.printStackTrace(); }
         return id;
     }
 
@@ -203,6 +201,8 @@ public class NetworkManager
 
     public int udpSend(Serializable data, String dst, int port)
     {
+        int code = 0;
+
         try
         {
             InetAddress addr = InetAddress.getByName(dst);
@@ -220,189 +220,192 @@ public class NetworkManager
             oo.writeObject(paquet);
             oo.close();
 
-
             byte[] serializedMessage = bStream.toByteArray();
             DatagramPacket datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, addr, port);
 
             datagramSocket.send(datagramPacket);
-
-            return 0;
         }
         catch (IOException e)
         {
             e.printStackTrace();
+            code = -1;
         }
 
-        return -1;
+        return code;
     }
 
     public int tcpSend(int socketId, Serializable data)
     {
+        int code = 0;
         Socket socket = this.sockets.get(socketId);
 
-        if (socket != null)
-        {
-            try
-            {
-                String srcIp = NetworkUtils.getSocketLocalIp(socket);
-                String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-                int srcPort = NetworkUtils.getSocketLocalPort(socket);
-                int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
-                NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, dstPort, data);
-
-                Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
-
-                OutputStream out = socket.getOutputStream();
-                ObjectOutputStream oout = new ObjectOutputStream(out);
-                oout.writeObject(paquet);
-
-                return 0;
-            }
-            catch (IOException e)
-            {
-                Log.Error(this.getClass().getName() + " ERROR in TCP Send");
-                e.printStackTrace();
-            }
-        }
-        else
+        if (socket == null)
         {
             Log.Error(this.getClass().getName() + " ERROR socket is null ");
+            return -1;
         }
 
-        Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
-        this.sockets.remove(socketId);
+        try
+        {
+            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+            String dstIp = NetworkUtils.getSocketDistantIp(socket);
 
-        return -1;
+            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+            NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, dstPort, data);
+
+            Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+
+            OutputStream out = socket.getOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(paquet);
+        }
+        catch (IOException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR in TCP Send");
+            Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
+
+            this.sockets.remove(socketId);
+
+            code = -1;
+        }
+
+        return code;
     }
 
     public int connect(int socketId, String ip, int port)
     {
+        int code = 0;
         Socket socket = this.sockets.get(socketId);
 
-        if (socket != null)
-        {
-            try
-            {
-                Log.Print(this.getClass().getName() + " Trying to connect with : " + ip + ":" + port + " --> socket id : " + socketId);
-
-                InetAddress inetAddress = InetAddress.getByName(ip);
-                SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
-                socket.connect(socketAddress, 5000);
-
-                Log.Info(this.getClass().getName() + " Connection success with : " + ip + ":" + port + " --> socket id : " + socketId);
-
-                return 0;
-            }
-            catch (IOException e)
-            {
-                Log.Error(this.getClass().getName() + " Cannot connect to : " + ip + ":" + port);
-                Log.Print(this.getClass().getName() + " Removing socket with id : " + socketId);
-
-                this.sockets.remove(socketId);
-            }
-        }
-        else
+        if (socket == null)
         {
             Log.Error(this.getClass().getName() + " ERROR socket is null");
+            return -1;
         }
 
-        return -1;
+        try
+        {
+            Log.Print(this.getClass().getName() + " Trying to connect with : " + ip + ":" + port + " --> socket id : " + socketId);
+
+            InetAddress inetAddress = InetAddress.getByName(ip);
+            SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
+            socket.connect(socketAddress, 5000);
+
+            Log.Info(this.getClass().getName() + " Connection success with : " + ip + ":" + port + " --> socket id : " + socketId);
+        }
+        catch (IOException e)
+        {
+            Log.Error(this.getClass().getName() + " Cannot connect to : " + ip + ":" + port);
+            Log.Print(this.getClass().getName() + " Removing socket with id : " + socketId);
+
+            this.sockets.remove(socketId);
+
+            code = -1;
+        }
+
+        return code;
     }
 
     public int accept(int serverId)
     {
+        int code = 0;
         ServerSocket server =  this.tcpServers.get(serverId);
 
-        if (server != null)
-        {
-            if (server.isBound() && !server.isClosed())
-            {
-                try
-                {
-                    Socket socket = server.accept();
-                    int socketId = this.sockets.add(socket);
-
-                    String srcIp = NetworkUtils.getSocketLocalIp(socket);
-                    String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-                    int srcPort = NetworkUtils.getSocketLocalPort(socket);
-                    int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
-                    Log.Info(this.getClass().getName() + " New TCP client : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
-                    return socketId;
-                }
-                catch (IOException e)
-                {
-                    Log.Error(this.getClass().getName() + " ERROR TCP server closed");
-                }
-            }
-            else
-            {
-                Log.Error(this.getClass().getName() + " ERROR TCP server not bound");
-            }
-        }
-        else
+        if (server == null)
         {
             Log.Error(this.getClass().getName() + " ERROR TCP server is null ");
+            return -1;
         }
 
-        return -1;
+        if (!server.isBound())
+        {
+            Log.Error(this.getClass().getName() + " ERROR TCP server not bound");
+            return -1;
+        }
+
+        if (server.isClosed())
+        {
+            Log.Error(this.getClass().getName() + " ERROR TCP server closed");
+            return -1;
+        }
+
+        try
+        {
+            Socket socket = server.accept();
+            int socketId = this.sockets.add(socket);
+
+            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+            String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+            Log.Info(this.getClass().getName() + " New TCP client : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+
+            code = socketId;
+        }
+        catch (IOException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR in TCP server");
+            code = -1;
+        }
+
+        return code;
     }
 
     public int startTcpServer(int serverId, int port)
     {
+        int code = 0;
         ServerSocket server =  this.tcpServers.get(serverId);
 
-        if (server != null)
+        if (server == null)
+        {
+            Log.Error(this.getClass().getName() + " ERROR TCP server port : " + port + " is null ");
+            return -1;
+        }
+
+        try
         {
             Log.Info(this.getClass().getName() + " Start TCP server on port : " + port);
 
-            try
-            {
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
-                server.bind(inetSocketAddress);
-                return 0;
-            }
-            catch (IOException e)
-            {
-                Log.Error(this.getClass().getName() + " ERROR in TCP TCP server");
-            }
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+            server.bind(inetSocketAddress);
         }
-        else
+        catch (IOException e)
         {
-            Log.Error(this.getClass().getName() + " ERROR TCP server port : " + port + " is null ");
+            Log.Error(this.getClass().getName() + " ERROR in TCP TCP server");
+            code = -1;
         }
 
-        return -1;
+        return code;
     }
 
     public int startUdpServer(int serverId, int port)
     {
+        int code = 0;
         DatagramSocket server =  this.udpServers.get(serverId);
 
-        if (server != null)
-        {
-            Log.Info(this.getClass().getName() + " Start UDP server on port : " + port);
-
-            try
-            {
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
-                server.bind(inetSocketAddress);
-            }
-            catch (SocketException e)
-            {
-                e.printStackTrace();
-            }
-            return 0;
-        }
-        else
+        if (server == null)
         {
             Log.Error(this.getClass().getName() + " ERROR TCP server is null ");
+            return -1;
         }
 
-        return -1;
+        try
+        {
+            Log.Info(this.getClass().getName() + " Start UDP server on port : " + port);
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(port);
+            server.bind(inetSocketAddress);
+        }
+        catch (SocketException e)
+        {
+            e.printStackTrace();
+            code = -1;
+        }
+
+        return code;
     }
 
     public void closeUdpServer(int serverID)

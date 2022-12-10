@@ -1,5 +1,6 @@
 package GUI.GUIControllers.Controllers;
 
+import ClavarChat.Utils.Path.Path;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -47,8 +48,10 @@ public class LoginController implements Initializable
 
     public LoginController(ClavarChatAPI api, FXMLLoader clavarChat)
     {
-        this.clavarChat = clavarChat;
         this.api = api;
+        this.clavarChat = clavarChat;
+
+        this.api.setAvatar(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
     }
 
     @Override

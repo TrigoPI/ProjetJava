@@ -1,5 +1,6 @@
 package ClavarChat.Models.ByteImage;
 
+import org.apache.commons.io.FilenameUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +13,7 @@ public class ByteImage implements Serializable
     public int size;
     public ByteArrayOutputStream byteArrayOutputStream;
 
-    public ByteImage(String path, String extension) throws IOException
+    private ByteImage(String path, String extension) throws IOException
     {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -20,5 +21,22 @@ public class ByteImage implements Serializable
         ImageIO.write(image, "jpg", byteArrayOutputStream);
 
         this.size = this.byteArrayOutputStream.size();
+    }
+
+    public static ByteImage createByteImage(String path)
+    {
+        String extension = FilenameUtils.getExtension(path);
+        ByteImage img = null;
+
+        try
+        {
+            img = new ByteImage(path, extension);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return img;
     }
 }
