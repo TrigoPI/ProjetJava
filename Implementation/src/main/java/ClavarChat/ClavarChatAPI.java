@@ -238,7 +238,6 @@ public class ClavarChatAPI implements Listener
 
             DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, count);
             this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
-
         }
         else
         {

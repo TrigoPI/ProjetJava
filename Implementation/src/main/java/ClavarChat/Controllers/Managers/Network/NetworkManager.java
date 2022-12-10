@@ -268,6 +268,8 @@ public class NetworkManager
 
             this.sockets.remove(socketId);
 
+            e.printStackTrace();
+
             code = -1;
         }
 

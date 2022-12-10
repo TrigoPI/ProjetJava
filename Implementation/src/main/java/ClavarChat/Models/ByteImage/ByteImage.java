@@ -11,16 +11,16 @@ import java.io.Serializable;
 public class ByteImage implements Serializable
 {
     public int size;
-    public ByteArrayOutputStream byteArrayOutputStream;
+    public byte[] buffer;
 
     private ByteImage(String path, String extension) throws IOException
     {
-        this.byteArrayOutputStream = new ByteArrayOutputStream();
-
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         BufferedImage image = ImageIO.read(new File(path));
         ImageIO.write(image, extension, byteArrayOutputStream);
 
-        this.size = this.byteArrayOutputStream.size();
+        this.size = byteArrayOutputStream.size();
+        this.buffer = byteArrayOutputStream.toByteArray();
     }
 
     public static ByteImage createByteImage(String path)
