@@ -329,7 +329,7 @@ public class ClavarChatController implements Initializable
 
     private void onMouseClick(MouseEvent event)
     {
-        if (this.selectedUser != null) this.selectedUser.getChildren().clear();
+        if (this.selectedUser != null) this.messagesContainer.getChildren().clear();
         this.selectUser((HBox)event.getSource());
 
         String otherPseudo = this.getSelectedUserPseudo();
