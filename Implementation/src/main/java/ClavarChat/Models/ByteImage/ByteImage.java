@@ -9,7 +9,6 @@ import java.io.*;
 
 public class ByteImage implements Serializable
 {
-    public int size;
     public byte[] buffer;
 
     private ByteImage(String path, String extension) throws IOException
@@ -18,7 +17,6 @@ public class ByteImage implements Serializable
         BufferedImage image = ImageIO.read(new File(path));
         ImageIO.write(image, extension, byteArrayOutputStream);
 
-        this.size = byteArrayOutputStream.size();
         this.buffer = byteArrayOutputStream.toByteArray();
     }
 
@@ -41,15 +39,13 @@ public class ByteImage implements Serializable
 
     public static Image decode(ByteImage img)
     {
-        byte[] buffer = new byte[img.size];
-
         try {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(buffer));
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(img.buffer));
             ImageIO.write(image, "jpg", new File(Path.getWorkingPath() + "src\\main\\resources\\test.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return new Image(new ByteArrayInputStream(buffer));
+        return new Image(new ByteArrayInputStream(img.buffer));
     }
 }
