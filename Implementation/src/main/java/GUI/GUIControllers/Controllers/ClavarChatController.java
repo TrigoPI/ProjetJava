@@ -301,6 +301,8 @@ public class ClavarChatController implements Initializable
 
         String pseudo = this.getPseudoFromHbox(this.selectedUser);
 
+        if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
+
         this.updateChatContainer(pseudo);
         this.clip(this.otherAvatarImg, 50);
     }
@@ -345,7 +347,6 @@ public class ClavarChatController implements Initializable
         String otherPseudo = this.getPseudoFromHbox(this.selectedUser);
         String userPseudo  = this.api.getPseudo();
 
-        if (!this.api.conversationExist(otherPseudo)) this.api.createConversation(otherPseudo);
         this.createConversation(otherPseudo, userPseudo);
     }
 
