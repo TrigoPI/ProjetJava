@@ -296,12 +296,17 @@ public class ClavarChatController implements Initializable
 
         this.selectedUser = hBox;
 
+        String pseudo = this.getPseudoFromHbox(this.selectedUser);
+
+        if (!this.api.conversationExist(pseudo))
+        {
+            this.api.createConversation(pseudo);
+            this.createConversation(pseudo);
+        }
+
         this.selectedUser.getStyleClass().remove("clvc-dracula-orchid");
         this.selectedUser.getStyleClass().add("clvc-american-river");
 
-        String pseudo = this.getPseudoFromHbox(this.selectedUser);
-
-        if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
 
         this.updateChatContainer(pseudo);
         this.clip(this.otherAvatarImg, 50);
@@ -343,20 +348,15 @@ public class ClavarChatController implements Initializable
     private void onMouseClick(MouseEvent event)
     {
         this.selectUser((HBox)event.getSource());
-
-        String otherPseudo = this.getPseudoFromHbox(this.selectedUser);
-        String userPseudo  = this.api.getPseudo();
-
-        this.createConversation(otherPseudo, userPseudo);
     }
 
-    private void createConversation(String otherPseudo, String userPseudo)
+    private void createConversation(String otherPseudo)
     {
         ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
 
         for (Message message : conversation)
         {
-            boolean me = message.pseudo.equals(userPseudo);
+            boolean me = message.pseudo.equals(this.api.getPseudo());
             this.createMessage(message.text, me);
         }
     }
