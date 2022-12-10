@@ -85,16 +85,28 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(key);
 
-            if (client.status == Client.STATUS.CONNECTED)
+            if (client.status == Client.STATUS.CONNECTING)
             {
-                client.out.stop();
-                client.in.stop();
+                Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is connecting --> CLOSE_WAIT");
+                client.status = Client.STATUS.CLOSE_WAIT;
             }
 
-            this.networkManager.closeTcpSocket(client.socketId);
-        }
+            if (client.status == Client.STATUS.CONNECTED)
+            {
+                if (client.isSending)
+                {
+                    Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is sending --> CLOSE_WAIT");
+                    client.status = Client.STATUS.CLOSE_WAIT;
+                }
+                else
+                {
+                    client.out.stop();
+                    client.in.stop();
 
-        this.clients.clear();
+                    this.networkManager.closeTcpSocket(client.socketId);
+                }
+            }
+        }
     }
 
     public void close(String ip)
@@ -176,8 +188,21 @@ public class NetworkAPI implements Listener
 
     private void onFinisedSending(SocketSendingEndEvent event)
     {
-        Log.Warning(this.getClass().getName() + " Socket id : " + event.socketId + " finished sending");
-//        Client client = this.clients.get(event.socketId);
+        Log.Print(this.getClass().getName() + " [" + event.dstIp + "] Socket id : " + event.socketId + " finished sending");
+
+        Client client = this.clients.get(event.dstIp);
+        client.isSending = false;
+
+        if (client.status == Client.STATUS.CLOSE_WAIT)
+        {
+            Log.Print(this.getClass().getName() + " Closing client : " + event.dstIp);
+
+            client.in.stop();
+            client.out.stop();
+
+            this.clients.remove(event.dstIp);
+            this.networkManager.closeTcpSocket(event.socketId);
+        }
     }
 
     private void onNetworkSocketData(SocketDataEvent event)
@@ -258,7 +283,8 @@ public class NetworkAPI implements Listener
         client.in  = in;
         client.out = out;
 
-        client.status = Client.STATUS.CONNECTED;
+        client.status = (client.status == Client.STATUS.CLOSE_WAIT)?Client.STATUS.CLOSE_WAIT:Client.STATUS.CONNECTED;
+        client.isSending = !client.pendingDatasBuffer.isEmpty();
 
         this.threadManager.setThreadRunnable(threadInId, in);
         this.threadManager.setThreadRunnable(threadOutId, out);
@@ -266,6 +292,7 @@ public class NetworkAPI implements Listener
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
 
+        Log.Print(this.getClass().getName() + " Socket state : " + client.status);
         Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
         Log.Print(this.getClass().getName() + " TCPOUT : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
 
@@ -301,12 +328,11 @@ public class NetworkAPI implements Listener
 
     private class Client
     {
-        public enum STATE { IDLE, SENDING }
         public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT }
 
         private STATUS status;
-        public STATE state;
 
+        public boolean isSending;
         public int socketId;
 
         public String srcIp;
@@ -322,9 +348,9 @@ public class NetworkAPI implements Listener
 
         public Client(int socketId)
         {
-            this.state = STATE.IDLE;
             this.status = STATUS.IDLE;
 
+            this.isSending = false;
             this.socketId = socketId;
 
             this.in = null;

@@ -16,7 +16,7 @@ public class TCPOUT extends TcpMessagin
     {
         super(networkManager, socketId);
 
-        this.datas = new LinkedBlockingQueue<Serializable>();
+        this.datas = new LinkedBlockingQueue<>();
     }
 
     public void put(Serializable data)
@@ -58,7 +58,7 @@ public class TCPOUT extends TcpMessagin
             {
                 if (isSending)
                 {
-                    this.eventManager.notiy(new SocketSendingEndEvent(this.socketId));
+                    this.eventManager.notiy(new SocketSendingEndEvent(this.socketId, dstIp));
                     isSending = false;
                 }
             }

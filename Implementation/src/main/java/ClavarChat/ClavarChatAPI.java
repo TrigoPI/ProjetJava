@@ -65,27 +65,27 @@ public class ClavarChatAPI implements Listener
 
         this.networkAPI.startServer();
 
-//        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
-//        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
-//        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
-//        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
-//        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
-//        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
-//        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
-//
-//        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
-//        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
-//
-//        this.userManager.setAvatar("user1", img1);
-//        this.userManager.setAvatar("user2", img2);
-//        this.userManager.setAvatar("user3", img1);
-//        this.userManager.setAvatar("user4", img1);
-//        this.userManager.setAvatar("user5", img1);
-//        this.userManager.setAvatar("user6", img1);
-//        this.userManager.setAvatar("user7", img1);
-//
-//        this.userManager.setUser("Alexis", "0000");
-//        this.userManager.setLogged(true);
+        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
+        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
+        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
+        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
+        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
+        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
+        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
+
+        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
+
+        this.userManager.setAvatar("user1", img1);
+        this.userManager.setAvatar("user2", img2);
+        this.userManager.setAvatar("user3", img1);
+        this.userManager.setAvatar("user4", img1);
+        this.userManager.setAvatar("user5", img1);
+        this.userManager.setAvatar("user6", img1);
+        this.userManager.setAvatar("user7", img1);
+
+        this.userManager.setUser("Alexis", "0000");
+        this.userManager.setLogged(true);
     }
 
 
