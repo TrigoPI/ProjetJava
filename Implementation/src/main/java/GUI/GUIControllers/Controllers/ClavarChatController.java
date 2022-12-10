@@ -1,5 +1,6 @@
 package GUI.GUIControllers.Controllers;
 
+import ClavarChat.Models.Message.Message;
 import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.User.User;
@@ -19,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -116,7 +118,13 @@ public class ClavarChatController implements Initializable
 
     public void onTextMessage(String pseudo, String message)
     {
-        Platform.runLater(() -> this.createMessage(message, true));
+        if (this.selectedUser != null)
+        {
+            String selectedPseudo = this.getSelectedUserPseudo();
+            if (selectedPseudo.equals(pseudo)) Platform.runLater(() -> this.createMessage(message, true));
+        }
+
+        this.api.saveMessage(pseudo, pseudo, message);
     }
 
     private String getSelectedUserPseudo()
@@ -321,7 +329,32 @@ public class ClavarChatController implements Initializable
 
     private void onMouseClick(MouseEvent event)
     {
+        if (this.selectedUser != null) this.selectedUser.getChildren().clear();
         this.selectUser((HBox)event.getSource());
+
+        String otherPseudo = this.getSelectedUserPseudo();
+        String userPseudo  = this.api.getPseudo();
+
+        if (this.api.conversationExist(otherPseudo))
+        {
+            ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
+            this.createConversation(otherPseudo, userPseudo);
+        }
+        else
+        {
+            this.api.createConversation(otherPseudo);
+        }
+    }
+
+    private void createConversation(String otherPseudo, String userPseudo)
+    {
+        ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
+
+        for (Message message : conversation)
+        {
+            boolean me = message.pseudo.equals(userPseudo);
+            this.createMessage(message.text, me);
+        }
     }
 
     @FXML
@@ -329,11 +362,14 @@ public class ClavarChatController implements Initializable
     {
         String message = this.messageInput.getText().trim();
         String pseudo = this.getSelectedUserPseudo();
+        String from = this.api.getPseudo();
 
         if (!message.isEmpty())
         {
             this.createMessage(message, false);
+
             this.messageInput.clear();
+            this.api.saveMessage(pseudo, from, message);
             this.api.sendMessage(pseudo, message);
         }
     }

@@ -1,5 +1,6 @@
 package ClavarChat;
 
+import ClavarChat.Controllers.Managers.Conversation.ConversationManager;
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Event.Listener;
@@ -17,6 +18,7 @@ import ClavarChat.Models.Events.Login.NewUserEvent;
 import ClavarChat.Models.Events.Login.RemoveUserEvent;
 import ClavarChat.Models.Events.Message.MessageEvent;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
+import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
@@ -33,6 +35,7 @@ public class ClavarChatAPI implements Listener
     private final EventManager eventManager;
     private final ThreadManager threadManager;
     private final UserManager userManager;
+    private final ConversationManager conversationManager;
 
     private final NetworkAPI networkAPI;
 
@@ -47,6 +50,7 @@ public class ClavarChatAPI implements Listener
         this.eventManager = EventManager.getInstance();
         this.threadManager = new ThreadManager();
         this.userManager = new UserManager();
+        this.conversationManager = new ConversationManager();
 
         this.networkAPI = new NetworkAPI(this.threadManager, this.tcpPort, this.udpPort);
 
@@ -65,30 +69,7 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
         this.networkAPI.startServer();
-
-//        this.userManager.addUser(new User("user1", "1111"), "192.168.1.3");
-//        this.userManager.addUser(new User("user2", "2222"), "192.168.1.4");
-//        this.userManager.addUser(new User("user3", "3333"), "192.168.1.5");
-//        this.userManager.addUser(new User("user4", "4444"), "192.168.1.6");
-//        this.userManager.addUser(new User("user5", "5555"), "192.168.1.7");
-//        this.userManager.addUser(new User("user6", "6666"), "192.168.1.8");
-//        this.userManager.addUser(new User("user7", "7777"), "192.168.1.9");
-//
-//        Image img1 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
-//        Image img2 = new Image("C:\\Users\\payet\\Desktop\\programs\\Java\\ProjetJava\\Implementation\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
-//
-//        this.userManager.setAvatar("user1", img1);
-//        this.userManager.setAvatar("user2", img2);
-//        this.userManager.setAvatar("user3", img1);
-//        this.userManager.setAvatar("user4", img1);
-//        this.userManager.setAvatar("user5", img1);
-//        this.userManager.setAvatar("user6", img1);
-//        this.userManager.setAvatar("user7", img1);
-//
-//        this.userManager.setUser("Alexis", "0000");
-//        this.userManager.setLogged(true);
     }
-
 
     public String getPseudo()
     {
@@ -106,6 +87,11 @@ public class ClavarChatAPI implements Listener
         return (user == null)?null:user.id;
     }
 
+    public ArrayList<Message> getConversation(String pseudo)
+    {
+        return this.conversationManager.getConversation(pseudo);
+    }
+
     public ArrayList<User> getUsers()
     {
         return this.userManager.getUsers();
@@ -119,6 +105,11 @@ public class ClavarChatAPI implements Listener
     public Image getAvatar(String pseudo)
     {
         return this.userManager.getAvatar(pseudo);
+    }
+
+    public boolean conversationExist(String pseudo)
+    {
+        return this.conversationManager.conversationExist(pseudo);
     }
 
     public void setAvatar(String path)
@@ -145,6 +136,17 @@ public class ClavarChatAPI implements Listener
                 this.networkAPI.sendTCP(this.userManager.getUserIP(user.pseudo).get(0), this.tcpPort, message);
             }
         }
+    }
+
+    public void createConversation(String pseudo)
+    {
+        if (!this.conversationManager.conversationExist(pseudo)) this.conversationManager.createConversation(pseudo);
+    }
+
+    public void saveMessage(String pseudo, String from, String text)
+    {
+        Log.Print(this.getClass().getName() + " Saving message : [" + pseudo + "] --> " + from + " have send : " + text);
+        this.conversationManager.addMessage(pseudo, from, text);
     }
 
     public void sendMessage(String pseudo, String message)

@@ -233,20 +233,11 @@
             </VBox>
             <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="messagesContainer" spacing="10.0">
+                  <VBox fx:id="messagesContainer" spacing="20.0">
                      <children>
-                        <HBox alignment="CENTER_RIGHT" fillHeight="false" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <HBox alignment="CENTER_RIGHT">
-                                 <children>
-                                    <Label text="Label" />
-                                 </children>
-                                 <styleClass>
-                                    <String fx:value="clvc-shy-moment" />
-                                    <String fx:value="clvc-chat-bubble" />
-                                 </styleClass>
-                              </HBox>
-                              <HBox alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0">
+                              <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <ImageView fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -254,12 +245,74 @@
                                        </image>
                                     </ImageView>
                                  </children>
-                              </HBox>
+                              </VBox>
+                              <VBox alignment="CENTER_RIGHT" fillWidth="false" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0">
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0">
+                              <VBox alignment="CENTER_RIGHT" fillWidth="false" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <ImageView fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -267,16 +320,7 @@
                                        </image>
                                     </ImageView>
                                  </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT">
-                                 <children>
-                                    <Label text="Label" />
-                                 </children>
-                                 <styleClass>
-                                    <String fx:value="clvc-shy-moment" />
-                                    <String fx:value="clvc-chat-bubble" />
-                                 </styleClass>
-                              </HBox>
+                              </VBox>
                            </children>
                         </HBox>
                      </children>

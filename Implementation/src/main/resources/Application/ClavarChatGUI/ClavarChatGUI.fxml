@@ -16,9 +16,9 @@
          <children>
             <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" styleClass="clvc-user-avatar-container">
                <children>
-                  <HBox fx:id="userAvatarContainer" alignment="CENTER">
+                  <HBox fx:id="userAvatarContainer" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0">
                      <children>
-                        <ImageView fx:id="userAvatarImg" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="userAvatarImg" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </HBox>
                   <VBox alignment="CENTER_LEFT" spacing="3.0">
