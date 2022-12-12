@@ -2,7 +2,8 @@ package ClavarChat.Controllers.Managers;
 
 
 
-import java.net.URL;
+
+
 import java.sql.*;
 
 public class DataBaseManager
@@ -29,9 +30,11 @@ public class DataBaseManager
         }
     }
 
+
+    // POUR LES STRING, IL FAUT LES METTRE ENTRE QUOTE ''
     public void createTable(String name, String fields)
     {
-        String sql = "CREATE TABLE IF NOT EXISTS " + name + fields;
+        String sql = "CREATE TABLE IF NOT EXISTS " + name + " (" + fields + " )";
         try{
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
@@ -75,9 +78,9 @@ public class DataBaseManager
         WHERE id_user = ?
      */
 
-    public void delete(String name, String id)
+    public void delete(String name, String id, String id_value)
     {
-        String sql = "DELETE FROM " + name + " WHERE " + id;
+        String sql = "DELETE FROM " + name + " WHERE " + id + " = " + id_value;
         try {
             Statement stmt = conn.createStatement();
             stmt.execute(sql);
