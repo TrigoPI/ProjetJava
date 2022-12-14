@@ -2,7 +2,7 @@ package ClavarChat;
 
 import ClavarChat.Controllers.Managers.Conversation.ConversationManager;
 import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
-import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
@@ -20,7 +20,6 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.Path.Path;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class ClavarChatAPI implements Listener
         this.userManager = new UserManager();
         this.conversationManager = new ConversationManager();
 
-        this.networkAPI = new NetworkAPI(this.threadManager, this.tcpPort, this.udpPort);
+        this.networkAPI = new NetworkAPI(this.threadManager, this.userManager, this.tcpPort, this.udpPort);
 
         this.discover = new Discover(this.networkAPI, this.userManager, this.udpPort);
         this.pseudoVerify = new PseudoVerify(this.networkAPI, this.userManager, this.tcpPort);
@@ -65,18 +64,6 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
-
-//        this.userManager.addUser(new User("user1", "2222"), "192.168.1.10");
-//        this.userManager.addUser(new User("user2", "3333"), "192.168.1.11");
-//        this.userManager.addUser(new User("user3", "4444"), "192.168.1.12");
-//        this.userManager.addUser(new User("user4", "5555"), "192.168.1.13");
-//        this.userManager.addUser(new User("user5", "6666"), "192.168.1.14");
-//
-//        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
-//        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
-//        this.userManager.setAvatar("user3", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
-//        this.userManager.setAvatar("user4", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
-//        this.userManager.setAvatar("user5", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png"));
 
         this.networkAPI.startServer();
     }
@@ -119,11 +106,6 @@ public class ClavarChatAPI implements Listener
         return this.userManager.getAvatar(pseudo);
     }
 
-    public Message getLastMessage(String conversationName)
-    {
-        return this.conversationManager.getLastMessage(conversationName);
-    }
-
     public boolean conversationExist(String conversationName)
     {
         return this.conversationManager.conversationExist(conversationName);
@@ -132,11 +114,6 @@ public class ClavarChatAPI implements Listener
     public void setAvatar(Image image)
     {
         this.userManager.setAvatar(image);
-    }
-
-    public void setAvatar(String pseudo, Image image)
-    {
-        this.userManager.setAvatar(pseudo, image);
     }
 
     public void login(String pseudo, String id, String path)
@@ -152,16 +129,7 @@ public class ClavarChatAPI implements Listener
 
     public void logout()
     {
-        if (this.userManager.isLogged())
-        {
-            User me = this.userManager.getUser();
-
-            for (User user : this.userManager.getUsers())
-            {
-                LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, me.pseudo, me.id);
-                this.networkAPI.sendTCP(this.userManager.getUserIP(user.pseudo).get(0), this.tcpPort, message);
-            }
-        }
+        this.networkAPI.sendLogout();
     }
 
     public void createConversation(String conversationName)
@@ -177,18 +145,7 @@ public class ClavarChatAPI implements Listener
 
     public void sendMessage(String pseudo, String message)
     {
-        if (this.userManager.isLogged())
-        {
-            User user = this.userManager.getUser();
-            String ip = this.userManager.getUserIP(pseudo).get(0);
-
-            TextMessage mgs = new TextMessage(user.pseudo, user.id, message);
-            this.networkAPI.sendTCP(ip, this.tcpPort, mgs);
-        }
-        else
-        {
-            Log.Error(this.getClass().getName() + " Cannot send message, user not logged");
-        }
+        this.networkAPI.sendMessage(pseudo, message);
     }
 
     public void closeServers()
@@ -196,7 +153,7 @@ public class ClavarChatAPI implements Listener
         this.networkAPI.closeServer();
     }
 
-    public void closeAllClient()
+    public void closeAllClients()
     {
         this.networkAPI.closeAllClients();
     }
@@ -254,22 +211,7 @@ public class ClavarChatAPI implements Listener
     private void onDiscoverRequest(String src)
     {
         Log.Print(this.getClass().getName() + " Discover from : " + src);
-
-        if (this.userManager.isLogged())
-        {
-            int count = this.userManager.getUserCount();
-            User user = this.userManager.getUser();
-            Image avatar = this.userManager.getAvatar();
-
-            ByteImage img = ByteImage.encode(avatar.getUrl());
-
-            DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, img, count);
-            this.networkAPI.sendTCP(src, this.tcpPort, informationMessage);
-        }
-        else
-        {
-            Log.Error(this.getClass().getName() + " User not logged cannot respond to DISCOVER");
-        }
+        this.networkAPI.sendDiscoverResponse(src);
     }
 
     private void onDiscoverResponse(DiscoverResponseMessage data, String src)

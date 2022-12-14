@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Chain;
 
-import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Models.ByteImage.ByteImage;
 import ClavarChat.Models.ChainData.Response;
 import ClavarChat.Controllers.Managers.User.UserManager;
@@ -32,9 +32,6 @@ public class PseudoVerify extends Handler
         Log.Print(this.getClass().getName() + " Checking if pseudo exist");
 
         User mainUser = this.userManager.getUser();
-        Image image = this.userManager.getAvatar();
-        ByteImage byteImage = ByteImage.encode(image.getUrl());
-        ArrayList<User> users = this.userManager.getUsers();
 
         if (this.userManager.userExist(mainUser.pseudo))
         {
@@ -46,13 +43,7 @@ public class PseudoVerify extends Handler
             return Response.INVALID_PSEUDO;
         }
 
-        for (User other : users)
-        {
-            ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
-            this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, mainUser.pseudo, mainUser.id, byteImage));
-        }
-
-        this.networkAPI.closeAllClients();
+        this.networkAPI.sendLogin();
         this.userManager.setLogged(true);
 
         return Response.VALID_PSEUDO;

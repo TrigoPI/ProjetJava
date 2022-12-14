@@ -1,15 +1,13 @@
 package ClavarChat.Controllers.Chain;
 
-import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ChainData.Response;
-import ClavarChat.Models.ClavarChatMessage.DiscoverRequestMessage;
 import ClavarChat.Models.ClavarChatMessage.DiscoverResponseMessage;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 
-import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Discover extends Handler
@@ -77,8 +75,7 @@ public class Discover extends Handler
 
     private void broadcast()
     {
-        ArrayList<String> broadcast = this.networkAPI.getBroadcastAddresses();
-        for (String addresse : broadcast) this.networkAPI.sendUDP(addresse, this.udpPort, new DiscoverRequestMessage());
+        this.networkAPI.sendDiscoverRequest();
     }
 
     private void waitResponses()

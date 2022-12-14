@@ -4,6 +4,7 @@ module Implementation
     requires javafx.fxml;
     requires MaterialFX;
     requires commons.io;
+    requires java.sql;
 
     opens Application.ClavarChatGUI to javafx.fxml;
     exports Application.ClavarChatGUI;

@@ -1,21 +1,25 @@
-package ClavarChat.Controllers.NetworkAPI;
+package ClavarChat.Controllers.API.NetworkAPI;
 
 import ClavarChat.Controllers.Managers.Event.Listener;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
+import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.ThreadExecutable.Network.Connection.TcpConnection;
 import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN;
 import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer;
-import ClavarChat.Models.ClavarChatMessage.ClavarChatMessage;
+import ClavarChat.Models.ByteImage.ByteImage;
+import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Network.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Events.Network.SocketDataEvent;
 import ClavarChat.Models.Events.Network.SocketSendingEndEvent;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import javafx.scene.image.Image;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ public class NetworkAPI implements Listener
 
     private final EventManager eventManager;
     private final ThreadManager threadManager;
+    private final UserManager userManager;
     private final NetworkManager networkManager;
 
     private final HashMap<String, Client> clients;
@@ -38,15 +43,16 @@ public class NetworkAPI implements Listener
     private final int tcpServerID;
     private final int udpServerID;
 
-    public NetworkAPI(ThreadManager threadManager, int tcpPort, int udpPort)
+    public NetworkAPI(ThreadManager threadManager, UserManager userManager, int tcpPort, int udpPort)
     {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
-        this.eventManager = EventManager.getInstance();
-
         this.networkManager = new NetworkManager();
+
+        this.eventManager = EventManager.getInstance();
         this.threadManager = threadManager;
+        this.userManager = userManager;
 
         this.tcpServerID = this.networkManager.createTcpServer();
         this.udpServerID = this.networkManager.createUdpServer();
@@ -71,6 +77,87 @@ public class NetworkAPI implements Listener
     public ArrayList<String> getBroadcastAddresses()
     {
         return this.networkManager.getBroadcastAddresses();
+    }
+
+    public void sendLogin()
+    {
+        User user = this.userManager.getUser();
+        Image img = this.userManager.getAvatar();
+        ByteImage byteImage = ByteImage.encode(img.getUrl());
+        ArrayList<User> users = this.userManager.getUsers();
+
+        for (User other : users)
+        {
+            ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
+            this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, byteImage));
+        }
+
+        this.closeAllClients();
+    }
+
+    public void sendLogout()
+    {
+        User user = this.userManager.getUser();
+
+        if (!this.userManager.isLogged())
+        {
+            Log.Error(this.getClass().getName() + " Cannot Logout, user not logged");
+            return;
+        }
+
+        for (User other : this.userManager.getUsers())
+        {
+            LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, user.pseudo, user.id);
+            this.sendTCP(this.userManager.getUserIP(other.pseudo).get(0), this.tcpPort, message);
+        }
+    }
+
+    public void sendMessage(String pseudo, String text)
+    {
+        if (!this.userManager.isLogged())
+        {
+            Log.Error(this.getClass().getName() + " Cannot send message, user not logged");
+            return;
+        }
+
+        User user = this.userManager.getUser();
+        String ip = this.userManager.getUserIP(pseudo).get(0);
+
+        TextMessage mgs = new TextMessage(user.pseudo, user.id, text);
+        this.sendTCP(ip, this.tcpPort, mgs);
+    }
+
+    public void sendDiscoverResponse(String src)
+    {
+        if (!this.userManager.isLogged())
+        {
+            Log.Error(this.getClass().getName() + " User not logged cannot respond to DISCOVER");
+            return;
+        }
+
+        int count = this.userManager.getUserCount();
+        User user = this.userManager.getUser();
+        Image avatar = this.userManager.getAvatar();
+
+        ByteImage img = ByteImage.encode(avatar.getUrl());
+
+        DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, img, count);
+        this.sendTCP(src, this.tcpPort, informationMessage);
+    }
+
+    public void sendDiscoverRequest()
+    {
+        ArrayList<String> broadcast = this.getBroadcastAddresses();
+        for (String address : broadcast) this.sendUDP(address, this.udpPort, new DiscoverRequestMessage());
+    }
+
+    public void startServer()
+    {
+        int tcpThreadID = this.threadManager.createThread(new TcpServer(this.networkManager, this.tcpServerID, this.tcpPort));
+        int udpThreadID = this.threadManager.createThread(new UdpServer(this.networkManager, this.udpServerID, this.udpPort));
+
+        this.threadManager.startThread(tcpThreadID);
+        this.threadManager.startThread(udpThreadID);
     }
 
     public void closeServer()
@@ -110,63 +197,6 @@ public class NetworkAPI implements Listener
                 }
             }
         }
-    }
-
-    public void sendUDP(String ip, int port, ClavarChatMessage data)
-    {
-        this.networkManager.udpSend(data, ip, port);
-    }
-
-    public void sendTCP(String ip, int port, ClavarChatMessage data)
-    {
-        Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
-
-        if (!this.clients.containsKey(ip))
-        {
-            Log.Print(this.getClass().getName() + " No client with ip : " + ip);
-            Log.Print(this.getClass().getName() + " Creating client : " + ip);
-
-            int socketId = this.networkManager.createSocket();
-            int threadId = this.threadManager.createThread();
-
-            Client client = new Client(socketId);
-            client.status = STATUS.CONNECTING;
-
-            this.clients.put(ip, client);
-            this.threadManager.setThreadRunnable(threadId, new TcpConnection(this.networkManager, socketId, ip, port));
-            this.threadManager.startThread(threadId);
-        }
-
-        Log.Print(this.getClass().getName() + " Getting client : " + ip);
-        Client client = this.clients.get(ip);
-
-        if (client.status != STATUS.CLOSED && client.status != STATUS.CLOSE_WAIT)
-        {
-            if (client.status == STATUS.CONNECTING)
-            {
-                Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
-                client.pendingDatasBuffer.push(data);
-            }
-            else
-            {
-                Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
-                client.isSending = true;
-                client.out.put(data);
-            }
-        }
-        else
-        {
-            Log.Info(this.getClass().getName() + " Cannot send data because client is : " + client.status);
-        }
-    }
-
-    public void startServer()
-    {
-        int tcpThreadID = this.threadManager.createThread(new TcpServer(this.networkManager, this.tcpServerID, this.tcpPort));
-        int udpThreadID = this.threadManager.createThread(new UdpServer(this.networkManager, this.udpServerID, this.udpPort));
-
-        this.threadManager.startThread(tcpThreadID);
-        this.threadManager.startThread(udpThreadID);
     }
 
     @Override
@@ -330,6 +360,54 @@ public class NetworkAPI implements Listener
         {
             Log.Print(this.getClass().getName() + " Flushing data to TCP Out : ");
             while (!client.pendingDatasBuffer.isEmpty()) client.out.put(client.pendingDatasBuffer.removeLast());
+        }
+    }
+
+    private void sendUDP(String ip, int port, ClavarChatMessage data)
+    {
+        this.networkManager.udpSend(data, ip, port);
+    }
+
+    private void sendTCP(String ip, int port, ClavarChatMessage data)
+    {
+        Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
+
+        if (!this.clients.containsKey(ip))
+        {
+            Log.Print(this.getClass().getName() + " No client with ip : " + ip);
+            Log.Print(this.getClass().getName() + " Creating client : " + ip);
+
+            int socketId = this.networkManager.createSocket();
+            int threadId = this.threadManager.createThread();
+
+            Client client = new Client(socketId);
+            client.status = STATUS.CONNECTING;
+
+            this.clients.put(ip, client);
+            this.threadManager.setThreadRunnable(threadId, new TcpConnection(this.networkManager, socketId, ip, port));
+            this.threadManager.startThread(threadId);
+        }
+
+        Log.Print(this.getClass().getName() + " Getting client : " + ip);
+        Client client = this.clients.get(ip);
+
+        if (client.status != STATUS.CLOSED && client.status != STATUS.CLOSE_WAIT)
+        {
+            if (client.status == STATUS.CONNECTING)
+            {
+                Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
+                client.pendingDatasBuffer.push(data);
+            }
+            else
+            {
+                Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
+                client.isSending = true;
+                client.out.put(data);
+            }
+        }
+        else
+        {
+            Log.Info(this.getClass().getName() + " Cannot send data because client is : " + client.status);
         }
     }
 

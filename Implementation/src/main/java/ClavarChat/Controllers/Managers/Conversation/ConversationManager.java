@@ -26,26 +26,6 @@ public class ConversationManager
         return this.conversations.get(conversationName);
     }
 
-    public Message getLastMessage(String conversationName)
-    {
-        if (!this.conversations.containsKey(conversationName))
-        {
-            Log.Warning(this.getClass().getName() + " No conversation with name : " + conversationName);
-            return null;
-        }
-
-        if (this.conversations.get(conversationName).isEmpty())
-        {
-            Log.Warning(this.getClass().getName() + " Conversation  : " + conversationName + " is empty");
-            return null;
-        }
-
-        ArrayList<Message> messages = this.conversations.get(conversationName);
-        int index = messages.size() - 1;
-
-        return messages.get(index);
-    }
-
     public boolean conversationExist(String pseudo)
     {
         return this.conversations.containsKey(pseudo);

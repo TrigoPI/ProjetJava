@@ -49,11 +49,11 @@ public class ClavarChatGUI extends Application
     }
 
     @Override
-    public void stop() throws Exception
+    public void stop()
     {
         this.clavarChatAPI.logout();
         this.clavarChatAPI.closeServers();
-        this.clavarChatAPI.closeAllClient();
+        this.clavarChatAPI.closeAllClients();
     }
 
     public void run()
