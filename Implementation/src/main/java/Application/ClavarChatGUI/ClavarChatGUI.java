@@ -35,8 +35,8 @@ public class ClavarChatGUI extends Application
         FXMLLoader fxmlLoaderLogin = new FXMLLoader(loginFXML);
         fxmlLoaderLogin.setController(loginController);
 
-        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
-//        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
+//        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
+        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
         stage.setScene(scene);

@@ -1,4 +1,4 @@
-package ClavarChat.Utils.Animation.FadeColor;
+package ClavarChat.Utils.GUI.Animation.FadeColor;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
@@ -36,6 +36,11 @@ public class FadeColor extends Transition
         double b = (1 - t) * this.a.getBlue()    + t * this.b.getBlue();
         double a = (1 - t) * this.a.getOpacity() + t * this.b.getOpacity();
 
-        this.region.setBackground(new Background(new BackgroundFill(new Color(r, g, b, a), CornerRadii.EMPTY, Insets.EMPTY)));
+        Color color = new Color(r, g, b, a);
+        CornerRadii cornerRadii = this.region.getBackground().getFills().get(0).getRadii();
+        BackgroundFill backgroundFill = new BackgroundFill(color, cornerRadii, Insets.EMPTY);
+        Background background = new Background(backgroundFill);
+
+        this.region.setBackground(background);
     }
 }

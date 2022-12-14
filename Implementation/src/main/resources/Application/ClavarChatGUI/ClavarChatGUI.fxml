@@ -6,7 +6,6 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -14,18 +13,13 @@
    <children>
       <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" spacing="20.0" styleClass="clvc-control-container">
          <children>
-            <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" styleClass="clvc-user-avatar-container">
+            <HBox fx:id="userAvatarContainer" alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" spacing="10.0" styleClass="clvc-user-avatar-container">
                <children>
-                  <HBox fx:id="userAvatarContainer" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0">
-                     <children>
-                        <ImageView fx:id="userAvatarImg" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </HBox>
                   <VBox alignment="CENTER_LEFT" spacing="3.0">
                      <children>
                         <Label fx:id="userName" text="User">
                            <styleClass>
-                              <String fx:value="clvlc-font-24px" />
+                              <String fx:value="clvc-font-24px" />
                               <String fx:value="clvc-font-bold" />
                            </styleClass>
                         </Label>
@@ -49,7 +43,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="usernameTextField" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="240.0" styleClass="clvc-font-12px" />
+                        <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" minWidth="-Infinity" prefWidth="240.0" styleClass="clvc-font-16px" />
                      </children>
                   </HBox>
                </children>
@@ -63,41 +57,26 @@
       </VBox>
       <VBox fx:id="chatContainer" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container">
-               <children>
-                  <HBox fx:id="otherAvatarContainer" alignment="CENTER">
-                     <children>
-                        <ImageView fx:id="otherAvatarImg" fitHeight="100.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </HBox>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                     <children>
-                        <Label fx:id="otherUserName" text="Name">
-                           <styleClass>
-                              <String fx:value="clvlc-font-24px" />
-                              <String fx:value="clvc-font-bold" />
-                           </styleClass>
-                        </Label>
-                        <Label fx:id="otherUserId" styleClass="clvc-font-12px" text="#1111" />
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
+            <VBox fx:id="otherAvatarContainer" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container" />
             <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
                <content>
                   <VBox fx:id="messagesContainer" spacing="10.0" />
                </content>
             </MFXScrollPane>
-            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
+            <VBox alignment="CENTER">
                <children>
-                  <VBox alignment="CENTER" prefWidth="70.0">
+                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="710.0" styleClass="clvc-input-field">
                      <children>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                        <VBox alignment="CENTER" prefWidth="70.0">
+                           <children>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                           </children>
+                        </VBox>
+                        <MFXTextField fx:id="messageInput" floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxWidth="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" prefWidth="625.0" styleClass="clvc-font-16px" />
                      </children>
-                  </VBox>
-                  <MFXTextField fx:id="messageInput" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" prefHeight="40.0" prefWidth="625.0" styleClass="clvc-font-12px" />
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
          </children>
       </VBox>
    </children>

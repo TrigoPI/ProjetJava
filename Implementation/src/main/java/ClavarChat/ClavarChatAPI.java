@@ -24,7 +24,6 @@ import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
 import javafx.scene.image.Image;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ClavarChatAPI implements Listener
@@ -68,17 +67,31 @@ public class ClavarChatAPI implements Listener
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
+        this.userManager.addUser(new User("user1", "2222"), "192.168.1.10");
+        this.userManager.addUser(new User("user2", "3333"), "192.168.1.11");
+        this.userManager.addUser(new User("user3", "4444"), "192.168.1.12");
+        this.userManager.addUser(new User("user4", "5555"), "192.168.1.13");
+        this.userManager.addUser(new User("user5", "6666"), "192.168.1.14");
+
+        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
+        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
+        this.userManager.setAvatar("user3", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
+        this.userManager.setAvatar("user4", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
+        this.userManager.setAvatar("user5", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png"));
+
         this.networkAPI.startServer();
     }
 
     public String getPseudo()
     {
-        return this.userManager.getUser().pseudo;
+        User user = this.userManager.getUser();
+        return (user == null)?null:user.pseudo;
     }
 
     public String getId()
     {
-        return this.userManager.getUser().id;
+        User user = this.userManager.getUser();
+        return (user == null)?null:user.id;
     }
 
     public String getId(String pseudo)
@@ -95,6 +108,11 @@ public class ClavarChatAPI implements Listener
     public ArrayList<User> getUsers()
     {
         return this.userManager.getUsers();
+    }
+
+    public Message getLastMessageWith(String pseudo)
+    {
+        return this.conversationManager.getLastMessageWith(pseudo);
     }
 
     public Image getAvatar()

@@ -26,6 +26,26 @@ public class ConversationManager
         return this.conversations.get(pseudo);
     }
 
+    public Message getLastMessageWith(String pseudo)
+    {
+        if (!this.conversations.containsKey(pseudo))
+        {
+            Log.Warning(this.getClass().getName() + " No conversation with : " + pseudo);
+            return null;
+        }
+
+        if (this.conversations.get(pseudo).isEmpty())
+        {
+            Log.Warning(this.getClass().getName() + " Conversation with : " + pseudo + " is empty");
+            return null;
+        }
+
+        ArrayList<Message> messages = this.conversations.get(pseudo);
+        int index = messages.size() - 1;
+
+        return messages.get(index);
+    }
+
     public boolean conversationExist(String pseudo)
     {
         return this.conversations.containsKey(pseudo);
@@ -44,16 +64,16 @@ public class ConversationManager
         }
     }
 
-    public void addMessage(String pseudo, String from, String text)
+    public void addMessage(String from, String dst, String text)
     {
-        if (this.conversationExist(pseudo))
+        if (this.conversationExist(dst))
         {
-            Message message = new Message(from, text);
-            this.conversations.get(pseudo).add(message);
+            Message message = new Message(from, dst,text);
+            this.conversations.get(dst).add(message);
         }
         else
         {
-            Log.Warning(this.getClass().getName() + " No conversation with : " + pseudo);
+            Log.Warning(this.getClass().getName() + " No conversation with : " + dst);
         }
     }
 }

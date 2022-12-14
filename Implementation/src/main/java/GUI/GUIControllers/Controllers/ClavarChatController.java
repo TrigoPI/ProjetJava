@@ -1,23 +1,21 @@
 package GUI.GUIControllers.Controllers;
 
-import ClavarChat.Models.Message.Message;
 import javafx.fxml.FXML;
+import ClavarChat.Models.Message.Message;
+import ClavarChat.Utils.GUI.Component.Avatar.Avatar;
+import ClavarChat.Utils.GUI.Component.ChatMessage.ChatMessage;
+import ClavarChat.Utils.GUI.Component.Discussion.Discussion;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.User.User;
-import ClavarChat.Utils.Animation.FadeColor.FadeColor;
 import ClavarChat.Utils.Log.Log;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,18 +25,15 @@ import java.util.ResourceBundle;
 public class ClavarChatController implements Initializable
 {
     private final ClavarChatAPI api;
-    private final HashMap<String, HBox> usersGUI;
+    private final HashMap<String, Discussion> usersGUI;
 
-    private final Color draculaOrchid;
-    private final Color americanRiver;
-
-    private HBox selectedUser;
+    private Discussion selectedUser;
 
     @FXML
     private HBox userAvatarContainer;
 
     @FXML
-    private HBox otherAvatarContainer;
+    private VBox otherAvatarContainer;
 
     @FXML
     private VBox userPreviewContainer;
@@ -56,18 +51,6 @@ public class ClavarChatController implements Initializable
     private Label userId;
 
     @FXML
-    private Label otherUserName;
-
-    @FXML
-    private Label otherUserId;
-
-    @FXML
-    private ImageView userAvatarImg;
-
-    @FXML
-    private ImageView otherAvatarImg;
-
-    @FXML
     private MFXTextField messageInput;
 
     public ClavarChatController(ClavarChatAPI api)
@@ -75,9 +58,6 @@ public class ClavarChatController implements Initializable
         this.api = api;
         this.usersGUI = new HashMap<>();
         this.selectedUser = null;
-
-        this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
-        this.americanRiver = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
     }
 
     @Override
@@ -88,24 +68,21 @@ public class ClavarChatController implements Initializable
         String pseudo = this.api.getPseudo();
         String id = this.api.getId();
 
-        this.userAvatarImg.setImage(this.api.getAvatar());
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
 
+        this.addAvatar(this.userAvatarContainer, this.api.getAvatar(), 50, 0);
         this.addDiscoveredUser();
-
-        this.clip(this.userAvatarImg, 50);
     }
 
     public void onRemoveUser(String pseudo)
     {
-        HBox container = this.usersGUI.get(pseudo);
-        Platform.runLater(() ->
-        {
+        Platform.runLater(() -> {
+            Discussion container = this.usersGUI.get(pseudo);
+
             if (this.selectedUser != null)
             {
-                String selectedPseudo = this.getPseudoFromHbox(this.selectedUser);
-                if (selectedPseudo.equals(pseudo)) this.chatContainer.setVisible(false);
+                if (this.selectedUser.getPseudo().equals(pseudo)) this.chatContainer.setVisible(false);
             }
 
             this.userPreviewContainer.getChildren().remove(container);
@@ -124,39 +101,19 @@ public class ClavarChatController implements Initializable
     {
         if (this.selectedUser != null)
         {
-            String selectedPseudo = this.getPseudoFromHbox(this.selectedUser);
-            if (selectedPseudo.equals(pseudo)) Platform.runLater(() -> this.createMessage(message, true));
+//            if (this.selectedUser.getPseudo().equals(pseudo)) Platform.runLater(() -> this.createMessage(pseudo, message));
         }
 
         if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
+
         this.api.saveMessage(pseudo, pseudo, message);
     }
 
-    private String getPseudoFromHbox(HBox hBox)
-    {
-        if (this.selectedUser == null) return null;
-
-        VBox vBox = (VBox)hBox.getChildren().get(1);
-        Label label = (Label)vBox.getChildren().get(0);
-
-        return label.getText();
-    }
-
-    private void clip(ImageView img, double radius)
+    private void addAvatar(Pane container, Image img, double radius, int index)
     {
         Platform.runLater(() -> {
-            img.setClip(null);
-
-            Circle circle = new Circle();
-            circle.setRadius(radius);
-
-            double w = img.getBoundsInParent().getWidth();
-            double h = img.getBoundsInParent().getHeight();
-
-            circle.setLayoutX(w / 2.0);
-            circle.setLayoutY(h / 2.0);
-
-            img.setClip(circle);
+            Avatar avatar = new Avatar(img, radius);
+            container.getChildren().add(index, avatar);
         });
     }
 
@@ -166,7 +123,7 @@ public class ClavarChatController implements Initializable
 
         if (!this.userPreviewContainer.getChildren().isEmpty())
         {
-            this.selectUser((HBox)this.userPreviewContainer.getChildren().get(0));
+            this.selectUser((Discussion)this.userPreviewContainer.getChildren().get(0));
         }
         else
         {
@@ -176,197 +133,87 @@ public class ClavarChatController implements Initializable
 
     private void createUserDescription(String pseudo, String id)
     {
-        HBox container = new HBox();
-        HBox avatarContainer = new HBox();
-        ImageView avatar = new ImageView();
-        VBox desContainer = new VBox();
-        Label userName = new Label(pseudo);
-        Label text = new Label(id);
+        Discussion discussion = new Discussion(this.api.getAvatar(pseudo), pseudo, id);
+        discussion.setOnMouseClicked(this::onMouseClick);
 
-        container.setOnMouseEntered(this::onMouseEntered);
-        container.setOnMouseExited(this::onMouseExited);
-        container.setOnMouseClicked(this::onMouseClick);
-        container.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        container.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        container.setPrefSize(Region.USE_COMPUTED_SIZE, 100);
-        container.setAlignment(Pos.CENTER_LEFT);
-
-        avatarContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        avatarContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        avatarContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-
-        desContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        desContainer.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        desContainer.setAlignment(Pos.CENTER_LEFT);
-        desContainer.setPrefSize(120, 80);
-        desContainer.setSpacing(20);
-
-        avatar.setFitWidth(100);
-        avatar.setFitHeight(0);
-        avatar.setPreserveRatio(true);
-        avatar.setImage(this.api.getAvatar(pseudo));
-
-        desContainer.getChildren().add(userName);
-        desContainer.getChildren().add(text);
-
-        avatarContainer.getChildren().add(avatar);
-
-        container.getChildren().add(avatar);
-        container.getChildren().add(desContainer);
-
-        userName.getStyleClass().add("clvc-font-bold");
-        text.getStyleClass().add("clvc-font-12px");
-
-        container.getStyleClass().add("clvc-user-preview-container");
-        container.getStyleClass().add("clvc-dracula-orchid");
-        container.getStyleClass().add("clvc-cursor-hand");
-
-        this.clip(avatar, 30);
-        this.usersGUI.put(pseudo, container);
-        this.userPreviewContainer.getChildren().add(container);
+        this.usersGUI.put(pseudo, discussion);
+        this.userPreviewContainer.getChildren().add(discussion);
     }
 
-    private void createMessage(String message, boolean other)
+    private void createChatBublle(String src, String dst, String text)
     {
-        Pos pos = (other)?Pos.CENTER_LEFT:Pos.CENTER_RIGHT;
-        String color = (other)?"clvc-american-river":"clvc-shy-moment";
+        Message lastMessage = this.api.getLastMessageWith(dst);
 
-        HBox container = new HBox();
-        HBox messageContainer = new HBox();
-        HBox avatarContainer = new HBox();
-        Label messageLabel = new Label();
-        ImageView avatar = new ImageView();
-
-        container.setAlignment(pos);
-        container.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        container.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        container.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        container.setFillHeight(false);
-        container.setSpacing(10);
-
-        messageLabel.setText(message);
-
-        messageContainer.setAlignment(pos);
-        messageContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        messageContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        messageContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        messageContainer.getStyleClass().add(color);
-        messageContainer.getStyleClass().add("clvc-chat-bubble");
-
-        avatarContainer.setAlignment(pos);
-        avatarContainer.setMinSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
-        avatarContainer.setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
-        avatarContainer.setPrefSize(80, Region.USE_COMPUTED_SIZE);
-
-        avatar.setFitWidth(100);
-        avatar.setFitHeight(0);
-        avatar.setPreserveRatio(true);
-        avatar.setImage(this.api.getAvatar());
-
-        messageContainer.getChildren().add(messageLabel);
-        avatarContainer.getChildren().add(avatar);
-
-        if (other)
+        if (lastMessage != null)
         {
-            container.getChildren().add(avatarContainer);
-            container.getChildren().add(messageContainer);
+            int index = this.chatContainer.getChildren().size() - 1;
+            ChatMessage lastChatMessage = (ChatMessage) this.chatContainer.getChildren().get(index);
         }
-        else
-        {
-            container.getChildren().add(messageContainer);
-            container.getChildren().add(avatarContainer);
-        }
-
-        this.clip(avatar, 30);
-        this.messagesContainer.getChildren().add(container);
     }
 
-    private void selectUser(HBox hBox)
+    private void selectUser(Discussion discussion)
     {
         if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
+        if (this.selectedUser != null) this.selectedUser.deselect();
 
-        if (this.selectedUser != null)
-        {
-            this.selectedUser.getStyleClass().remove("clvc-american-river");
-            this.selectedUser.getStyleClass().add("clvc-dracula-orchid");
-            this.selectedUser.setBackground(new Background(new BackgroundFill(this.draculaOrchid, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.selectedUser = discussion;
+        String pseudo = this.selectedUser.getPseudo();
 
-            this.messagesContainer.getChildren().clear();
-        }
-
-        this.selectedUser = hBox;
-
-        this.selectedUser.getStyleClass().remove("clvc-dracula-orchid");
-        this.selectedUser.getStyleClass().add("clvc-american-river");
-
-        String pseudo = this.getPseudoFromHbox(this.selectedUser);
+        this.messagesContainer.getChildren().clear();
+        this.selectedUser.select();
 
         if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
 
         this.createConversation(pseudo);
         this.updateChatContainer(pseudo);
-        this.clip(this.otherAvatarImg, 50);
     }
 
     private void updateChatContainer(String pseudo)
     {
-        Image avatar = this.api.getAvatar(pseudo);
+        VBox vBox = new VBox();
+        Label pseudoLabel = new Label(pseudo);
+        Label idLabel = new Label("#" + this.api.getId(pseudo));
 
-        this.otherAvatarImg.setImage(avatar);
-        this.otherUserName.setText(pseudo);
-        this.otherUserId.setText("#" + this.api.getId(pseudo));
-    }
+        pseudoLabel.getStyleClass().add("clvc-font-24px");
+        pseudoLabel.getStyleClass().add("clvc-font-bold");
 
-    private void onMouseExited(MouseEvent event)
-    {
-        HBox hBox = (HBox)event.getSource();
+        idLabel.getStyleClass().add("clvc-font-12px");
 
-        if (this.selectedUser != hBox)
-        {
-            Color startColor = (Color)hBox.getBackground().getFills().get(0).getFill();
-            FadeColor fadeColor = new FadeColor(startColor, this.draculaOrchid, hBox, 200);
-            fadeColor.playFromStart();
-        }
-    }
+        vBox.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        vBox.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        vBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        vBox.setAlignment(Pos.TOP_CENTER);
+        vBox.setSpacing(5);
 
-    private void onMouseEntered(MouseEvent event)
-    {
-        HBox hBox = (HBox)event.getSource();
+        vBox.getChildren().add(pseudoLabel);
+        vBox.getChildren().add(idLabel);
 
-        if (this.selectedUser != hBox)
-        {
-            Color startColor = (Color)hBox.getBackground().getFills().get(0).getFill();
-            FadeColor fadeColor = new FadeColor(startColor, this.americanRiver, hBox, 200);
-            fadeColor.playFromStart();
-        }
+        this.otherAvatarContainer.getChildren().clear();
+        this.otherAvatarContainer.getChildren().add(vBox);
+        this.addAvatar(this.otherAvatarContainer, this.api.getAvatar(pseudo), 50, 0);
     }
 
     private void onMouseClick(MouseEvent event)
     {
-        this.selectUser((HBox)event.getSource());
+        this.selectUser((Discussion)event.getSource());
     }
 
     private void createConversation(String otherPseudo)
     {
         ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
-
-        for (Message message : conversation)
-        {
-            boolean me = message.pseudo.equals(this.api.getPseudo());
-            this.createMessage(message.text, me);
-        }
+//        for (Message message : conversation) this.createMessage(message.pseudo, this.api.getPseudo(), message.text);
     }
 
     @FXML
     private void onSendMessage()
     {
         String message = this.messageInput.getText().trim();
-        String pseudo = this.getPseudoFromHbox(this.selectedUser);
+        String pseudo = this.selectedUser.getPseudo();
         String from = this.api.getPseudo();
 
         if (!message.isEmpty())
         {
-            this.createMessage(message, false);
+//            this.createMessage(this.api.getPseudo(), pseudo, message);
 
             this.messageInput.clear();
             this.api.saveMessage(pseudo, from, message);

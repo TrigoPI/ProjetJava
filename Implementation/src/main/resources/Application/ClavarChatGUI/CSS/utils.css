@@ -26,8 +26,12 @@
     -fx-background-color: transparent;
 }
 
-.clvlc-font-24px {
+.clvc-font-24px {
     -fx-font-size: 24px;
+}
+
+.clvc-font-16px {
+    -fx-font-size: 16px;
 }
 
 .clvc-font-12px {
@@ -73,8 +77,11 @@
 }
 
 .clvc-input-field > .mfx-text-field:floating .floating-text {
-    -fx-font-size: 12px;
+    -fx-font-size: 16px;
     -fx-text-fill: #dfe6e9;
+    -fx-background-color: #bdc3c7;
+    -fx-padding: 5px;
+    -fx-background-radius: 5px;
 }
 
 .clvc-input-field-error > .mfx-text-field .floating-text {

@@ -22,7 +22,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-user-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="usernameTextField" floatingText="Pseudo" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseEntered="#onInputClick" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Pseudo" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseEntered="#onInputClick" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
@@ -32,7 +32,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-id-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="idTextField" floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="idTextField" floatMode="BORDER" floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
@@ -42,7 +42,7 @@
                               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-password-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="passwordTextField" floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="passwordTextField" floatMode="BORDER" floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                </children>
