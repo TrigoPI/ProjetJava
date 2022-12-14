@@ -112,11 +112,6 @@ public class NetworkAPI implements Listener
         }
     }
 
-    public void close(String ip)
-    {
-
-    }
-
     public void sendUDP(String ip, int port, ClavarChatMessage data)
     {
         this.networkManager.udpSend(data, ip, port);
@@ -155,6 +150,7 @@ public class NetworkAPI implements Listener
             else
             {
                 Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
+                client.isSending = true;
                 client.out.put(data);
             }
         }
