@@ -81,12 +81,12 @@ public class LoginController implements Initializable
     {
         try
         {
-            this.api.createConversation("user1");
-            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+//            this.api.createConversation("user1");
+//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
 
             this.spinnerBar.setVisible(false);
             this.spinnerBar.setManaged(false);
@@ -132,7 +132,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, id, Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
+            this.api.login(pseudo, id, Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
         }
     }
 }

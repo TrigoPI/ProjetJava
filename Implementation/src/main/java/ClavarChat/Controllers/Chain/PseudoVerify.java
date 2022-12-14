@@ -52,7 +52,9 @@ public class PseudoVerify extends Handler
             this.networkAPI.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, mainUser.pseudo, mainUser.id, byteImage));
         }
 
+        this.networkAPI.closeAllClients();
         this.userManager.setLogged(true);
+
         return Response.VALID_PSEUDO;
     }
 }

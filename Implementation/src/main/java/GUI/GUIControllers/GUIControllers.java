@@ -67,13 +67,11 @@ public class GUIControllers implements Listener
     private void onLoginFailed()
     {
         this.loginController.onLoginFailed();
-        this.api.closeAllClient();
     }
 
     private void onLoginSuccess()
     {
         this.loginController.onLoginSuccess();
-        this.api.closeAllClient();
     }
 
     private void onTextMessage(String pseudo, String message)

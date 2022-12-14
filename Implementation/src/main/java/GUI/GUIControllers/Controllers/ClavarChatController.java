@@ -105,7 +105,7 @@ public class ClavarChatController implements Initializable
 
         if (this.selectedUser != null)
         {
-//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.createChatBubble(dst, src, dst, message));
+//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(dst, src, dst, message));
         }
 
         if (!this.api.conversationExist(src)) this.api.createConversation(src);
@@ -142,6 +142,7 @@ public class ClavarChatController implements Initializable
 
         this.usersGUI.put(pseudo, discussion);
         this.userPreviewContainer.getChildren().add(discussion);
+        this.api.createConversation(pseudo);
     }
 
     private void updateChatBox(String conversationName, String src, String text)
@@ -160,7 +161,6 @@ public class ClavarChatController implements Initializable
 
     private void selectUser(Discussion discussion)
     {
-        if (!this.usersMessageBox.containsKey(discussion.getConversationName())) this.createConversation(discussion.getConversationName());
         if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
         if (this.selectedUser != null) this.selectedUser.deselect();
 

@@ -198,10 +198,11 @@ public class NetworkAPI implements Listener
 
     private void onFinisedSending(SocketSendingEndEvent event)
     {
-        Log.Print(this.getClass().getName() + " [" + event.dstIp + "] Socket id : " + event.socketId + " finished sending");
-
         Client client = this.clients.get(event.dstIp);
         client.isSending = false;
+
+        Log.Print(this.getClass().getName() + " [" + event.dstIp + "] Socket id : " + event.socketId + " finished sending");
+        Log.Print(this.getClass().getName() + " [" + event.dstIp + "] Socket id : " + event.socketId + " Status : " + client.status);
 
         if (client.status == STATUS.CLOSE_WAIT)
         {
@@ -316,7 +317,6 @@ public class NetworkAPI implements Listener
             Log.Print(this.getClass().getName() + " Removing client : " + event.dstIp);
 
             Client client = this.clients.get(event.dstIp);
-            client.status = STATUS.CLOSED;
 
             if (client.status == STATUS.CONNECTED)
             {

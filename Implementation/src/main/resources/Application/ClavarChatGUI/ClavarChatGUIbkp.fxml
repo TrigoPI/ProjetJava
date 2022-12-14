@@ -206,6 +206,7 @@
                   </VBox>
                </content>
             </MFXScrollPane>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
@@ -440,20 +441,20 @@
                   <String fx:value="clvc-dracula-orchid" />
                </styleClass>
             </MFXScrollPane>
-            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0">
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="clvc-message-input">
                <children>
-                  <VBox alignment="CENTER" prefWidth="70.0">
+                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
                      <children>
-                        <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                        <VBox alignment="CENTER" prefWidth="70.0">
+                           <children>
+                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                           </children>
+                        </VBox>
+                        <MFXTextField floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="644.0" />
                      </children>
-                  </VBox>
-                  <MFXTextField floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="644.0" />
+                  </HBox>
                </children>
-               <styleClass>
-                  <String fx:value="clvc-input-field" />
-                  <String fx:value="clvc-message-input" />
-               </styleClass>
-            </HBox>
+            </VBox>
          </children>
       </VBox>
    </children>
