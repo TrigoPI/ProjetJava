@@ -24,6 +24,8 @@ import java.util.LinkedList;
 
 public class NetworkAPI implements Listener
 {
+    public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT }
+
     private final int tcpPort;
     private final int udpPort;
 
@@ -85,18 +87,18 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(key);
 
-            if (client.status == Client.STATUS.CONNECTING)
+            if (client.status == STATUS.CONNECTING)
             {
                 Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is connecting --> CLOSE_WAIT");
-                client.status = Client.STATUS.CLOSE_WAIT;
+                client.status = STATUS.CLOSE_WAIT;
             }
 
-            if (client.status == Client.STATUS.CONNECTED)
+            if (client.status == STATUS.CONNECTED)
             {
                 if (client.isSending)
                 {
                     Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is sending --> CLOSE_WAIT");
-                    client.status = Client.STATUS.CLOSE_WAIT;
+                    client.status = STATUS.CLOSE_WAIT;
                 }
                 else
                 {
@@ -132,7 +134,7 @@ public class NetworkAPI implements Listener
             int threadId = this.threadManager.createThread();
 
             Client client = new Client(socketId);
-            client.status = Client.STATUS.CONNECTING;
+            client.status = STATUS.CONNECTING;
 
             this.clients.put(ip, client);
             this.threadManager.setThreadRunnable(threadId, new TcpConnection(this.networkManager, socketId, ip, port));
@@ -142,7 +144,7 @@ public class NetworkAPI implements Listener
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
         Client client = this.clients.get(ip);
 
-        if (client.status == Client.STATUS.CONNECTING)
+        if (client.status == STATUS.CONNECTING)
         {
             Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
             client.pendingDatasBuffer.push(data);
@@ -193,7 +195,7 @@ public class NetworkAPI implements Listener
         Client client = this.clients.get(event.dstIp);
         client.isSending = false;
 
-        if (client.status == Client.STATUS.CLOSE_WAIT)
+        if (client.status == STATUS.CLOSE_WAIT)
         {
             Log.Print(this.getClass().getName() + " Closing client : " + event.dstIp);
 
@@ -244,7 +246,7 @@ public class NetworkAPI implements Listener
         client.in  = in;
         client.out = out;
 
-        client.status = Client.STATUS.CONNECTED;
+        client.status = STATUS.CONNECTED;
 
         this.threadManager.setThreadRunnable(threadInId, in);
         this.threadManager.setThreadRunnable(threadOutId, out);
@@ -283,7 +285,7 @@ public class NetworkAPI implements Listener
         client.in  = in;
         client.out = out;
 
-        client.status = (client.status == Client.STATUS.CLOSE_WAIT)?Client.STATUS.CLOSE_WAIT:Client.STATUS.CONNECTED;
+        client.status = (client.status == STATUS.CLOSE_WAIT)?STATUS.CLOSE_WAIT:STATUS.CONNECTED;
         client.isSending = !client.pendingDatasBuffer.isEmpty();
 
         this.threadManager.setThreadRunnable(threadInId, in);
@@ -307,7 +309,7 @@ public class NetworkAPI implements Listener
 
             Client client = this.clients.get(event.dstIp);
 
-            if (client.status == Client.STATUS.CONNECTED)
+            if (client.status == STATUS.CONNECTED)
             {
                 client.in.stop();
                 client.out.stop();
@@ -328,8 +330,6 @@ public class NetworkAPI implements Listener
 
     private class Client
     {
-        public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT }
-
         private STATUS status;
 
         public boolean isSending;
