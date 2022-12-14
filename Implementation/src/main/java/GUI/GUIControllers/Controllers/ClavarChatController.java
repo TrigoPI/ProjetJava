@@ -157,6 +157,8 @@ public class ClavarChatController implements Initializable
         {
             messageBox.addMessage(src, this.api.getAvatar(src), text, true);
         }
+
+        this.messagesContainer.setVvalue(1.0);
     }
 
     private void selectUser(Discussion discussion)

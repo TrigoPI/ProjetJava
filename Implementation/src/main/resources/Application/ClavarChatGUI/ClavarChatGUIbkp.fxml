@@ -232,7 +232,7 @@
                   </VBox>
                </children>
             </VBox>
-            <MFXScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+            <MFXScrollPane fitToWidth="true" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
                <content>
                   <VBox fx:id="messagesContainer" depthTest="DISABLE" spacing="20.0">
                      <children>
