@@ -105,7 +105,7 @@ public class ClavarChatController implements Initializable
 
         if (this.selectedUser != null)
         {
-//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(dst, src, dst, message));
+            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(src, src, message));
         }
 
         if (!this.api.conversationExist(src)) this.api.createConversation(src);
@@ -140,9 +140,9 @@ public class ClavarChatController implements Initializable
         Discussion discussion = new Discussion(pseudo, this.api.getAvatar(pseudo), pseudo, id);
         discussion.setOnMouseClicked(this::onMouseClick);
 
-        this.usersGUI.put(pseudo, discussion);
+        this.createConversation(pseudo);
         this.userPreviewContainer.getChildren().add(discussion);
-        this.api.createConversation(pseudo);
+        this.usersGUI.put(pseudo, discussion);
     }
 
     private void updateChatBox(String conversationName, String src, String text)
