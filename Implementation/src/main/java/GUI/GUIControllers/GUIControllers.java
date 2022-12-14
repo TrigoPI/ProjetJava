@@ -44,7 +44,7 @@ public class GUIControllers implements Listener
         switch (event.type)
         {
             case LoginEvent.LOGIN_SUCCESS:
-                this.onLoginSucces();
+                this.onLoginSuccess();
                 break;
             case LoginEvent.LOGIN_FAILED:
                 this.onLoginFailed();
@@ -70,7 +70,7 @@ public class GUIControllers implements Listener
         this.api.closeAllClient();
     }
 
-    private void onLoginSucces()
+    private void onLoginSuccess()
     {
         this.loginController.onLoginSuccess();
         this.api.closeAllClient();

@@ -1,7 +1,5 @@
 package ClavarChat.Controllers.Chain;
 
-import ClavarChat.Models.ChainData.Request.Request;
-
 public abstract class Handler
 {
     protected Handler next;
@@ -11,6 +9,6 @@ public abstract class Handler
         this.next = next;
     }
 
-    public abstract String handle(Request request);
+    public abstract String handle();
 
 }

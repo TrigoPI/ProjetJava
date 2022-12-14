@@ -14,16 +14,18 @@ import javafx.scene.paint.Color;
 public class Discussion extends HBox
 {
     private boolean selected;
+    private String conversationName;
     private String pseudo;
 
     private final Color draculaOrchid;
     private final Color americanRiver;
 
-    public Discussion(Image img, String pseudo, String text)
+    public Discussion(String conversationName, Image img, String pseudo, String text)
     {
         super();
 
         this.pseudo = pseudo;
+        this.conversationName = conversationName;
         this.selected = false;
 
         this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
@@ -69,9 +71,9 @@ public class Discussion extends HBox
         return this.pseudo;
     }
 
-    public boolean isSelected()
+    public String getConversationName()
     {
-        return this.selected;
+        return this.conversationName;
     }
 
     public void select()

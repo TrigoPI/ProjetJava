@@ -1,6 +1,7 @@
 package ClavarChat;
 
 import ClavarChat.Controllers.Managers.Conversation.ConversationManager;
+import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Event.Listener;
@@ -8,9 +9,7 @@ import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Chain.Discover;
 import ClavarChat.Controllers.Chain.PseudoVerify;
-import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
 import ClavarChat.Models.ByteImage.ByteImage;
-import ClavarChat.Models.ChainData.Request.LoginRequest;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Login.LoginEvent;
@@ -67,17 +66,17 @@ public class ClavarChatAPI implements Listener
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
-        this.userManager.addUser(new User("user1", "2222"), "192.168.1.10");
-        this.userManager.addUser(new User("user2", "3333"), "192.168.1.11");
-        this.userManager.addUser(new User("user3", "4444"), "192.168.1.12");
-        this.userManager.addUser(new User("user4", "5555"), "192.168.1.13");
-        this.userManager.addUser(new User("user5", "6666"), "192.168.1.14");
-
-        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
-        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
-        this.userManager.setAvatar("user3", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
-        this.userManager.setAvatar("user4", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
-        this.userManager.setAvatar("user5", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png"));
+//        this.userManager.addUser(new User("user1", "2222"), "192.168.1.10");
+//        this.userManager.addUser(new User("user2", "3333"), "192.168.1.11");
+//        this.userManager.addUser(new User("user3", "4444"), "192.168.1.12");
+//        this.userManager.addUser(new User("user4", "5555"), "192.168.1.13");
+//        this.userManager.addUser(new User("user5", "6666"), "192.168.1.14");
+//
+//        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg"));
+//        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
+//        this.userManager.setAvatar("user3", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
+//        this.userManager.setAvatar("user4", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
+//        this.userManager.setAvatar("user5", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png"));
 
         this.networkAPI.startServer();
     }
@@ -110,11 +109,6 @@ public class ClavarChatAPI implements Listener
         return this.userManager.getUsers();
     }
 
-    public Message getLastMessageWith(String pseudo)
-    {
-        return this.conversationManager.getLastMessageWith(pseudo);
-    }
-
     public Image getAvatar()
     {
         return this.userManager.getAvatar();
@@ -125,20 +119,34 @@ public class ClavarChatAPI implements Listener
         return this.userManager.getAvatar(pseudo);
     }
 
-    public boolean conversationExist(String pseudo)
+    public Message getLastMessage(String conversationName)
     {
-        return this.conversationManager.conversationExist(pseudo);
+        return this.conversationManager.getLastMessage(conversationName);
     }
 
-    public void setAvatar(String path)
+    public boolean conversationExist(String conversationName)
     {
-        this.userManager.setAvatar(path);
+        return this.conversationManager.conversationExist(conversationName);
     }
 
-    public void login(String pseudo, String id)
+    public void setAvatar(Image image)
+    {
+        this.userManager.setAvatar(image);
+    }
+
+    public void setAvatar(String pseudo, Image image)
+    {
+        this.userManager.setAvatar(pseudo, image);
+    }
+
+    public void login(String pseudo, String id, String path)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
-        int threadId = this.threadManager.createThread(new LoginExecutable(discover, new LoginRequest(pseudo, id, "")));
+
+        int threadId = this.threadManager.createThread(new LoginExecutable(discover));
+
+        this.userManager.setUser(pseudo, id);
+        this.userManager.setAvatar(new Image(path));
         this.threadManager.startThread(threadId);
     }
 
@@ -156,15 +164,15 @@ public class ClavarChatAPI implements Listener
         }
     }
 
-    public void createConversation(String pseudo)
+    public void createConversation(String conversationName)
     {
-        if (!this.conversationManager.conversationExist(pseudo)) this.conversationManager.createConversation(pseudo);
+        this.conversationManager.createConversation(conversationName);
     }
 
-    public void saveMessage(String pseudo, String from, String text)
+    public void saveMessage(String conversationName, String src, String dst, String text)
     {
-        Log.Print(this.getClass().getName() + " Saving message : [" + pseudo + "] --> " + from + " have send : " + text);
-        this.conversationManager.addMessage(pseudo, from, text);
+        Log.Print(this.getClass().getName() + " Saving message : [" + src + "] --> [" + dst + "] : " + text);
+        this.conversationManager.addMessage(conversationName, src, dst, text);
     }
 
     public void sendMessage(String pseudo, String message)

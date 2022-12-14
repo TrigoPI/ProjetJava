@@ -34,7 +34,6 @@ public class TcpConnection extends NetworkExecutable
         }
         else
         {
-            Log.Warning(this.getClass().getName() + " Connection failed with : " + this.ip + ":" + this.port);
             this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, this.ip, this.port, this.socketId));
         }
     }

@@ -218,7 +218,7 @@
                         <Circle fill="#7bed9f" layoutX="130.0" layoutY="91.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </AnchorPane>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                  <VBox alignment="TOP_CENTER" cache="true" depthTest="ENABLE" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
                         <Label text="Name">
                            <styleClass>
@@ -231,13 +231,13 @@
                   </VBox>
                </children>
             </VBox>
-            <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
+            <MFXScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="messagesContainer" spacing="20.0">
+                  <VBox fx:id="messagesContainer" depthTest="DISABLE" spacing="20.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="BOTTOM_RIGHT">
                                  <children>
                                     <ImageView fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -246,35 +246,27 @@
                                     </ImageView>
                                  </children>
                               </VBox>
-                              <VBox alignment="CENTER_RIGHT" fillWidth="false" spacing="5.0">
+                              <VBox spacing="5.0">
                                  <children>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label text="Label" />
-                                       </children>
+                                    <Label text="Name">
                                        <styleClass>
-                                          <String fx:value="clvc-shy-moment" />
-                                          <String fx:value="clvc-chat-bubble" />
+                                          <String fx:value="clvc-font-12px" />
+                                          <String fx:value="clvc-pseudo-label" />
                                        </styleClass>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
+                                    </Label>
+                                    <VBox fillWidth="false" spacing="5.0">
                                        <children>
-                                          <Label text="Label" />
+                                          <HBox alignment="CENTER_RIGHT">
+                                             <styleClass>
+                                                <String fx:value="clvc-shy-moment" />
+                                                <String fx:value="clvc-chat-bubble" />
+                                             </styleClass>
+                                             <children>
+                                                <Label maxWidth="200.0" text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" wrapText="true" />
+                                             </children>
+                                          </HBox>
                                        </children>
-                                       <styleClass>
-                                          <String fx:value="clvc-shy-moment" />
-                                          <String fx:value="clvc-chat-bubble" />
-                                       </styleClass>
-                                    </HBox>
-                                    <HBox alignment="CENTER_RIGHT">
-                                       <children>
-                                          <Label text="Label" />
-                                       </children>
-                                       <styleClass>
-                                          <String fx:value="clvc-shy-moment" />
-                                          <String fx:value="clvc-chat-bubble" />
-                                       </styleClass>
-                                    </HBox>
+                                    </VBox>
                                  </children>
                               </VBox>
                            </children>
@@ -283,6 +275,123 @@
                            <children>
                               <VBox alignment="CENTER_RIGHT" fillWidth="false" spacing="5.0">
                                  <children>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Label text="Label" />
+                                       </children>
+                                       <styleClass>
+                                          <String fx:value="clvc-shy-moment" />
+                                          <String fx:value="clvc-chat-bubble" />
+                                       </styleClass>
+                                    </HBox>
                                     <HBox alignment="CENTER_RIGHT">
                                        <children>
                                           <Label text="Label" />
@@ -326,16 +435,24 @@
                      </children>
                   </VBox>
                </content>
+               <styleClass>
+                  <String fx:value="clvc-chat-scroll-pane" />
+                  <String fx:value="clvc-dracula-orchid" />
+               </styleClass>
             </MFXScrollPane>
-            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="clvc-input-field">
+            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0">
                <children>
                   <VBox alignment="CENTER" prefWidth="70.0">
                      <children>
                         <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                      </children>
                   </VBox>
-                  <MFXTextField fx:id="usernameTextField1" floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="644.0" />
+                  <MFXTextField floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="644.0" />
                </children>
+               <styleClass>
+                  <String fx:value="clvc-input-field" />
+                  <String fx:value="clvc-message-input" />
+               </styleClass>
             </HBox>
          </children>
       </VBox>

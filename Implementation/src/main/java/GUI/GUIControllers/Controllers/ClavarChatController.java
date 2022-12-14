@@ -1,9 +1,10 @@
 package GUI.GUIControllers.Controllers;
 
+import ClavarChat.Utils.GUI.Component.MessageBox.MessageBox;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import javafx.fxml.FXML;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Utils.GUI.Component.Avatar.Avatar;
-import ClavarChat.Utils.GUI.Component.ChatMessage.ChatMessage;
 import ClavarChat.Utils.GUI.Component.Discussion.Discussion;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.User.User;
@@ -18,7 +19,6 @@ import javafx.scene.layout.*;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -26,8 +26,12 @@ public class ClavarChatController implements Initializable
 {
     private final ClavarChatAPI api;
     private final HashMap<String, Discussion> usersGUI;
+    private final HashMap<String, MessageBox> usersMessageBox;
 
     private Discussion selectedUser;
+
+    @FXML
+    private MFXScrollPane messagesContainer;
 
     @FXML
     private HBox userAvatarContainer;
@@ -37,9 +41,6 @@ public class ClavarChatController implements Initializable
 
     @FXML
     private VBox userPreviewContainer;
-
-    @FXML
-    private VBox messagesContainer;
 
     @FXML
     private VBox chatContainer;
@@ -57,6 +58,7 @@ public class ClavarChatController implements Initializable
     {
         this.api = api;
         this.usersGUI = new HashMap<>();
+        this.usersMessageBox = new HashMap<>();
         this.selectedUser = null;
     }
 
@@ -97,16 +99,18 @@ public class ClavarChatController implements Initializable
         });
     }
 
-    public void onTextMessage(String pseudo, String message)
+    public void onTextMessage(String src, String message)
     {
+        String dst = this.api.getPseudo();
+
         if (this.selectedUser != null)
         {
-//            if (this.selectedUser.getPseudo().equals(pseudo)) Platform.runLater(() -> this.createMessage(pseudo, message));
+//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.createChatBubble(dst, src, dst, message));
         }
 
-        if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
+        if (!this.api.conversationExist(src)) this.api.createConversation(src);
 
-        this.api.saveMessage(pseudo, pseudo, message);
+        this.api.saveMessage(src, src, dst, message);
     }
 
     private void addAvatar(Pane container, Image img, double radius, int index)
@@ -133,38 +137,39 @@ public class ClavarChatController implements Initializable
 
     private void createUserDescription(String pseudo, String id)
     {
-        Discussion discussion = new Discussion(this.api.getAvatar(pseudo), pseudo, id);
+        Discussion discussion = new Discussion(pseudo, this.api.getAvatar(pseudo), pseudo, id);
         discussion.setOnMouseClicked(this::onMouseClick);
 
         this.usersGUI.put(pseudo, discussion);
         this.userPreviewContainer.getChildren().add(discussion);
     }
 
-    private void createChatBublle(String src, String dst, String text)
+    private void updateChatBox(String conversationName, String src, String text)
     {
-        Message lastMessage = this.api.getLastMessageWith(dst);
+        MessageBox messageBox = this.usersMessageBox.get(conversationName);
 
-        if (lastMessage != null)
+        if (src.equals(this.api.getPseudo()))
         {
-            int index = this.chatContainer.getChildren().size() - 1;
-            ChatMessage lastChatMessage = (ChatMessage) this.chatContainer.getChildren().get(index);
+            messageBox.addMessage(src, this.api.getAvatar(), text, false);
+        }
+        else
+        {
+            messageBox.addMessage(src, this.api.getAvatar(src), text, true);
         }
     }
 
     private void selectUser(Discussion discussion)
     {
+        if (!this.usersMessageBox.containsKey(discussion.getConversationName())) this.createConversation(discussion.getConversationName());
         if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
         if (this.selectedUser != null) this.selectedUser.deselect();
 
         this.selectedUser = discussion;
         String pseudo = this.selectedUser.getPseudo();
 
-        this.messagesContainer.getChildren().clear();
+        this.messagesContainer.setContent(this.usersMessageBox.get(discussion.getConversationName()));
         this.selectedUser.select();
 
-        if (!this.api.conversationExist(pseudo)) this.api.createConversation(pseudo);
-
-        this.createConversation(pseudo);
         this.updateChatContainer(pseudo);
     }
 
@@ -198,26 +203,27 @@ public class ClavarChatController implements Initializable
         this.selectUser((Discussion)event.getSource());
     }
 
-    private void createConversation(String otherPseudo)
+    private void createConversation(String conversationName)
     {
-        ArrayList<Message> conversation = this.api.getConversation(otherPseudo);
-//        for (Message message : conversation) this.createMessage(message.pseudo, this.api.getPseudo(), message.text);
+        this.api.createConversation(conversationName);
+        this.usersMessageBox.put(conversationName, new MessageBox());
+        for (Message message : this.api.getConversation(conversationName)) this.updateChatBox(conversationName, message.srcPseudo, message.text);
     }
 
     @FXML
     private void onSendMessage()
     {
         String message = this.messageInput.getText().trim();
-        String pseudo = this.selectedUser.getPseudo();
-        String from = this.api.getPseudo();
+        String dst = this.selectedUser.getPseudo();
+        String src = this.api.getPseudo();
 
         if (!message.isEmpty())
         {
-//            this.createMessage(this.api.getPseudo(), pseudo, message);
+            this.updateChatBox(dst, src, message);
 
             this.messageInput.clear();
-            this.api.saveMessage(pseudo, from, message);
-            this.api.sendMessage(pseudo, message);
+            this.api.saveMessage(dst, src, dst, message);
+            this.api.sendMessage(dst, message);
         }
     }
 }

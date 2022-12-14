@@ -11,7 +11,6 @@ public class UserManager
 {
     private User user;
     private Image avatar;
-
     private final HashMap<String, UserData> users;
 
     private boolean logged;
@@ -84,10 +83,9 @@ public class UserManager
         this.user = new User(pseudo, id);
     }
 
-    public void setAvatar(String path)
+    public void setAvatar(Image image)
     {
-        Log.Print(this.getClass().getName() + " Set avatar : " + path + " to user");
-        this.avatar = new Image(path);
+        this.avatar = image;
     }
 
     public void setAvatar(String pseudo, Image image)

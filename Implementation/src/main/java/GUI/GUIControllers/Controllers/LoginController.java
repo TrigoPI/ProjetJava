@@ -13,6 +13,7 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -50,8 +51,6 @@ public class LoginController implements Initializable
     {
         this.api = api;
         this.clavarChat = clavarChat;
-
-        this.api.setAvatar(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
     }
 
     @Override
@@ -59,7 +58,7 @@ public class LoginController implements Initializable
     {
         Log.Print(this.getClass().getName() + " Initialized");
 
-        this.usernameTextField.setText("Bastien");
+        this.usernameTextField.setText("Alexis");
         this.idTextField.setText("2222");
         this.passwordTextField.setText("qsdfjsdfji");
 
@@ -82,6 +81,13 @@ public class LoginController implements Initializable
     {
         try
         {
+            this.api.createConversation("user1");
+            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
+
             this.spinnerBar.setVisible(false);
             this.spinnerBar.setManaged(false);
 
@@ -126,7 +132,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, id);
+            this.api.login(pseudo, id, Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
         }
     }
 }

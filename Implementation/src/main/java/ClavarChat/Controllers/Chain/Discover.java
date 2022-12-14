@@ -2,8 +2,7 @@ package ClavarChat.Controllers.Chain;
 
 import ClavarChat.Controllers.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Models.ChainData.Request.Request;
-import ClavarChat.Models.ChainData.Response.Response;
+import ClavarChat.Models.ChainData.Response;
 import ClavarChat.Models.ClavarChatMessage.DiscoverRequestMessage;
 import ClavarChat.Models.ClavarChatMessage.DiscoverResponseMessage;
 import ClavarChat.Models.User.User;
@@ -61,7 +60,7 @@ public class Discover extends Handler
     }
 
     @Override
-    public String handle(Request request)
+    public String handle()
     {
         this.broadcast();
         this.waitResponses();
@@ -69,7 +68,7 @@ public class Discover extends Handler
         if (this.succeed() && this.next != null)
         {
             this.reset();
-            return this.next.handle(request);
+            return this.next.handle();
         }
 
         this.reset();

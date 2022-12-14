@@ -15,32 +15,32 @@ public class ConversationManager
         this.conversations = new HashMap<>();
     }
 
-    public ArrayList<Message> getConversation(String pseudo)
+    public ArrayList<Message> getConversation(String conversationName)
     {
-        if (!this.conversations.containsKey(pseudo))
+        if (!this.conversations.containsKey(conversationName))
         {
-            Log.Warning(this.getClass().getName() + " No conversation with : " + pseudo);
+            Log.Warning(this.getClass().getName() + " No conversation with namae: " + conversationName);
             return null;
         }
 
-        return this.conversations.get(pseudo);
+        return this.conversations.get(conversationName);
     }
 
-    public Message getLastMessageWith(String pseudo)
+    public Message getLastMessage(String conversationName)
     {
-        if (!this.conversations.containsKey(pseudo))
+        if (!this.conversations.containsKey(conversationName))
         {
-            Log.Warning(this.getClass().getName() + " No conversation with : " + pseudo);
+            Log.Warning(this.getClass().getName() + " No conversation with name : " + conversationName);
             return null;
         }
 
-        if (this.conversations.get(pseudo).isEmpty())
+        if (this.conversations.get(conversationName).isEmpty())
         {
-            Log.Warning(this.getClass().getName() + " Conversation with : " + pseudo + " is empty");
+            Log.Warning(this.getClass().getName() + " Conversation  : " + conversationName + " is empty");
             return null;
         }
 
-        ArrayList<Message> messages = this.conversations.get(pseudo);
+        ArrayList<Message> messages = this.conversations.get(conversationName);
         int index = messages.size() - 1;
 
         return messages.get(index);
@@ -51,25 +51,25 @@ public class ConversationManager
         return this.conversations.containsKey(pseudo);
     }
 
-    public void createConversation(String pseudo)
+    public void createConversation(String conversationName)
     {
-        if (!this.conversationExist(pseudo))
+        if (!this.conversationExist(conversationName))
         {
-            Log.Info(this.getClass().getName() + " Creating conversation with : " + pseudo);
-            this.conversations.put(pseudo, new ArrayList<>());
+            Log.Info(this.getClass().getName() + " Creating conversation with : " + conversationName);
+            this.conversations.put(conversationName, new ArrayList<>());
         }
         else
         {
-            Log.Warning(this.getClass().getName() + " Conversation already exist with : " + pseudo);
+            Log.Warning(this.getClass().getName() + " Conversation already exist with : " + conversationName);
         }
     }
 
-    public void addMessage(String from, String dst, String text)
+    public void addMessage(String conversationName, String src, String dst, String text)
     {
-        if (this.conversationExist(dst))
+        if (this.conversationExist(conversationName))
         {
-            Message message = new Message(from, dst,text);
-            this.conversations.get(dst).add(message);
+            Message message = new Message(src, dst, text);
+            this.conversations.get(conversationName).add(message);
         }
         else
         {

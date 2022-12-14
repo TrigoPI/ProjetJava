@@ -40,7 +40,7 @@
                      <children>
                         <VBox alignment="CENTER" prefWidth="70.0">
                            <children>
-                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
                            </children>
                         </VBox>
                         <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Recherche utilisateur" floatingTextGap="10.0" maxHeight="-Infinity" minWidth="-Infinity" prefWidth="240.0" styleClass="clvc-font-16px" />
@@ -58,18 +58,14 @@
       <VBox fx:id="chatContainer" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">
          <children>
             <VBox fx:id="otherAvatarContainer" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container" />
-            <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox fx:id="messagesContainer" spacing="10.0" />
-               </content>
-            </MFXScrollPane>
-            <VBox alignment="CENTER">
+            <MFXScrollPane fx:id="messagesContainer" fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS" />
+            <VBox alignment="CENTER" styleClass="clvc-message-input">
                <children>
                   <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="710.0" styleClass="clvc-input-field">
                      <children>
                         <VBox alignment="CENTER" prefWidth="70.0">
                            <children>
-                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-search-icon" />
+                              <Button alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" styleClass="clvc-plane-icon" />
                            </children>
                         </VBox>
                         <MFXTextField fx:id="messageInput" floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxWidth="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" prefWidth="625.0" styleClass="clvc-font-16px" />

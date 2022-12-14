@@ -24,7 +24,7 @@ import java.util.LinkedList;
 
 public class NetworkAPI implements Listener
 {
-    public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT }
+    public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT, CLOSED }
 
     private final int tcpPort;
     private final int udpPort;
@@ -102,6 +102,7 @@ public class NetworkAPI implements Listener
                 }
                 else
                 {
+                    client.status = STATUS.CLOSED;
                     client.out.stop();
                     client.in.stop();
 
@@ -144,15 +145,22 @@ public class NetworkAPI implements Listener
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
         Client client = this.clients.get(ip);
 
-        if (client.status == STATUS.CONNECTING)
+        if (client.status != STATUS.CLOSED && client.status != STATUS.CLOSE_WAIT)
         {
-            Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
-            client.pendingDatasBuffer.push(data);
+            if (client.status == STATUS.CONNECTING)
+            {
+                Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
+                client.pendingDatasBuffer.push(data);
+            }
+            else
+            {
+                Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
+                client.out.put(data);
+            }
         }
         else
         {
-            Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
-            client.out.put(data);
+            Log.Info(this.getClass().getName() + " Cannot send data because client is : " + client.status);
         }
     }
 
@@ -308,6 +316,7 @@ public class NetworkAPI implements Listener
             Log.Print(this.getClass().getName() + " Removing client : " + event.dstIp);
 
             Client client = this.clients.get(event.dstIp);
+            client.status = STATUS.CLOSED;
 
             if (client.status == STATUS.CONNECTED)
             {

@@ -414,39 +414,36 @@ public class NetworkManager
     {
         DatagramSocket server = this.udpServers.get(serverID);
 
-        if (server != null)
-        {
-            int port = server.getLocalPort();
-            server.close();
-            Log.Error(this.getClass().getName() + " Closing UDP server with id : " + serverID + " --> " + port);
-        }
-        else
+        if (server == null)
         {
             Log.Error(this.getClass().getName() + " ERROR no UDP server with id : " + serverID);
+            return;
         }
+
+        int port = server.getLocalPort();
+        server.close();
+        Log.Error(this.getClass().getName() + " Closing UDP server with id : " + serverID + " --> " + port);
     }
 
     public void closeTcpServer(int serverID)
     {
         ServerSocket server = this.tcpServers.get(serverID);
 
-        if (server != null)
-        {
-
-            try
-            {
-                int port = server.getLocalPort();
-                server.close();
-                Log.Error(this.getClass().getName() + " Closing TCP server with id : " + serverID + " --> " + port);
-            }
-            catch (IOException e)
-            {
-                Log.Error(this.getClass().getName() + " ERROR closeTcpServer");
-            }
-        }
-        else
+        if (server == null)
         {
             Log.Error(this.getClass().getName() + " ERROR no TCP server with id : " + serverID);
+            return;
+        }
+
+        try
+        {
+            int port = server.getLocalPort();
+            server.close();
+            Log.Error(this.getClass().getName() + " Closing TCP server with id : " + serverID + " --> " + port);
+        }
+        catch (IOException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR closeTcpServer");
         }
     }
 
@@ -454,33 +451,36 @@ public class NetworkManager
     {
         Socket socket = this.sockets.get(socketId);
 
-        if (socket != null)
-        {
-            try
-            {
-                if (socket.isConnected())
-                {
-                    String srcIp = NetworkUtils.getSocketLocalIp(socket);
-                    String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-                    int srcPort = NetworkUtils.getSocketLocalPort(socket);
-                    int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
-                    socket.close();
-                    Log.Info(this.getClass().getName() + " Closing Socket : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
-                }
-
-                Log.Info(this.getClass().getName() + " removing socket with id : " + socketId);
-                this.sockets.remove(socketId);
-            }
-            catch (IOException e)
-            {
-                Log.Error(this.getClass().getName() + " ERROR closeTcpSocket ");
-            }
-        }
-        else
+        if (socket == null)
         {
             Log.Error(this.getClass().getName() + " ERROR cannot close socket is null ");
+            return;
+        }
+
+        if (!socket.isConnected())
+        {
+            Log.Warning(this.getClass().getName() + " Socket not connected ");
+            this.sockets.remove(socketId);
+            return;
+        }
+
+        try
+        {
+            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+            String dstIp = NetworkUtils.getSocketDistantIp(socket);
+
+            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+
+            Log.Info(this.getClass().getName() + " Closing Socket : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
+            socket.close();
+
+            Log.Info(this.getClass().getName() + " removing socket with id : " + socketId);
+            this.sockets.remove(socketId);
+        }
+        catch (IOException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR closeTcpSocket ");
         }
     }
 }

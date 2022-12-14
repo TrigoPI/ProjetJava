@@ -1,4 +1,4 @@
-package ClavarChat.Models.ChainData.Response;
+package ClavarChat.Models.ChainData;
 
 public class Response
 {

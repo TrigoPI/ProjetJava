@@ -1,6 +1,7 @@
 package Application.ClavarChatGUI;
 
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.Path.Path;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
 import GUI.GUIControllers.GUIControllers;
@@ -8,6 +9,7 @@ import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -35,10 +37,11 @@ public class ClavarChatGUI extends Application
         FXMLLoader fxmlLoaderLogin = new FXMLLoader(loginFXML);
         fxmlLoaderLogin.setController(loginController);
 
-//        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
-        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
+        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
+//        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
+        stage.getIcons().add(new Image("file:" + Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
         stage.setScene(scene);
         stage.show();
 
