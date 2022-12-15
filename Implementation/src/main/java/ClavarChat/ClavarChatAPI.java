@@ -66,12 +66,6 @@ public class ClavarChatAPI implements Listener
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
 
-        this.userManager.addUser(new User("user1", "9999"), "192.168.1.100");
-        this.userManager.addUser(new User("user2", "4444"), "192.168.1.100");
-
-        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
-        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
-
         this.networkAPI.startServer();
     }
 
