@@ -1,9 +1,10 @@
 package GUI.GUIControllers.Controllers;
 
+import javafx.fxml.FXML;
+import ClavarChat.Utils.GUI.Animation.FadeColor.FadeColor;
 import ClavarChat.Utils.Path.Path;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +14,9 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.net.URL;
@@ -64,6 +66,9 @@ public class LoginController implements Initializable
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
+
+        this.loginButton.setOnMouseEntered(this::onMouseEntered);
+        this.loginButton.setOnMouseExited(this::onMouseExited);
     }
 
     public void onLoginFailed()
@@ -81,13 +86,6 @@ public class LoginController implements Initializable
     {
         try
         {
-//            this.api.createConversation("user1");
-//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-//            this.api.saveMessage("user1", "user1", "Alexis", "aaaaaa");
-
             this.spinnerBar.setVisible(false);
             this.spinnerBar.setManaged(false);
 
@@ -105,6 +103,22 @@ public class LoginController implements Initializable
     private void errorInput(Node node)
     {
         node.getParent().getStyleClass().add("clvc-input-field-error");
+    }
+
+    private void onMouseEntered(MouseEvent event)
+    {
+        Color startColor = (Color)this.loginButton.getBackground().getFills().get(0).getFill();
+        Color endColor = new Color(56.0 / 255.0, 1.0, 172.0 / 255.0, 1.0);
+        FadeColor fadeColor = new FadeColor(startColor, endColor, this.loginButton, 200);
+        fadeColor.playFromStart();
+    }
+
+    private void onMouseExited(MouseEvent event)
+    {
+        Color startColor = (Color)this.loginButton.getBackground().getFills().get(0).getFill();
+        Color endColor = new Color(123.0 / 255.0, 237.0 / 255.0, 159.0 / 255.0, 1.0);
+        FadeColor fadeColor = new FadeColor(startColor, endColor, this.loginButton, 200);
+        fadeColor.playFromStart();
     }
 
     @FXML

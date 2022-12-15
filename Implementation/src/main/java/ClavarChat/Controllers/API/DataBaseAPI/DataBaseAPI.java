@@ -1,6 +1,6 @@
-package ClavarChat.Controllers.DataBaseAPI;
+package ClavarChat.Controllers.API.DataBaseAPI;
 
-import ClavarChat.Controllers.Managers.DataBaseManager;
+import ClavarChat.Controllers.Managers.DataBase.DataBaseManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +30,7 @@ public class DataBaseAPI {
     public void updatePseudonym(String id_user, String newPseudonym)
     {
         String update = "'" + newPseudonym +"'";
-        manager.update("users", "pseudonym", "id_user",id_user,update);
+        manager.update("users", "pseudonym", "id_user", id_user,update);
     }
 
     public ResultSet selectMessage(String id_conv)

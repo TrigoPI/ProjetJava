@@ -20,6 +20,7 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.Path.Path;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -64,6 +65,12 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
+
+        this.userManager.addUser(new User("user1", "9999"), "192.168.1.100");
+        this.userManager.addUser(new User("user2", "4444"), "192.168.1.100");
+
+        this.userManager.setAvatar("user1", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg"));
+        this.userManager.setAvatar("user2", new Image(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg"));
 
         this.networkAPI.startServer();
     }
@@ -123,7 +130,7 @@ public class ClavarChatAPI implements Listener
         int threadId = this.threadManager.createThread(new LoginExecutable(discover));
 
         this.userManager.setUser(pseudo, id);
-        this.userManager.setAvatar(new Image(path));
+        this.userManager.setAvatar(new Image("file:" + path));
         this.threadManager.startThread(threadId);
     }
 
