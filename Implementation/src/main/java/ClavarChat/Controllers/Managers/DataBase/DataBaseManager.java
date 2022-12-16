@@ -11,7 +11,7 @@ public class DataBaseManager
 
     public DataBaseManager()
     {
-        this.path = "./src/main/resources/BDD/Connect/ClavarDataBase.db";
+        this.path = "/Users/clementroussel/Desktop/Programmation/ProjetJava/Implementation/src/main/resources/BDD/ClavarDataBase.db";
         this.url="jdbc:sqlite:" + path;
         this.connect();
     }
@@ -104,5 +104,4 @@ public class DataBaseManager
     /* request select
     select id_conv FROM conversation
      */
-
 }
