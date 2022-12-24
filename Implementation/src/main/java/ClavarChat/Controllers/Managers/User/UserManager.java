@@ -56,7 +56,7 @@ public class UserManager
 
     public int getUserCount()
     {
-        return this.users.getDatas().size();
+        return this.users.getDatas().size() + 1;
     }
 
     public int getId()
