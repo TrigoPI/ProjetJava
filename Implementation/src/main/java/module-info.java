@@ -3,8 +3,8 @@ module Implementation
     requires javafx.controls;
     requires javafx.fxml;
     requires MaterialFX;
-    requires commons.io;
     requires java.sql;
+    requires org.apache.commons.io;
 
     opens Application.ClavarChatGUI to javafx.fxml;
     exports Application.ClavarChatGUI;

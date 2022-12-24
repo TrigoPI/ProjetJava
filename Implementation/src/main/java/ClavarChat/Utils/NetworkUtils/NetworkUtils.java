@@ -7,7 +7,6 @@ import java.util.List;
 
 public class NetworkUtils
 {
-
     public static String inetAddressToString(InetAddress addr)
     {
         return addr.toString().split("/")[1];

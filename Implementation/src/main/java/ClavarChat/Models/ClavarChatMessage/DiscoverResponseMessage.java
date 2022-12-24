@@ -1,17 +1,15 @@
 package ClavarChat.Models.ClavarChatMessage;
 
-import ClavarChat.Models.ByteImage.ByteImage;
-
 public class DiscoverResponseMessage extends ClavarChatMessage
 {
     public static final String DISCOVER_RESPONSE  = "DISCOVER_RESPONSE";
 
     public int count;
-    public ByteImage avatar;
+    public byte[] avatar;
     public String pseudo;
-    public String id;
+    public int id;
 
-    public DiscoverResponseMessage(String pseudo, String id, ByteImage avatar, int count)
+    public DiscoverResponseMessage(String pseudo, int id, byte[] avatar, int count)
     {
         super(DISCOVER_RESPONSE);
 

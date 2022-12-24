@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Managers.User;
 
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import javafx.scene.image.Image;
+import ClavarChat.Utils.PackedArray.PackedArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,11 @@ import java.util.HashMap;
 public class UserManager
 {
     private User user;
-    private Image avatar;
-    private final HashMap<String, UserData> users;
+    private byte[] avatar;
+
+    private final PackedArray<UserData> users;
+    private final HashMap<Integer, Integer> idToIndex;
+    private final HashMap<String, Integer> pseudoToIndex;
 
     private boolean logged;
 
@@ -19,37 +22,74 @@ public class UserManager
     {
         this.user = null;
         this.avatar = null;
-        this.users = new HashMap<>();
+        this.users = new PackedArray<>();
+        this.idToIndex = new HashMap<>();
+        this.pseudoToIndex = new HashMap<>();
 
         this.logged = false;
     }
 
-    public ArrayList<User> getUsers()
+    public boolean isConnected(int userId)
     {
-        ArrayList<User> users = new ArrayList<>();
-        for (String key : this.users.keySet()) users.add(this.users.get(key).user);
-        return users;
+        return this.idToIndex.containsKey(userId);
     }
 
-    public ArrayList<String> getUserIP(String pseudo)
+    public boolean isConnected(String pseudo)
     {
-        if (!this.userExist(pseudo)) return null;
-        return this.users.get(pseudo).addresses;
+        return this.pseudoToIndex.containsKey(pseudo);
     }
 
     public boolean isLogged()
     {
-        return this.logged;
+        return !this.logged;
     }
 
-    public boolean userExist(String pseudo)
+    public boolean idExist(int userId)
     {
-        return this.users.containsKey(pseudo);
+        return this.idToIndex.containsKey(userId);
+    }
+
+    public boolean pseudoExist(String pseudo)
+    {
+        return this.pseudoToIndex.containsKey(pseudo);
     }
 
     public int getUserCount()
     {
-        return this.users.size() + 1;
+        return this.users.getDatas().size();
+    }
+
+    public int getId()
+    {
+        return (this.user == null)?null:this.user.id;
+    }
+
+    public int getId(String pseudo)
+    {
+        if (!this.pseudoToIndex.containsKey(pseudo))
+        {
+            Log.Warning(this.getClass().getName() + " No user pseudo : " + pseudo);
+            return -1;
+        }
+
+        int id = this.pseudoToIndex.get(pseudo);
+        UserData userData = this.users.get(id);
+        return userData.user.id;
+    }
+
+    public ArrayList<User> getUsers()
+    {
+        ArrayList<User> allUsers = new ArrayList<>();
+        for (UserData userData : this.users.getDatas()) allUsers.add(userData.user);
+        return allUsers;
+    }
+
+    public ArrayList<String> getUserIP(int userId)
+    {
+        if (!this.idToIndex.containsKey(userId)) return null;
+        int index = this.idToIndex.get(userId);
+        UserData userData = this.users.get(index);
+        return userData.addresses;
     }
 
     public User getUser()
@@ -57,19 +97,69 @@ public class UserManager
         return this.user;
     }
 
-    public User getUser(String pseudo)
+    public User getUser(int userId)
     {
-        return (!this.users.containsKey(pseudo))?null:this.users.get(pseudo).user;
+        if (this.user != null && userId == this.user.id)
+        {
+            return this.user;
+        }
+
+        if (!this.idToIndex.containsKey(userId))
+        {
+            Log.Warning(this.getClass().getName() + " No user with id : " + userId);
+            return null;
+        }
+
+        int index = this.idToIndex.get(userId);
+
+        return this.users.get(index).user;
     }
 
-    public Image getAvatar()
+    public String getPseudo()
+    {
+        return (this.user == null)?null:this.user.pseudo;
+    }
+
+    public String getPseudo(int userId)
+    {
+        if (this.user != null && userId == this.user.id)
+        {
+            return this.user.pseudo;
+        }
+
+        if (!this.idToIndex.containsKey(userId))
+        {
+            Log.Warning(this.getClass().getName() + " No user with id : " + userId);
+            return null;
+        }
+
+        int index = this.idToIndex.get(userId);
+
+        return this.users.get(index).user.pseudo;
+    }
+
+    public byte[] getAvatar()
     {
         return this.avatar;
     }
 
-    public Image getAvatar(String pseudo)
+    public byte[] getAvatar(int userId)
     {
-        return (!this.users.containsKey(pseudo))?null:this.users.get(pseudo).avatar;
+        if ( this.user != null && userId == this.user.id)
+        {
+            return this.avatar;
+        }
+
+        if (this.idToIndex.containsKey(userId))
+        {
+            Log.Warning(this.getClass().getName() + " No user with id : " + userId);
+            return null;
+        }
+
+        int index = this.idToIndex.get(userId);
+        UserData userData = this.users.get(index);
+
+        return userData.avatar;
     }
 
     public void setLogged(boolean logged)
@@ -77,48 +167,68 @@ public class UserManager
         this.logged = logged;
     }
 
-    public void setUser(String pseudo, String id)
+    public void setUser(String pseudo, int id, byte[] avatar)
     {
         Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
+        this.avatar = avatar;
         this.user = new User(pseudo, id);
     }
 
-    public void setAvatar(Image image)
+    public void addUser(String pseudo, int userId, byte[] avatar)
     {
-        this.avatar = image;
-    }
-
-    public void setAvatar(String pseudo, Image image)
-    {
-        Log.Print(this.getClass().getName() + " Set avatar to user : " + pseudo);
-        if (this.users.containsKey(pseudo)) this.users.get(pseudo).avatar = image;
-    }
-
-    public void addUser(User user, String ip)
-    {
-
-        if (!this.userExist(user.pseudo))
+        if (this.idExist(userId))
         {
-            Log.Info(this.getClass().getName() + " Adding new user : " + user.pseudo + " / #" + user.id);
-            this.users.put(user.pseudo, new UserData(user));
+            Log.Error(this.getClass().getName() + " User : " + pseudo + " / #" + userId + " already register");
+            return;
         }
 
-        Log.Info(this.getClass().getName() + " Adding ip : " + ip + " to user : " + user.pseudo + " / #" + user.id);
+        if (this.pseudoExist(pseudo))
+        {
+            Log.Error(this.getClass().getName() + " User : " + pseudo + " / #" + userId + " already register");
+            return;
+        }
 
-        UserData userData = this.users.get(user.pseudo);
+        Log.Info(this.getClass().getName() + " Adding new user : " + pseudo + " / #" + userId);
+
+        User newUser = new User(pseudo, userId);
+        UserData userData = new UserData(newUser, avatar);
+
+        int id = this.users.add(userData);
+        this.idToIndex.put(userId, id);
+        this.pseudoToIndex.put(pseudo, id);
+    }
+
+    public void addIpToUser(int userId, String ip)
+    {
+        if (!this.idToIndex.containsKey(userId))
+        {
+            Log.Error(this.getClass().getName() + " No user with id : " + userId);
+            return;
+        }
+
+        Log.Info(this.getClass().getName() + " Adding ip : " + ip + " to user : " + userId);
+        int index = this.idToIndex.get(userId);
+        UserData userData = this.users.get(index);
         userData.addresses.add(ip);
     }
 
-    public void removeUser(String pseudo)
+    public void removeUser(int userId)
     {
-        if (this.userExist(pseudo))
+        if (this.idToIndex.containsKey(userId))
         {
-            Log.Print(this.getClass().getName() + " Removing user : " + pseudo);
-            this.users.remove(pseudo);
+            Log.Print(this.getClass().getName() + " Removing user : " + userId);
+
+            int index = this.idToIndex.get(userId);
+            UserData userData = this.users.get(index);
+            User user = userData.user;
+
+            this.idToIndex.remove(userId);
+            this.pseudoToIndex.remove(user.pseudo);
+            this.users.remove(index);
         }
         else
         {
-            Log.Print(this.getClass().getName() + " No user with pseudo : " + pseudo);
+            Log.Print(this.getClass().getName() + " No user with id : " + userId);
         }
     }
 
@@ -127,18 +237,20 @@ public class UserManager
         Log.Print(this.getClass().getName() + " Resetting User Manager");
         this.user = null;
         this.users.clear();
+        this.pseudoToIndex.clear();
+        this.idToIndex.clear();
     }
 
-    private class UserData
+    private static class UserData
     {
-        public User user;
-        public Image avatar;
-        public ArrayList<String> addresses;
+        public final User user;
+        public final byte[] avatar;
+        public final ArrayList<String> addresses;
 
-        public UserData(User user)
+        public UserData(User user, byte[] avatar)
         {
             this.user = user;
-            this.avatar = null;
+            this.avatar = avatar;
             this.addresses = new ArrayList<>();
         }
     }

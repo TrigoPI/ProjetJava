@@ -10,19 +10,19 @@ import javafx.scene.layout.VBox;
 
 public class ChatMessage extends HBox
 {
-    private VBox messageContainer;
-    private String styleClass;
-    private String src;
+    private final VBox messageContainer;
+    private final String styleClass;
+    private final int userId;
 
-    public ChatMessage(Image img, String src, boolean reverse)
+    public ChatMessage(int userId, String pseudo, Image img, boolean reverse)
     {
         this.messageContainer = new VBox();
-        this.src = src;
+        this.userId = userId;
         this.styleClass = (reverse)?"clvc-american-river":"clvc-shy-moment";
 
         Pos position = (reverse)?Pos.TOP_LEFT:Pos.TOP_RIGHT;
-        Avatar avatar = new Avatar(img, 25);
-        Label pseudoLabel = new Label(src);
+        Avatar avatar = new Avatar(img, 25, false);
+        Label pseudoLabel = new Label(pseudo);
         VBox avatarContainer = new VBox();
         VBox messageAndNameContainer = new VBox();
 
@@ -45,6 +45,8 @@ public class ChatMessage extends HBox
         messageAndNameContainer.getChildren().add(pseudoLabel);
         messageAndNameContainer.getChildren().add(this.messageContainer);
 
+        avatar.displayStatus(false);
+
         this.messageContainer.setSpacing(3);
         this.messageContainer.setFillWidth(false);
         this.messageContainer.setAlignment(position);
@@ -61,9 +63,9 @@ public class ChatMessage extends HBox
         this.getChildren().add((reverse)?1:0, messageAndNameContainer);
     }
 
-    public String getSrc()
+    public int getUserId()
     {
-        return this.src;
+        return this.userId;
     }
 
     public void addMessage(String message)

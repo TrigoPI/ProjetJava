@@ -1,108 +1,306 @@
 package ClavarChat.Controllers.Managers.DataBase;
 
+import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
+import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.PackedArray.PackedArray;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DataBaseManager
 {
-    private String path;
-    private String url;
+    private final String url;
+    private final PackedArray<PreparedStatement> preparedStatements;
+    private final PackedArray<ResultSet> resultsSet;
     private Connection conn;
 
-
-    public DataBaseManager()
+    public DataBaseManager(String path)
     {
-        this.path = "./src/main/resources/BDD/Connect/ClavarDataBase.db";
-        this.url="jdbc:sqlite:" + path;
+        this.url = "jdbc:sqlite:" + path;
+
+        this.preparedStatements = new PackedArray<>();
+        this.resultsSet = new PackedArray<>();
+
         this.connect();
     }
+
+    public ArrayList<Integer> decodeAsInt(int resultSetId, int columnIndex)
+    {
+        ArrayList<Integer> datas = new ArrayList<>();
+        ResultSet result = this.resultsSet.get(resultSetId);
+
+        if (result == null)
+        {
+            Log.Error(this.getClass().getName() + " No resultsSet with id : " + resultSetId);
+            return null;
+        }
+
+        try
+        {
+            while (result.next())
+            {
+                int data = result.getInt(columnIndex);
+                datas.add(data);
+            }
+        }
+        catch (SQLException e)
+        {
+            Log.Error(DataBaseAPI.class.getName() + " " + e.getMessage());
+        }
+
+        return datas;
+    }
+
+    public ArrayList<String> decodeAsString(int resultSetId, int columnIndex)
+    {
+        ArrayList<String> datas = new ArrayList<>();
+        ResultSet result = this.resultsSet.get(resultSetId);
+
+        if (result == null)
+        {
+            Log.Error(this.getClass().getName() + " No resultsSet with id : " + resultSetId);
+            return null;
+        }
+
+        try
+        {
+            while (result.next())
+            {
+                String data = result.getString(columnIndex);
+                datas.add(data);
+            }
+        }
+        catch (SQLException e)
+        {
+            Log.Error(DataBaseAPI.class.getName() + " " + e.getMessage());
+        }
+
+        return datas;
+    }
+
+    public ArrayList<byte[]> decodeAsBytes(int resultSetId, int columnIndex)
+    {
+        ArrayList<byte[]> datas = new ArrayList<>();
+        ResultSet result = this.resultsSet.get(resultSetId);
+
+        if (result == null)
+        {
+            Log.Error(this.getClass().getName() + " No resultsSet with id : " + resultSetId);
+            return null;
+        }
+
+        try
+        {
+            while (result.next())
+            {
+                byte[] data = result.getBytes(columnIndex);
+                datas.add(data);
+            }
+        }
+        catch (SQLException e)
+        {
+            Log.Error(DataBaseAPI.class.getName() + " " + e.getMessage());
+        }
+
+        return datas;
+    }
+
+    public int createPreparedStatement(String request)
+    {
+        int id = -1;
+
+        try
+        {
+            PreparedStatement preparedStatement = this.conn.prepareStatement(request);
+            id = this.preparedStatements.add(preparedStatement);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
+        }
+
+        return id;
+    }
+
+    public int executeQuery(String request, Object ...value)
+    {
+        int id = -1;
+        String requestFormat = String.format(request, value);
+        Log.Print(this.getClass().getName() + " Executing : " + requestFormat);
+
+        try
+        {
+            Statement statement = conn.createStatement();
+            id = this.resultsSet.add(statement.executeQuery(requestFormat));
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
+        }
+
+        return id;
+    }
+
+    public int getIdGenerated(int preparedStatementId)
+    {
+        PreparedStatement statement = this.preparedStatements.get(preparedStatementId);
+        int id = -1;
+
+        if (statement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatementId with id : " + preparedStatementId);
+            return -1;
+        }
+
+        try
+        {
+            id = statement.getGeneratedKeys().getInt(1);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
+        }
+
+        return id;
+    }
+
     public void connect()
     {
-        try {
-            conn = DriverManager.getConnection(url);
-            System.out.println("Connection to SQLite has been established.");
+        try
+        {
+            conn = DriverManager.getConnection(this.url);
+            Log.Info(this.getClass().getName() + " Connection to SQLite has been established.");
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
         }
     }
 
-
-    // POUR LES STRING, IL FAUT LES METTRE ENTRE QUOTE ''
-    public void createTable(String name, String fields)
+    public void execute(String request, Object ...value)
     {
-        String sql = "CREATE TABLE IF NOT EXISTS " + name + " (" + fields + " )";
-        try{
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        String requestFormat = String.format(request, value);
+        Log.Print(this.getClass().getName() + " Executing : " + requestFormat);
+
+        try
+        {
+            Statement statement = conn.createStatement();
+            statement.execute(requestFormat);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
         }
     }
-    /* request create
-    "CREATE TABLE IF NOT EXISTS test (
-        test1 integer PRIMARY KEY,
-        test2 text NOT NULL
-        )
-    */
 
-    public void insert(String name_arguments, String values)
+    public void executePreparedStatement(int preparedStatementId)
     {
-        String sql = "INSERT INTO " + name_arguments + " " + values;
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        PreparedStatement preparedStatement = this.preparedStatements.get(preparedStatementId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatement with id : " + preparedStatementId);
+            return;
+        }
+
+        try
+        {
+            Log.Info(this.getClass().getName() + " Executing preparedStatement with id : " + preparedStatementId);
+            preparedStatement.execute();
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " " + e.getMessage());
         }
     }
-    /* request insert
-    INSERT INTO messages(id_msg,id_conv,id_user,msg,date) VALUES(?,?,?,?,?)
-     */
 
-    public void update(String name, String field_value, String name_primary_key, String primary_key_value, String new_value)
+    public void setString(int preparedStatementId, int index, String value)
     {
-        String sql = "UPDATE " + name + " SET " + field_value + " = " + new_value + " WHERE " + name_primary_key + " = " + primary_key_value;
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        PreparedStatement preparedStatement = this.preparedStatements.get(preparedStatementId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatement with id : " + preparedStatementId);
+            return;
+        }
+
+        try
+        {
+            Log.Print(this.getClass().getName() + " Setting STRING to preparedStatement width id : " + preparedStatementId + " value : " + value);
+            preparedStatement.setString(index, value);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR setting STRING with preparedStatement id : " + preparedStatementId + " --> " + e.getMessage());
         }
     }
-    /* request update
-        UPDATE users SET pseudonym = ?
-        WHERE id_user = ?
-     */
 
-    public void delete(String name, String id, String id_value)
+    public void setBytes(int preparedStatementId, int index, byte[] value)
     {
-        String sql = "DELETE FROM " + name + " WHERE " + id + " = " + id_value;
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        PreparedStatement preparedStatement = this.preparedStatements.get(preparedStatementId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatement with id : " + preparedStatementId);
+            return;
+        }
+
+        try
+        {
+            Log.Print(this.getClass().getName() + " Setting BLOB to preparedStatement width id : " + preparedStatementId + " value : " + value);
+            preparedStatement.setBytes(index, value);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR setting BLOB with preparedStatement id : " + preparedStatementId + " --> " + e.getMessage());
         }
     }
-    /* request delete
-    DELETE FROM warehouses WHERE id = ?
-     */
 
-    public ResultSet select(String field, String name, String filter)
+    public void setInt(int preparedStatementId, int index, int value)
     {
-        String sql = "SELECT " + field + " FROM " + name + filter;
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            return rs;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            ResultSet rs = null;
-            return rs;
+        PreparedStatement preparedStatement = this.preparedStatements.get(preparedStatementId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatement with id : " + preparedStatementId);
+            return;
+        }
+
+        try
+        {
+            Log.Print(this.getClass().getName() + " Setting INT to preparedStatement width id : " + preparedStatementId + " value : " + value);
+            preparedStatement.setInt(index, value);
+        }
+        catch (SQLException e)
+        {
+            Log.Error(this.getClass().getName() + " ERROR setting int with preparedStatement id : " + preparedStatementId + " --> " + e.getMessage());
         }
     }
-    /* request select
-    select id_conv FROM conversation
-     */
 
+    public void removeResultSet(int resultSetId)
+    {
+        ResultSet preparedStatement = this.resultsSet.get(resultSetId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No resultsSet with id : " + resultSetId);
+            return;
+        }
+
+        this.resultsSet.remove(resultSetId);
+    }
+
+    public void removePreparedStatement(int preparedStatementId)
+    {
+        PreparedStatement preparedStatement = this.preparedStatements.get(preparedStatementId);
+
+        if (preparedStatement == null)
+        {
+            Log.Error(this.getClass().getName() + " No preparedStatement with id : " + preparedStatementId);
+            return;
+        }
+
+        this.preparedStatements.remove(preparedStatementId);
+    }
 }

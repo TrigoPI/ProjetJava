@@ -12,8 +12,6 @@ import java.util.concurrent.Semaphore;
 
 public class Discover extends Handler
 {
-    private final int udpPort;
-
     private final NetworkAPI networkAPI;
     private final UserManager userManager;
     private final Semaphore semaphore;
@@ -22,11 +20,9 @@ public class Discover extends Handler
     private int responseCount;
     private final int timeout;
 
-    public Discover(NetworkAPI networkAPI, UserManager userManager, int udpPort)
+    public Discover(NetworkAPI networkAPI, UserManager userManager)
     {
         super();
-
-        this.udpPort = udpPort;
 
         this.networkAPI = networkAPI;
         this.userManager = userManager;
@@ -99,7 +95,7 @@ public class Discover extends Handler
         {
             Log.Info(this.getClass().getName() + " Success Discover");
             if (this.responseCount == -1) Log.Info(this.getClass().getName() + " No response, alone on the network");
-            for (User user : this.userManager.getUsers()) Log.Info(this.getClass().getName() + " Discovered " + this.userManager.getUserIP(user.pseudo) + " --> " + user.pseudo + " / #" + user.id);
+            for (User user : this.userManager.getUsers()) Log.Info(this.getClass().getName() + " Discovered " + this.userManager.getUserIP(user.id) + " --> " + user.pseudo + " / #" + user.id);
 
             return true;
         }

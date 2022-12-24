@@ -2,14 +2,12 @@ package ClavarChat.Models.Message;
 
 public class Message
 {
-    public final String srcPseudo;
-    public final String dstPseudo;
+    public final int userId;
     public final String text;
 
-    public Message(String srcPseudo, String dstPseudo, String text)
+    public Message(int userId, String text)
     {
-        this.srcPseudo = srcPseudo;
-        this.dstPseudo = dstPseudo;
+        this.userId = userId;
         this.text = text;
     }
 }

@@ -9,15 +9,15 @@ public class Clock
         this.start = System.currentTimeMillis();
     }
 
-    public float timeSecond()
+    public double timeSecond()
     {
-        return (System.currentTimeMillis() - this.start) / 1000;
+        return (System.currentTimeMillis() - this.start) / 1000.0;
     }
 
-    public float resetSecond()
+    public double resetSecond()
     {
-        float time = this.timeSecond();
+        double time = this.timeSecond();
         this.start = System.currentTimeMillis();
-        return  time;
+        return time;
     }
 }

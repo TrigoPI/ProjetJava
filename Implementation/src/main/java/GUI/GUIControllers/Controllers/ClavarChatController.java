@@ -1,13 +1,14 @@
 package GUI.GUIControllers.Controllers;
 
+import javafx.fxml.FXML;
+import ClavarChat.Models.BytesImage.BytesImage;
+import ClavarChat.Models.Message.Message;
+import ClavarChat.Models.User.User;
 import ClavarChat.Utils.GUI.Component.MessageBox.MessageBox;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
-import javafx.fxml.FXML;
-import ClavarChat.Models.Message.Message;
 import ClavarChat.Utils.GUI.Component.Avatar.Avatar;
 import ClavarChat.Utils.GUI.Component.Discussion.Discussion;
 import ClavarChat.ClavarChatAPI;
-import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
@@ -18,16 +19,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ClavarChatController implements Initializable
 {
     private final ClavarChatAPI api;
-    private final HashMap<String, Discussion> usersGUI;
-    private final HashMap<String, MessageBox> usersMessageBox;
-
+    private final HashMap<Integer, Discussion> usersGUI;
+    private final HashMap<Integer, MessageBox> messagesBoxGui;
     private Discussion selectedUser;
 
     @FXML
@@ -58,7 +60,7 @@ public class ClavarChatController implements Initializable
     {
         this.api = api;
         this.usersGUI = new HashMap<>();
-        this.usersMessageBox = new HashMap<>();
+        this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
     }
 
@@ -68,96 +70,117 @@ public class ClavarChatController implements Initializable
         Log.Print(this.getClass().getName() + " Initialized");
 
         String pseudo = this.api.getPseudo();
-        String id = this.api.getId();
+        BytesImage buffer = this.api.getAvatar();
+        InputStream in = buffer.toInputStream();
+        Image avatar = new Image(in);
+        int id = this.api.getId();
 
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
 
-        this.addAvatar(this.userAvatarContainer, this.api.getAvatar(), 50, 0);
-        this.addDiscoveredUser();
+        this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
+        this.initDiscussionContainer();
     }
 
     public void onRemoveUser(String pseudo)
     {
-        Platform.runLater(() -> {
-            Discussion container = this.usersGUI.get(pseudo);
-
-            if (this.selectedUser != null)
-            {
-                if (this.selectedUser.getPseudo().equals(pseudo)) this.chatContainer.setVisible(false);
-            }
-
-            this.userPreviewContainer.getChildren().remove(container);
-        });
+//        Platform.runLater(() -> {
+//            Discussion container = this.usersGUI.get(pseudo);
+//
+//            if (this.selectedUser != null)
+//            {
+//                if (this.selectedUser.getPseudo().equals(pseudo)) this.chatContainer.setVisible(false);
+//            }
+//
+//            this.userPreviewContainer.getChildren().remove(container);
+//        });
     }
 
     public void onNewUser(String pseudo)
     {
         Platform.runLater(() -> {
-            this.createUserDescription(pseudo, this.api.getId(pseudo));
-            this.selectUser(this.usersGUI.get(pseudo));
+//            this.createUserDiscussion(pseudo, this.api.getId(pseudo));
+//            this.selectUser(this.usersGUI.get(pseudo));
         });
+    }
+
+    private void initDiscussionContainer()
+    {
+        for (int conversationId : this.api.getConversationsIdInDataBase())
+        {
+            ArrayList<Integer> usersId = this.api.getUserIdInConversation(conversationId);
+            this.messagesBoxGui.put(conversationId, new MessageBox());
+            this.createUserDiscussion(usersId.get(0), conversationId);
+            this.initMessageBox(conversationId);
+        }
+    }
+
+    private void initMessageBox(int conversationId)
+    {
+        MessageBox messageBox = this.messagesBoxGui.get(conversationId);
+
+        for (int id : this.api.getMessagesIdInDataBase(conversationId))
+        {
+            Message message = this.api.getMessageInDataBase(id);
+            String pseudo = this.api.getPseudoFromDataBase(message.userId);
+            BytesImage buffer = this.api.getAvatarFromDataBase(message.userId);
+            InputStream in = buffer.toInputStream();
+            Image avatar = new Image(in);
+            messageBox.addMessage(message.userId, pseudo, avatar, message.text, this.api.getId() != message.userId);
+        }
+
+    }
+
+    private void createUserDiscussion(int userId, int conversationId)
+    {
+        String pseudo = this.api.getPseudoFromDataBase(userId);
+        BytesImage buffer = this.api.getAvatarFromDataBase(userId);
+        InputStream in = buffer.toInputStream();
+        Image avatar = new Image(in);
+
+        Discussion discussion = new Discussion(conversationId, userId, this.api.isConnected(userId), avatar, pseudo, pseudo + " : blablabla");
+        discussion.setOnMouseClicked(this::onMouseClick);
+
+        this.userPreviewContainer.getChildren().add(discussion);
+        this.usersGUI.put(conversationId, discussion);
+    }
+
+    private void addMessage(int conversationId, int userId, String message)
+    {
+        MessageBox messageBox =  this.messagesBoxGui.get(conversationId);
+        String pseudo = this.api.getPseudoFromDataBase(userId);
+        BytesImage buffer = this.api.getAvatarFromDataBase(userId);
+        InputStream in = buffer.toInputStream();
+        Image avatar = new Image(in);
+        messageBox.addMessage(userId, pseudo, avatar, message, this.api.getId() != userId);
+        this.api.saveMessage(conversationId, userId, message);
     }
 
     public void onTextMessage(String src, String message)
     {
-        String dst = this.api.getPseudo();
+        String dst = this.api.getUser().pseudo;
 
         if (this.selectedUser != null)
         {
-            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(src, src, message));
+//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(src, src, message));
         }
 
-        if (!this.api.conversationExist(src)) this.api.createConversation(src);
+//        if (!this.api.conversationExist(src)) this.api.createConversation(src);
 
-        this.api.saveMessage(src, src, dst, message);
+//        this.api.saveMessage(src, src, dst, message);
     }
 
-    private void addAvatar(Pane container, Image img, double radius, int index)
+    private void addAvatar(Pane container, Image img, boolean connected, double radius, int index)
     {
         Platform.runLater(() -> {
-            Avatar avatar = new Avatar(img, radius);
+            Avatar avatar = new Avatar(img, radius, connected);
             container.getChildren().add(index, avatar);
         });
     }
 
-    private void addDiscoveredUser()
+    private void updateChatBox(int conversationId, String src, String text)
     {
-        for (User user : this.api.getUsers()) this.createUserDescription(user.pseudo, user.id);
-
-        if (!this.userPreviewContainer.getChildren().isEmpty())
-        {
-            this.selectUser((Discussion)this.userPreviewContainer.getChildren().get(0));
-        }
-        else
-        {
-            this.chatContainer.setVisible(false);
-        }
-    }
-
-    private void createUserDescription(String pseudo, String id)
-    {
-        Discussion discussion = new Discussion(pseudo, this.api.getAvatar(pseudo), pseudo, id);
-        discussion.setOnMouseClicked(this::onMouseClick);
-
-        this.createConversation(pseudo);
-        this.userPreviewContainer.getChildren().add(discussion);
-        this.usersGUI.put(pseudo, discussion);
-    }
-
-    private void updateChatBox(String conversationName, String src, String text)
-    {
-        MessageBox messageBox = this.usersMessageBox.get(conversationName);
-
-        if (src.equals(this.api.getPseudo()))
-        {
-            messageBox.addMessage(src, this.api.getAvatar(), text, false);
-        }
-        else
-        {
-            messageBox.addMessage(src, this.api.getAvatar(src), text, true);
-        }
-
+//        messageBox.addMessage(src, this.api.getAvatar(src), text, !this.api.getPseudo().equals(src));
         this.messagesContainer.setVvalue(1.0);
     }
 
@@ -167,19 +190,22 @@ public class ClavarChatController implements Initializable
         if (this.selectedUser != null) this.selectedUser.deselect();
 
         this.selectedUser = discussion;
-        String pseudo = this.selectedUser.getPseudo();
-
-        this.messagesContainer.setContent(this.usersMessageBox.get(discussion.getConversationName()));
+        this.messagesContainer.setContent(this.messagesBoxGui.get(discussion.getConversationId()));
         this.selectedUser.select();
 
-        this.updateChatContainer(pseudo);
+        this.updateChatContainer(discussion.getUserId());
     }
 
-    private void updateChatContainer(String pseudo)
+    private void updateChatContainer(int userId)
     {
+        User user = this.api.getUserInDataBase(userId);
+        BytesImage buffer = this.api.getAvatarFromDataBase(userId);
+
         VBox vBox = new VBox();
-        Label pseudoLabel = new Label(pseudo);
-        Label idLabel = new Label("#" + this.api.getId(pseudo));
+        Label pseudoLabel = new Label(user.pseudo);
+        Label idLabel = new Label("#" + userId);
+        InputStream in = buffer.toInputStream();
+        Image avatar = new Image(in);
 
         pseudoLabel.getStyleClass().add("clvc-font-24px");
         pseudoLabel.getStyleClass().add("clvc-font-bold");
@@ -197,7 +223,7 @@ public class ClavarChatController implements Initializable
 
         this.otherAvatarContainer.getChildren().clear();
         this.otherAvatarContainer.getChildren().add(vBox);
-        this.addAvatar(this.otherAvatarContainer, this.api.getAvatar(pseudo), 50, 0);
+        this.addAvatar(this.otherAvatarContainer, avatar, this.api.isConnected(userId), 50, 0);
     }
 
     private void onMouseClick(MouseEvent event)
@@ -207,25 +233,24 @@ public class ClavarChatController implements Initializable
 
     private void createConversation(String conversationName)
     {
-        this.api.createConversation(conversationName);
-        this.usersMessageBox.put(conversationName, new MessageBox());
-        for (Message message : this.api.getConversation(conversationName)) this.updateChatBox(conversationName, message.srcPseudo, message.text);
+        this.api.createConversation();
+//        this.usersMessageBox.put(conversationName, new MessageBox());
+//        for (Message message : this.api.getConversation(conversationName)) this.updateChatBox(conversationName, message.srcPseudo, message.text);
     }
 
     @FXML
     private void onSendMessage()
     {
+        int userId = this.api.getId();
+        int conversationId = this.selectedUser.getConversationId();
         String message = this.messageInput.getText().trim();
-        String dst = this.selectedUser.getPseudo();
-        String src = this.api.getPseudo();
+
+        System.out.println(conversationId);
 
         if (!message.isEmpty())
         {
-            this.updateChatBox(dst, src, message);
-
+            this.addMessage(conversationId, userId, message);
             this.messageInput.clear();
-            this.api.saveMessage(dst, src, dst, message);
-            this.api.sendMessage(dst, message);
         }
     }
 }

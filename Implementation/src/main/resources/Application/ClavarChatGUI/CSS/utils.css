@@ -1,4 +1,4 @@
-@import "color.css"
+@import "color.css";
 
 * {
     -fx-font-family: "Comfortaa";
@@ -20,6 +20,10 @@
 
 .clvc-shy-moment {
     -fx-background-color: clvc-shy-moment;
+}
+
+.clvc-lime-soap {
+    -fx-background-color: clvc-lime-soap;
 }
 
 .clvc-transparent-background {

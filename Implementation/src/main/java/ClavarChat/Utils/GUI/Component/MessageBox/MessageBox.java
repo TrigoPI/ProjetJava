@@ -20,31 +20,31 @@ public class MessageBox extends VBox
         this.setFillWidth(true);
     }
 
-    public void createMessage(String src, Image image, String text, boolean reverse)
+    public void createMessage(int userId, String pseudo, Image image, String text, boolean reverse)
     {
-        ChatMessage chatMessage = new ChatMessage(image, src, reverse);
+        ChatMessage chatMessage = new ChatMessage(userId, pseudo, image, reverse);
         chatMessage.addMessage(text);
 
         this.getChildren().add(chatMessage);
         this.last = chatMessage;
     }
 
-    public void addMessage(String src, Image image, String text, boolean reverse)
+    public void addMessage(int userId, String pseudo, Image image, String text, boolean reverse)
     {
         if (last != null)
         {
-            if (this.last.getSrc().equals(src))
+            if (this.last.getUserId() == userId)
             {
                 this.last.addMessage(text);
             }
             else
             {
-                this.createMessage(src, image, text, reverse);
+                this.createMessage(userId, pseudo, image, text, reverse);
             }
         }
         else
         {
-            this.createMessage(src, image, text, reverse);
+            this.createMessage(userId, pseudo, image, text, reverse);
         }
     }
 }

@@ -10,7 +10,7 @@ import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN;
 import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer;
-import ClavarChat.Models.ByteImage.ByteImage;
+import ClavarChat.Models.BytesImage.BytesImage;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Network.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
@@ -19,7 +19,6 @@ import ClavarChat.Models.Events.Network.SocketDataEvent;
 import ClavarChat.Models.Events.Network.SocketSendingEndEvent;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import javafx.scene.image.Image;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,14 +81,13 @@ public class NetworkAPI implements Listener
     public void sendLogin()
     {
         User user = this.userManager.getUser();
-        Image img = this.userManager.getAvatar();
-        ByteImage byteImage = ByteImage.encode(img.getUrl());
+        byte[] avatar = this.userManager.getAvatar();
         ArrayList<User> users = this.userManager.getUsers();
 
         for (User other : users)
         {
-            ArrayList<String> dst = this.userManager.getUserIP(other.pseudo);
-            this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, byteImage));
+            ArrayList<String> dst = this.userManager.getUserIP(other.id);
+            this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, avatar));
         }
 
         this.closeAllClients();
@@ -99,7 +97,7 @@ public class NetworkAPI implements Listener
     {
         User user = this.userManager.getUser();
 
-        if (!this.userManager.isLogged())
+        if (this.userManager.isLogged())
         {
             Log.Error(this.getClass().getName() + " Cannot Logout, user not logged");
             return;
@@ -108,20 +106,20 @@ public class NetworkAPI implements Listener
         for (User other : this.userManager.getUsers())
         {
             LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, user.pseudo, user.id);
-            this.sendTCP(this.userManager.getUserIP(other.pseudo).get(0), this.tcpPort, message);
+            this.sendTCP(this.userManager.getUserIP(other.id).get(0), this.tcpPort, message);
         }
     }
 
-    public void sendMessage(String pseudo, String text)
+    public void sendMessage(int userId, String text)
     {
-        if (!this.userManager.isLogged())
+        if (this.userManager.isLogged())
         {
             Log.Error(this.getClass().getName() + " Cannot send message, user not logged");
             return;
         }
 
         User user = this.userManager.getUser();
-        String ip = this.userManager.getUserIP(pseudo).get(0);
+        String ip = this.userManager.getUserIP(userId).get(0);
 
         TextMessage mgs = new TextMessage(user.pseudo, user.id, text);
         this.sendTCP(ip, this.tcpPort, mgs);
@@ -129,19 +127,17 @@ public class NetworkAPI implements Listener
 
     public void sendDiscoverResponse(String src)
     {
-        if (!this.userManager.isLogged())
+        if (this.userManager.isLogged())
         {
             Log.Error(this.getClass().getName() + " User not logged cannot respond to DISCOVER");
             return;
         }
 
         int count = this.userManager.getUserCount();
+        byte[] avatar = this.userManager.getAvatar();
         User user = this.userManager.getUser();
-        Image avatar = this.userManager.getAvatar();
 
-        ByteImage img = ByteImage.encode(avatar.getUrl());
-
-        DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, img, count);
+        DiscoverResponseMessage informationMessage = new DiscoverResponseMessage(user.pseudo, user.id, avatar, count);
         this.sendTCP(src, this.tcpPort, informationMessage);
     }
 
@@ -202,23 +198,12 @@ public class NetworkAPI implements Listener
     @Override
     public void onEvent(Event event)
     {
-        switch (event.type)
-        {
-            case ConnectionEvent.CONNECTION_SUCCESS:
-                this.onConnectionSuccess((ConnectionEvent)event);
-                break;
-            case ConnectionEvent.CONNECTION_NEW:
-                this.onConnectionNew((ConnectionEvent)event);
-                break;
-            case ConnectionEvent.CONNECTION_FAILED:
-                this.connectionFailed((ConnectionEvent)event);
-                break;
-            case SocketDataEvent.SOCKET_DATA:
-                this.onNetworkSocketData((SocketDataEvent)event);
-                break;
-            case SocketSendingEndEvent.FINISHED_SENDING:
-                this.onFinisedSending((SocketSendingEndEvent)event);
-                break;
+        switch (event.type) {
+            case ConnectionEvent.CONNECTION_SUCCESS -> this.onConnectionSuccess((ConnectionEvent) event);
+            case ConnectionEvent.CONNECTION_NEW -> this.onConnectionNew((ConnectionEvent) event);
+            case ConnectionEvent.CONNECTION_FAILED -> this.connectionFailed((ConnectionEvent) event);
+            case SocketDataEvent.SOCKET_DATA -> this.onNetworkSocketData((SocketDataEvent) event);
+            case SocketSendingEndEvent.FINISHED_SENDING -> this.onFinisedSending((SocketSendingEndEvent) event);
         }
     }
 
@@ -411,7 +396,7 @@ public class NetworkAPI implements Listener
         }
     }
 
-    private class Client
+    private static class Client
     {
         private STATUS status;
 

@@ -1,6 +1,7 @@
 package ClavarChat.Utils.GUI.Component.Discussion;
 
 import ClavarChat.Utils.GUI.Animation.FadeColor.FadeColor;
+import ClavarChat.Utils.GUI.Colors.Colors;
 import ClavarChat.Utils.GUI.Component.Avatar.Avatar;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,24 +15,23 @@ import javafx.scene.paint.Color;
 public class Discussion extends HBox
 {
     private boolean selected;
-    private String conversationName;
-    private String pseudo;
 
-    private final Color draculaOrchid;
-    private final Color americanRiver;
+    private final int userId;
 
-    public Discussion(String conversationName, Image img, String pseudo, String text)
+    private final int conversationId;
+    private final String pseudo;
+    private final Avatar avatar;
+
+    public Discussion(int conversationId, int userId, boolean connected, Image img, String pseudo, String text)
     {
         super();
 
         this.pseudo = pseudo;
-        this.conversationName = conversationName;
+        this.userId = userId;
+        this.conversationId = conversationId;
         this.selected = false;
+        this.avatar = new Avatar(img, 35, connected);
 
-        this.draculaOrchid = new Color(45.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0,1.0);
-        this.americanRiver = new Color(99.0 / 255.0, 110.0 / 255.0, 114.0 / 255.0, 1.0);
-
-        Avatar avatar = new Avatar(img, 35);
         VBox vBox = new VBox();
         Label pseudoLabel = new Label(pseudo);
         Label textLabel = new Label(text);
@@ -66,14 +66,19 @@ public class Discussion extends HBox
         this.setOnMouseExited(this::onMouseExited);
     }
 
+    public int getUserId()
+    {
+        return this.userId;
+    }
+
+    public int getConversationId()
+    {
+        return this.conversationId;
+    }
+
     public String getPseudo()
     {
         return this.pseudo;
-    }
-
-    public String getConversationName()
-    {
-        return this.conversationName;
     }
 
     public void select()
@@ -92,21 +97,19 @@ public class Discussion extends HBox
 
     private void onMouseEntered(MouseEvent event)
     {
-        if (!this.selected)
-        {
-            Color startColor = (Color)this.getBackground().getFills().get(0).getFill();
-            FadeColor fadeColor = new FadeColor(startColor, this.americanRiver, this, 200);
-            fadeColor.playFromStart();
-        }
+        if (this.selected) return;
+
+        Color startColor = (Color)this.getBackground().getFills().get(0).getFill();
+        FadeColor fadeColor = new FadeColor(startColor, Colors.americanRiver, this, 200);
+        fadeColor.playFromStart();
     }
 
     private void onMouseExited(MouseEvent event)
     {
-        if (!this.selected)
-        {
-            Color startColor = (Color)this.getBackground().getFills().get(0).getFill();
-            FadeColor fadeColor = new FadeColor(startColor, this.draculaOrchid, this, 200);
-            fadeColor.playFromStart();
-        }
+        if (this.selected) return;
+
+        Color startColor = (Color)this.getBackground().getFills().get(0).getFill();
+        FadeColor fadeColor = new FadeColor(startColor, Colors.draculaOrchid, this, 200);
+        fadeColor.playFromStart();
     }
 }

@@ -7,10 +7,10 @@ public class MessageEvent extends Event
     public static final String TEXT_MESSAGE = "TEXT_MESSAGE";
 
     public String pseudo;
-    public String id;
     public String message;
+    public int id;
 
-    public MessageEvent(String pseudo, String id, String message)
+    public MessageEvent(String pseudo, int id, String message)
     {
         super(TEXT_MESSAGE);
 

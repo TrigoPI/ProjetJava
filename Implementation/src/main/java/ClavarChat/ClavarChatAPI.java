@@ -1,6 +1,6 @@
 package ClavarChat;
 
-import ClavarChat.Controllers.Managers.Conversation.ConversationManager;
+import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
 import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
@@ -9,7 +9,7 @@ import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Chain.Discover;
 import ClavarChat.Controllers.Chain.PseudoVerify;
-import ClavarChat.Models.ByteImage.ByteImage;
+import ClavarChat.Models.BytesImage.BytesImage;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Login.LoginEvent;
@@ -20,42 +20,32 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.Path.Path;
-import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 
 public class ClavarChatAPI implements Listener
 {
-    private final int tcpPort;
-    private final int udpPort;
-
     private final EventManager eventManager;
     private final ThreadManager threadManager;
     private final UserManager userManager;
-    private final ConversationManager conversationManager;
 
+    private final DataBaseAPI dataBaseAPI;
     private final NetworkAPI networkAPI;
 
-    private Discover discover;
-    private PseudoVerify pseudoVerify;
+    private final Discover discover;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
-        this.tcpPort = tcpPort;
-        this.udpPort = udpPort;
 
         this.eventManager = EventManager.getInstance();
         this.threadManager = new ThreadManager();
         this.userManager = new UserManager();
-        this.conversationManager = new ConversationManager();
 
-        this.networkAPI = new NetworkAPI(this.threadManager, this.userManager, this.tcpPort, this.udpPort);
+        this.networkAPI = new NetworkAPI(this.threadManager, this.userManager, tcpPort, udpPort);
+        this.dataBaseAPI = new DataBaseAPI(this.userManager);
 
-        this.discover = new Discover(this.networkAPI, this.userManager, this.udpPort);
-        this.pseudoVerify = new PseudoVerify(this.networkAPI, this.userManager, this.tcpPort);
-
-        this.discover.setNext(this.pseudoVerify);
+        this.discover = new Discover(this.networkAPI, this.userManager);
+        PseudoVerify pseudoVerify = new PseudoVerify(this.networkAPI, this.userManager);
 
         this.eventManager.addEvent(MessageEvent.TEXT_MESSAGE);
         this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
@@ -65,31 +55,48 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
 
         this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
-
         this.networkAPI.startServer();
+        this.discover.setNext(pseudoVerify);
+
+//        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
+//        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
+//        BytesImage img3 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+//        BytesImage img4 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
+//
+//        this.userManager.addUser("user1", 1111, img1.getBytes());
+//        this.userManager.addUser("user2", 2222, img2.getBytes());
+//        this.userManager.addUser("user3", 3333, img3.getBytes());
+//        this.userManager.addUser("user4", 4444, img4.getBytes());
+//
+//        this.userManager.addIpToUser("user1", "192.168.1.11");
+//        this.userManager.addIpToUser("user2", "192.168.1.22");
+//        this.userManager.addIpToUser("user3", "192.168.1.33");
+//        this.userManager.addIpToUser("user4", "192.168.1.44");
+//
+//        this.dataBaseAPI.addUser("user1", 1111, this.userManager.getAvatar("user1"));
+//        this.dataBaseAPI.addUser("user2", 2222, this.userManager.getAvatar("user2"));
+//        this.dataBaseAPI.addUser("user3", 3333, this.userManager.getAvatar("user3"));
+//        this.dataBaseAPI.addUser("user4", 4444, this.userManager.getAvatar("user4"));
+
+//        this.dataBaseAPI.createConversation("user1", 6969, 1111);
+//        this.dataBaseAPI.createConversation("user2", 6969, 2222);
+//        this.dataBaseAPI.createConversation("user3", 6969, 3333);
+//        this.dataBaseAPI.createConversation("user4", 6969, 4444);
     }
 
-    public String getPseudo()
+    public boolean isConnected(int userId)
     {
-        User user = this.userManager.getUser();
-        return (user == null)?null:user.pseudo;
+        return this.userManager.isConnected(userId);
     }
 
-    public String getId()
+    public int getId()
     {
-        User user = this.userManager.getUser();
-        return (user == null)?null:user.id;
+        return this.userManager.getId();
     }
 
-    public String getId(String pseudo)
+    public int getId(String pseudo)
     {
-        User user = this.userManager.getUser(pseudo);
-        return (user == null)?null:user.id;
-    }
-
-    public ArrayList<Message> getConversation(String pseudo)
-    {
-        return this.conversationManager.getConversation(pseudo);
+        return this.userManager.getId(pseudo);
     }
 
     public ArrayList<User> getUsers()
@@ -97,34 +104,94 @@ public class ClavarChatAPI implements Listener
         return this.userManager.getUsers();
     }
 
-    public Image getAvatar()
+    public ArrayList<Integer> getConversationsIdInDataBase()
     {
-        return this.userManager.getAvatar();
+        return this.dataBaseAPI.getConversationsId();
     }
 
-    public Image getAvatar(String pseudo)
+    public ArrayList<Integer> getUsersIdInDataBase()
     {
-        return this.userManager.getAvatar(pseudo);
+        return this.dataBaseAPI.getUsersId();
     }
 
-    public boolean conversationExist(String conversationName)
+    public ArrayList<Integer> getUserIdInConversation(int conversationId)
     {
-        return this.conversationManager.conversationExist(conversationName);
+        return this.dataBaseAPI.getUsersInConversation(conversationId);
     }
 
-    public void setAvatar(Image image)
+    public ArrayList<Integer> getMessagesIdInDataBase(int conversationId)
     {
-        this.userManager.setAvatar(image);
+        return this.dataBaseAPI.getMessagesId(conversationId);
     }
 
-    public void login(String pseudo, String id, String path)
+    public String getPseudoFromDataBase(int userId)
+    {
+        return this.dataBaseAPI.getUserPseudo(userId);
+    }
+
+    public String getPseudo()
+    {
+        return this.userManager.getPseudo();
+    }
+
+    public String getPseudo(int id)
+    {
+        return this.userManager.getPseudo(id);
+    }
+
+    public User getUserInDataBase(int userId)
+    {
+        String pseudo = this.dataBaseAPI.getUserPseudo(userId);
+        return new User(pseudo, userId);
+    }
+
+    public User getUser()
+    {
+        return this.userManager.getUser();
+    }
+
+    public User getUser(int userId)
+    {
+        return this.userManager.getUser(userId);
+    }
+
+    public Message getMessageInDataBase(int messageId)
+    {
+        int userId  = this.dataBaseAPI.getMessageUserId(messageId);
+        String text = this.dataBaseAPI.getMessageText(messageId);
+        return new Message(userId, text);
+    }
+
+    public BytesImage getAvatar()
+    {
+        return new BytesImage(this.userManager.getAvatar());
+    }
+
+    public BytesImage getAvatarFromDataBase(int userId)
+    {
+        return  new BytesImage(this.dataBaseAPI.getUserAvatar(userId));
+    }
+
+    public BytesImage getAvatar(int userId)
+    {
+        return new BytesImage(this.userManager.getAvatar(userId));
+    }
+
+    public void createConversation()
+    {
+//        this.conversationManager.createConversation(conversationName);
+//        this.dataBaseAPI.createConversation();
+    }
+
+    public void login(String pseudo, int id, String path)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
 
         int threadId = this.threadManager.createThread(new LoginExecutable(discover));
+        BytesImage avatar = new BytesImage(path);
 
-        this.userManager.setUser(pseudo, id);
-        this.userManager.setAvatar(new Image("file:" + path));
+        this.userManager.setUser(pseudo, id, avatar.getBytes());
+        this.dataBaseAPI.addUser(pseudo, id, avatar.getBytes());
         this.threadManager.startThread(threadId);
     }
 
@@ -133,20 +200,15 @@ public class ClavarChatAPI implements Listener
         this.networkAPI.sendLogout();
     }
 
-    public void createConversation(String conversationName)
+    public void saveMessage(int conversationId, int userId, String text)
     {
-        this.conversationManager.createConversation(conversationName);
+        Log.Print(this.getClass().getName() + " Saving message : [" + userId + "] : " + text);
+        this.dataBaseAPI.addMessage(conversationId, userId, text);
     }
 
-    public void saveMessage(String conversationName, String src, String dst, String text)
+    public void sendMessage(int userId, String message)
     {
-        Log.Print(this.getClass().getName() + " Saving message : [" + src + "] --> [" + dst + "] : " + text);
-        this.conversationManager.addMessage(conversationName, src, dst, text);
-    }
-
-    public void sendMessage(String pseudo, String message)
-    {
-        this.networkAPI.sendMessage(pseudo, message);
+        this.networkAPI.sendMessage(userId, message);
     }
 
     public void closeServers()
@@ -162,11 +224,9 @@ public class ClavarChatAPI implements Listener
     @Override
     public void onEvent(Event event)
     {
-        switch (event.type)
+        if (event.type.equals(NetworkPacketEvent.NETWORK_PACKET))
         {
-            case NetworkPacketEvent.NETWORK_PACKET:
-                this.onNetworkPacketEvent((NetworkPacketEvent)event);
-                break;
+            this.onNetworkPacketEvent((NetworkPacketEvent) event);
         }
     }
 
@@ -174,38 +234,25 @@ public class ClavarChatAPI implements Listener
     {
         ClavarChatMessage data = event.data;
 
-        switch (data.type)
-        {
-            case LoginMessage.LOGIN:
-                this.onLogin((LoginMessage)data, event.ip);
-                break;
-            case LoginMessage.LOGOUT:
-                this.onLogout((LoginMessage)data);
-                break;
-            case DiscoverRequestMessage.DISCOVER_REQUEST:
-                this.onDiscoverRequest(event.ip);
-                break;
-            case DiscoverResponseMessage.DISCOVER_RESPONSE:
-                this.onDiscoverResponse((DiscoverResponseMessage)data, event.ip);
-                break;
-            case TextMessage.TEXT_MESSAGE:
-                this.onTextMessage((TextMessage)data, event.ip);
-                break;
+        switch (data.type) {
+            case LoginMessage.LOGIN -> this.onLogin((LoginMessage) data, event.ip);
+            case LoginMessage.LOGOUT -> this.onLogout((LoginMessage) data);
+            case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(event.ip);
+            case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage) data, event.ip);
+            case TextMessage.TEXT_MESSAGE -> this.onTextMessage((TextMessage) data, event.ip);
         }
     }
 
     private void onLogin(LoginMessage data, String src)
     {
-        Image avatar = ByteImage.decode(data.img);
-
-        this.userManager.addUser(new User(data.pseudo, data.id), src);
-        this.userManager.setAvatar(data.pseudo, avatar);
+        this.userManager.addUser(data.pseudo, data.id, data.img);
+        this.userManager.addIpToUser(data.id, src);
         this.eventManager.notiy(new NewUserEvent(data.pseudo));
     }
 
     private void onLogout(LoginMessage data)
     {
-        this.userManager.removeUser(data.pseudo);
+        this.userManager.removeUser(data.id);
         this.eventManager.notiy(new RemoveUserEvent(data.pseudo));
     }
 
@@ -218,11 +265,8 @@ public class ClavarChatAPI implements Listener
     private void onDiscoverResponse(DiscoverResponseMessage data, String src)
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
-
-        Image avatar = ByteImage.decode(data.avatar);
-
-        this.userManager.addUser(new User(data.pseudo, data.id), src);
-        this.userManager.setAvatar(data.pseudo, avatar);
+        this.userManager.addUser(data.pseudo, data.id, data.avatar);
+        this.userManager.addIpToUser(data.id, src);
         this.discover.onDiscoverInformation(data, src);
     }
 

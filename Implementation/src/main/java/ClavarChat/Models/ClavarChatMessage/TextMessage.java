@@ -6,9 +6,9 @@ public class TextMessage extends ClavarChatMessage
 
     public String pseudo;
     public String message;
-    public String id;
+    public int id;
 
-    public TextMessage(String pseudo, String id, String message)
+    public TextMessage(String pseudo, int id, String message)
     {
         super(TEXT_MESSAGE);
         this.pseudo = pseudo;

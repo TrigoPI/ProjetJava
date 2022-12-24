@@ -1,46 +1,174 @@
 package ClavarChat.Controllers.API.DataBaseAPI;
 
 import ClavarChat.Controllers.Managers.DataBase.DataBaseManager;
+import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.Path.Path;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
-public class DataBaseAPI {
+public class DataBaseAPI
+{
+    private final DataBaseManager dataBaseManager;
+    private final UserManager userManager;
 
-    private DataBaseManager manager = new DataBaseManager();
-
-    public void insertConv(String id_conv, String id_user1, String id_user2)
+    public DataBaseAPI(UserManager userManager)
     {
-        String values = "VALUES("+ id_conv +","+ id_user1 + "," + id_user2 +")";
-        manager.insert("conversations",values);
+        this.dataBaseManager = new DataBaseManager(Path.getWorkingPath() + "/src/main/resources/BDD/Connect/ClavarDataBase.db");
+        this.userManager = userManager;
     }
 
-    public void insertMsg(String id_msg, String id_conv, String id_user, String msg, String date)
+    public boolean userExist(int id)
     {
-        String values = "VALUES(" + id_msg + "," + id_conv + "," + id_user + "," + "'" + msg + "'" + "," + "'" + date + "'" +")";
-        manager.insert("messages(id_msg,id_conv,id_user,msg,date)",values);
+        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM User WHERE user_id = %d", id);
+        boolean isEmpty = !this.dataBaseManager.decodeAsInt(resultId, 1).isEmpty();
+        this.dataBaseManager.removeResultSet(resultId);
+        return isEmpty;
     }
 
-    public void insertUser(String id_user, String pseudonym)
+    public String getUserPseudo(int userId)
     {
-        String values = "VALUES(" + id_user + "," + "'" + pseudonym + "'" + ")";
-        manager.insert("users", values);
+        if (!this.userExist(userId))
+        {
+            Log.Error(this.getClass().getName() + " No user with id : " + userId);
+            return null;
+        }
+
+        int resultId = this.dataBaseManager.executeQuery("SELECT pseudo FROM User WHERE user_id = %d", userId);
+        ArrayList<String> pseudos = this.dataBaseManager.decodeAsString(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return pseudos.get(0);
     }
 
-    public void updatePseudonym(String id_user, String newPseudonym)
+    public byte[] getUserAvatar(int userId)
     {
-        String update = "'" + newPseudonym +"'";
-        manager.update("users", "pseudonym", "id_user", id_user,update);
+        if (!this.userExist(userId))
+        {
+            Log.Error(this.getClass().getName() + " No user with id : " + userId);
+            return null;
+        }
+
+        int resultId = this.dataBaseManager.executeQuery("SELECT avatar FROM User WHERE user_id = %d", userId);
+        ArrayList<byte[]> avatars = this.dataBaseManager.decodeAsBytes(resultId, 1);
+        byte[] buffer = avatars.get(0);
+        this.dataBaseManager.removeResultSet(resultId);
+        return buffer;
     }
 
-    public ResultSet selectMessage(String id_conv)
+    public ArrayList<Integer> getUsersId()
     {
-        return manager.select("id_user,msg,date", "messages", " WHERE id_conv = " + id_conv);
+        int id = this.userManager.getId();
+        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM User WHERE user_id != %d", id);
+        ArrayList<Integer> users = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return users;
     }
 
-    public String searchIdConv (String id_user1, String id_user2) throws SQLException {
-        ResultSet rs = manager.select("id_conv", "conversations", " WHERE id_user1 = " + id_user1 + " AND id_user2 = " + id_user2);
-        return rs.getString("id_conv");
+    public ArrayList<Integer> getConversationsId()
+    {
+        int id = this.userManager.getId();
+        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Read WHERE user_id = %d", id);
+        ArrayList<Integer> conversationsId = this.dataBaseManager.decodeAsInt(resultId, 1);
+
+        this.dataBaseManager.removeResultSet(resultId);
+
+        return conversationsId;
     }
 
+    public ArrayList<Integer> getMessagesId(int conversationId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT message_id FROM Message WHERE conversation_id = %d", conversationId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting messages in conversation : " + conversationId);
+            return null;
+        }
+
+        ArrayList<Integer> messagesId = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return messagesId;
+    }
+
+    public ArrayList<Integer> getUsersInConversation(int conversationId)
+    {
+        int userId = this.userManager.getId();
+        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM Read WHERE conversation_id = %d AND user_id != %d", conversationId, userId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting users in conversation : " + conversationId);
+            return null;
+        }
+
+        ArrayList<Integer> users = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return users;
+    }
+
+    public String getMessageText(int messageId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT text FROM Message WHERE message_id = %d", messageId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting message with id : " + messageId);
+            return null;
+        }
+
+        ArrayList<String> messages = this.dataBaseManager.decodeAsString(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return messages.get(0);
+    }
+
+    public int getMessageUserId(int messageId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM Message WHERE message_id = %d", messageId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting message with id : " + messageId);
+            return -1;
+        }
+
+        ArrayList<Integer> messages = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return messages.get(0);
+    }
+
+    public void addUser(String pseudo, int id, byte[] avatar)
+    {
+        if (this.userExist(id))
+        {
+            Log.Info(this.getClass().getName() + " User " + pseudo + " already in database");
+            return;
+        }
+
+        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT OR IGNORE INTO User(user_id, pseudo, avatar) VALUES(?, ?, ?)");
+        this.dataBaseManager.setInt(preparedStatementId, 1, id);
+        this.dataBaseManager.setString(preparedStatementId, 2, pseudo);
+        this.dataBaseManager.setBytes(preparedStatementId, 3, avatar);
+        this.dataBaseManager.executePreparedStatement(preparedStatementId);
+        this.dataBaseManager.removePreparedStatement(preparedStatementId);
+    }
+
+    public void addMessage(int conversationId, int userId, String message)
+    {
+        this.dataBaseManager.execute("INSERT INTO Message(date, text, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d')", message, conversationId, userId);
+    }
+
+    public void createConversation(String conversationName, int userId1, int userId2)
+    {
+        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT INTO Conversation(conversation_name) VALUES(?)");
+        this.dataBaseManager.setString(preparedStatementId, 1, conversationName);
+        this.dataBaseManager.executePreparedStatement(preparedStatementId);
+
+        int conversationId = this.dataBaseManager.getIdGenerated(preparedStatementId);
+        if (conversationId == -1) return;
+
+        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId1, conversationId);
+        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId2, conversationId);
+
+        this.dataBaseManager.removePreparedStatement(preparedStatementId);
+    }
 }
