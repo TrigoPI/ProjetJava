@@ -77,6 +77,7 @@ public class ClavarChatController implements Initializable
 
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
+        this.chatContainer.setVisible(false);
 
         this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
         this.initDiscussionContainer();
@@ -124,7 +125,6 @@ public class ClavarChatController implements Initializable
             Image avatar = new Image(in);
             messageBox.addMessage(message.userId, pseudo, avatar, message.text, this.api.getId() != message.userId);
         }
-
     }
 
     private void createUserDiscussion(int userId, int conversationId)
@@ -237,12 +237,10 @@ public class ClavarChatController implements Initializable
         int conversationId = this.selectedUser.getConversationId();
         String message = this.messageInput.getText().trim();
 
-        System.out.println(conversationId);
-
         if (!message.isEmpty())
         {
             this.addMessage(conversationId, userId, message);
-            this.api.sendMessage(otherUserId, conversationId, message);
+            this.api.sendMessage(userId, otherUserId, conversationId, message);
             this.messageInput.clear();
         }
     }

@@ -206,11 +206,11 @@ public class ClavarChatAPI implements Listener
         this.dataBaseAPI.addMessage(conversationId, userId, text);
     }
 
-    public void sendMessage(int userId, int conversationId, String message)
+    public void sendMessage(int srcId, int dstId, int conversationId, String message)
     {
-        Log.Print(this.getClass().getName() + " Saving message : [" + userId + "] : " + message);
-        this.dataBaseAPI.addMessage(conversationId, userId, message);
-        this.networkAPI.sendMessage(userId, message);
+        Log.Print(this.getClass().getName() + " Saving message : [" + srcId + "] " + srcId + " --> " + dstId + " : " + message);
+        this.dataBaseAPI.addMessage(conversationId, srcId, message);
+        this.networkAPI.sendMessage(dstId, message);
     }
 
     public void closeServers()
