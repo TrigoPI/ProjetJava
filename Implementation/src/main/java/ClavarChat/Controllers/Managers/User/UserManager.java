@@ -167,7 +167,7 @@ public class UserManager
         this.logged = logged;
     }
 
-    public void setUser(String pseudo, int id, byte[] avatar)
+    public void setUser(int id, String pseudo, byte[] avatar)
     {
         Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
         this.avatar = avatar;

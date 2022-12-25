@@ -76,7 +76,7 @@ public class GUIControllers implements Listener
 
     private void onTextMessage(String pseudo, String message)
     {
-        this.clavarChatController.onTextMessage(pseudo, message);
+//        this.clavarChatController.onTextMessage(pseudo, message);
     }
 
     private void onRemoveUser(int userId)

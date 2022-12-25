@@ -11,16 +11,20 @@ import javafx.scene.shape.Circle;
 public class Avatar extends VBox
 {
     private static final double a = Math.sqrt(2.0) / 2.0;
+    private final double radius;
     private final Circle statusCircle;
+    private final Circle clippingShape;
+    private final ImageView view;
 
     public Avatar(Image image, double radius, boolean connected)
     {
         super();
 
+        this.radius = radius;
         this.statusCircle = new Circle(0.2 * radius);
+        this.clippingShape = new Circle(radius);
+        this.view = new ImageView(image);
 
-        ImageView view = new ImageView(image);
-        Circle clippingShape = new Circle(radius);
 
         double diameter = radius * 2.0;
         double ratio = image.getWidth() / image.getHeight();
@@ -33,15 +37,15 @@ public class Avatar extends VBox
         this.getChildren().add(view);
         this.getChildren().add(statusCircle);
 
-        view.setPreserveRatio(true);
-        view.setFitWidth(width);
+        this.view.setPreserveRatio(true);
+        this.view.setFitWidth(width);
 
-        double imageWidth  = view.getBoundsInParent().getWidth();
-        double imageHeight = view.getBoundsInParent().getHeight();
+        double imageWidth  = this.view.getBoundsInParent().getWidth();
+        double imageHeight = this.view.getBoundsInParent().getHeight();
         double translate = radius * (1 + a);
 
-        clippingShape.setLayoutX(imageWidth  / 2.0);
-        clippingShape.setLayoutY(imageHeight / 2.0);
+        this.clippingShape.setLayoutX(imageWidth  / 2.0);
+        this.clippingShape.setLayoutY(imageHeight / 2.0);
 
         statusCircle.setManaged(false);
         statusCircle.setStrokeWidth(4);
@@ -49,7 +53,7 @@ public class Avatar extends VBox
         statusCircle.setTranslateX(translate);
         statusCircle.setTranslateY(translate);
 
-        view.setClip(clippingShape);
+        this.view.setClip(this.clippingShape);
         this.setStatus(connected);
     }
 
@@ -63,6 +67,26 @@ public class Avatar extends VBox
         {
             statusCircle.setFill(Colors.chiGong);
         }
+    }
+
+    public void changeImage(Image image)
+    {
+        this.view.setClip(null);
+        this.view.setImage(image);
+
+        double diameter = radius * 2.0;
+        double ratio = image.getWidth() / image.getHeight();
+        double width = diameter * ratio;
+
+        this.view.setFitWidth(width);
+
+        double imageWidth  = this.view.getBoundsInParent().getWidth();
+        double imageHeight = this.view.getBoundsInParent().getHeight();
+
+        this.clippingShape.setLayoutX(imageWidth  / 2.0);
+        this.clippingShape.setLayoutY(imageHeight / 2.0);
+
+        this.view.setClip(this.clippingShape);
     }
 
     public void changeStrokeColor(Color color)

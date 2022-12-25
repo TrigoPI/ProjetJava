@@ -145,20 +145,21 @@ public class DataBaseAPI
         return messages.get(0);
     }
 
-    public void addUser(String pseudo, int id, byte[] avatar)
+    public void addUser(int userId, String pseudo, byte[] avatar)
     {
-        if (this.userExist(id))
+        if (this.userExist(userId))
         {
-            Log.Info(this.getClass().getName() + " User " + pseudo + " already in database");
-            return;
+            this.updateUser(userId, pseudo, avatar);
         }
-
-        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT OR IGNORE INTO User(user_id, pseudo, avatar) VALUES(?, ?, ?)");
-        this.dataBaseManager.setInt(preparedStatementId, 1, id);
-        this.dataBaseManager.setString(preparedStatementId, 2, pseudo);
-        this.dataBaseManager.setBytes(preparedStatementId, 3, avatar);
-        this.dataBaseManager.executePreparedStatement(preparedStatementId);
-        this.dataBaseManager.removePreparedStatement(preparedStatementId);
+        else
+        {
+            int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT OR IGNORE INTO User(user_id, pseudo, avatar) VALUES(?, ?, ?)");
+            this.dataBaseManager.setInt(preparedStatementId, 1, userId);
+            this.dataBaseManager.setString(preparedStatementId, 2, pseudo);
+            this.dataBaseManager.setBytes(preparedStatementId, 3, avatar);
+            this.dataBaseManager.executePreparedStatement(preparedStatementId);
+            this.dataBaseManager.removePreparedStatement(preparedStatementId);
+        }
     }
 
     public void addMessage(int conversationId, int userId, String message)
@@ -179,5 +180,15 @@ public class DataBaseAPI
         this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId2, conversationId);
 
         this.dataBaseManager.removePreparedStatement(preparedStatementId);
+    }
+
+    private void updateUser(int userId, String pseudo, byte[] avatar)
+    {
+        int statementId = this.dataBaseManager.createPreparedStatement("UPDATE User SET pseudo = ?, avatar = ? WHERE user_id = ?");
+        this.dataBaseManager.setString(statementId, 1, pseudo);
+        this.dataBaseManager.setBytes(statementId, 2, avatar);
+        this.dataBaseManager.setInt(statementId, 3, userId);
+        this.dataBaseManager.executePreparedStatement(statementId);
+        this.dataBaseManager.removePreparedStatement(statementId);
     }
 }

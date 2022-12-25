@@ -15,11 +15,11 @@ import javafx.scene.paint.Color;
 public class Discussion extends HBox
 {
     private boolean selected;
-
     private final int userId;
     private final int conversationId;
-    private final String pseudo;
-    private final Avatar avatar;
+    private final Label pseudoLabel;
+    private String pseudo;
+    private Avatar avatar;
 
     public Discussion(int conversationId, int userId, Image img, String pseudo, String text)
     {
@@ -30,12 +30,12 @@ public class Discussion extends HBox
         this.conversationId = conversationId;
         this.selected = false;
         this.avatar = new Avatar(img, 35, false);
+        this.pseudoLabel = new Label(pseudo);
 
         VBox vBox = new VBox();
-        Label pseudoLabel = new Label(pseudo);
         Label textLabel = new Label(text);
 
-        pseudoLabel.getStyleClass().add("clvc-font-bold");
+        this.pseudoLabel.getStyleClass().add("clvc-font-bold");
 
         textLabel.getStyleClass().add("clvc-font-12px");
 
@@ -97,6 +97,17 @@ public class Discussion extends HBox
         this.selected = false;
         this.getStyleClass().remove("clvc-american-river");
         this.getStyleClass().add("clvc-dracula-orchid");
+    }
+
+    public void changePseudo(String pseudo)
+    {
+        this.pseudo = pseudo;
+        this.pseudoLabel.setText(pseudo);
+    }
+
+    public void changeAvatar(Image image)
+    {
+        this.avatar.changeImage(image);
     }
 
     private void onMouseEntered(MouseEvent event)

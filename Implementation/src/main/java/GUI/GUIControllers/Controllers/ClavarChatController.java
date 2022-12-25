@@ -97,7 +97,6 @@ public class ClavarChatController implements Initializable
         Platform.runLater(() -> {
             ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
             this.createUserDiscussion(userId, conversationsId.get(0));
-//            this.selectUser(this.usersGUI.get(pseudo));
         });
     }
 
@@ -138,6 +137,8 @@ public class ClavarChatController implements Initializable
         if (this.usersGUI.containsKey(conversationId))
         {
             Discussion discussion = this.usersGUI.get(conversationId);
+            discussion.changePseudo(pseudo);
+            discussion.changeAvatar(avatar);
             discussion.setStatus(true);
         }
         else
@@ -149,7 +150,6 @@ public class ClavarChatController implements Initializable
             this.userPreviewContainer.getChildren().add(discussion);
             this.usersGUI.put(conversationId, discussion);
         }
-
     }
 
     private void addMessage(int conversationId, int userId, String message)
@@ -160,21 +160,12 @@ public class ClavarChatController implements Initializable
         InputStream in = buffer.toInputStream();
         Image avatar = new Image(in);
         messageBox.addMessage(userId, pseudo, avatar, message, this.api.getId() != userId);
-        this.api.saveMessage(conversationId, userId, message);
     }
 
-    public void onTextMessage(String src, String message)
+    public void onTextMessage(int userId, String message)
     {
-        String dst = this.api.getUser().pseudo;
-
-        if (this.selectedUser != null)
-        {
-//            if (this.selectedUser.getPseudo().equals(src)) Platform.runLater(() -> this.updateChatBox(src, src, message));
-        }
-
-//        if (!this.api.conversationExist(src)) this.api.createConversation(src);
-
-//        this.api.saveMessage(src, src, dst, message);
+//        String dst = this.api.getUser().pseudo;
+//        Platform.runLater(() -> this.updateChatBox(src, src, message));
     }
 
     private void addAvatar(Pane container, Image img, boolean connected, double radius, int index)
@@ -242,6 +233,7 @@ public class ClavarChatController implements Initializable
     private void onSendMessage()
     {
         int userId = this.api.getId();
+        int otherUserId = this.selectedUser.getUserId();
         int conversationId = this.selectedUser.getConversationId();
         String message = this.messageInput.getText().trim();
 
@@ -250,6 +242,7 @@ public class ClavarChatController implements Initializable
         if (!message.isEmpty())
         {
             this.addMessage(conversationId, userId, message);
+            this.api.sendMessage(otherUserId, conversationId, message);
             this.messageInput.clear();
         }
     }

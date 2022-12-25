@@ -183,15 +183,15 @@ public class ClavarChatAPI implements Listener
         return new BytesImage(this.userManager.getAvatar(userId));
     }
 
-    public void login(String pseudo, int id, String path)
+    public void login(int id, String pseudo, String path)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
 
         int threadId = this.threadManager.createThread(new LoginExecutable(discover));
         BytesImage avatar = new BytesImage(path);
 
-        this.userManager.setUser(pseudo, id, avatar.getBytes());
-        this.dataBaseAPI.addUser(pseudo, id, avatar.getBytes());
+        this.userManager.setUser(id, pseudo, avatar.getBytes());
+        this.dataBaseAPI.addUser(id, pseudo, avatar.getBytes());
         this.threadManager.startThread(threadId);
     }
 
@@ -206,8 +206,10 @@ public class ClavarChatAPI implements Listener
         this.dataBaseAPI.addMessage(conversationId, userId, text);
     }
 
-    public void sendMessage(int userId, String message)
+    public void sendMessage(int userId, int conversationId, String message)
     {
+        Log.Print(this.getClass().getName() + " Saving message : [" + userId + "] : " + message);
+        this.dataBaseAPI.addMessage(conversationId, userId, message);
         this.networkAPI.sendMessage(userId, message);
     }
 
@@ -247,7 +249,7 @@ public class ClavarChatAPI implements Listener
     {
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, src);
-        this.createConversation(data.id);
+        this.createConversation(data.id, data.pseudo, data.img);
         this.eventManager.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
@@ -268,7 +270,7 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(data.pseudo, data.id, data.avatar);
         this.userManager.addIpToUser(data.id, src);
-        this.createConversation(data.id);
+        this.createConversation(data.id, data.pseudo, data.avatar);
         this.discover.onDiscoverInformation(data, src);
     }
 
@@ -278,17 +280,9 @@ public class ClavarChatAPI implements Listener
         this.eventManager.notify(new MessageEvent(data.pseudo, data.id, data.message));
     }
 
-    private void createConversation(int userId)
+    private void createConversation(int userId, String pseudo, byte[] avatar)
     {
-        if (this.dataBaseAPI.userExist(userId))
-        {
-            Log.Warning(this.getClass().getName() + " user : " + userId + " already in dataBase");
-            return;
-        }
-
-        String pseudo = this.userManager.getPseudo(userId);
-        byte[] avatar = this.userManager.getAvatar(userId);
-        this.dataBaseAPI.addUser(pseudo, userId, avatar);
-        this.dataBaseAPI.createConversation(pseudo, this.getId(), userId);
+        this.dataBaseAPI.addUser(userId, pseudo, avatar);
+        if (!this.dataBaseAPI.userExist(userId)) this.dataBaseAPI.createConversation(pseudo, this.getId(), userId);
     }
 }
