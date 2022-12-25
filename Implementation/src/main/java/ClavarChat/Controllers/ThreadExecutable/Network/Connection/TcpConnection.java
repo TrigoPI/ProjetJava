@@ -30,11 +30,11 @@ public class TcpConnection extends NetworkExecutable
             int srcPort = this.networkManager.getLocalSocketPort(this.socketId);
 
             Log.Print(this.getClass().getName() + " Connection success with : " + this.ip + ":" + this.port);
-            this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_SUCCESS, this.ip, this.port, srcIp, srcPort, this.socketId));
+            this.eventManager.notify(new ConnectionEvent(ConnectionEvent.CONNECTION_SUCCESS, this.ip, this.port, srcIp, srcPort, this.socketId));
         }
         else
         {
-            this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, this.ip, this.port, this.socketId));
+            this.eventManager.notify(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, this.ip, this.port, this.socketId));
         }
     }
 }

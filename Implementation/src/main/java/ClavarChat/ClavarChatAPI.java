@@ -20,6 +20,7 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.Path.Path;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,7 @@ public class ClavarChatAPI implements Listener
         this.eventManager.addEvent(RemoveUserEvent.REMOVE_USER);
         this.eventManager.addEvent(NetworkPacketEvent.NETWORK_PACKET);
 
-        this.eventManager.addListenner(this, NetworkPacketEvent.NETWORK_PACKET);
+        this.eventManager.addListener(this, NetworkPacketEvent.NETWORK_PACKET);
         this.networkAPI.startServer();
         this.discover.setNext(pseudoVerify);
 
@@ -68,16 +69,16 @@ public class ClavarChatAPI implements Listener
 //        this.userManager.addUser("user3", 3333, img3.getBytes());
 //        this.userManager.addUser("user4", 4444, img4.getBytes());
 //
-//        this.userManager.addIpToUser("user1", "192.168.1.11");
-//        this.userManager.addIpToUser("user2", "192.168.1.22");
-//        this.userManager.addIpToUser("user3", "192.168.1.33");
-//        this.userManager.addIpToUser("user4", "192.168.1.44");
+//        this.userManager.addIpToUser(1111, "192.168.1.11");
+//        this.userManager.addIpToUser(2222, "192.168.1.22");
+//        this.userManager.addIpToUser(3333, "192.168.1.33");
+//        this.userManager.addIpToUser(4444, "192.168.1.44");
 //
-//        this.dataBaseAPI.addUser("user1", 1111, this.userManager.getAvatar("user1"));
-//        this.dataBaseAPI.addUser("user2", 2222, this.userManager.getAvatar("user2"));
-//        this.dataBaseAPI.addUser("user3", 3333, this.userManager.getAvatar("user3"));
-//        this.dataBaseAPI.addUser("user4", 4444, this.userManager.getAvatar("user4"));
-
+//        this.dataBaseAPI.addUser("user1", 1111, this.userManager.getAvatar(1111));
+//        this.dataBaseAPI.addUser("user2", 2222, this.userManager.getAvatar(2222));
+//        this.dataBaseAPI.addUser("user3", 3333, this.userManager.getAvatar(3333));
+//        this.dataBaseAPI.addUser("user4", 4444, this.userManager.getAvatar(4444));
+//
 //        this.dataBaseAPI.createConversation("user1", 6969, 1111);
 //        this.dataBaseAPI.createConversation("user2", 6969, 2222);
 //        this.dataBaseAPI.createConversation("user3", 6969, 3333);
@@ -102,6 +103,11 @@ public class ClavarChatAPI implements Listener
     public ArrayList<User> getUsers()
     {
         return this.userManager.getUsers();
+    }
+
+    public ArrayList<Integer> getConversationIdWith(int userId)
+    {
+        return this.dataBaseAPI.getConversationWith(userId);
     }
 
     public ArrayList<Integer> getConversationsIdInDataBase()
@@ -177,12 +183,6 @@ public class ClavarChatAPI implements Listener
         return new BytesImage(this.userManager.getAvatar(userId));
     }
 
-    public void createConversation()
-    {
-//        this.conversationManager.createConversation(conversationName);
-//        this.dataBaseAPI.createConversation();
-    }
-
     public void login(String pseudo, int id, String path)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
@@ -247,13 +247,14 @@ public class ClavarChatAPI implements Listener
     {
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, src);
-        this.eventManager.notiy(new NewUserEvent(data.pseudo));
+        this.createConversation(data.id);
+        this.eventManager.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
     private void onLogout(LoginMessage data)
     {
         this.userManager.removeUser(data.id);
-        this.eventManager.notiy(new RemoveUserEvent(data.pseudo));
+        this.eventManager.notify(new RemoveUserEvent(data.pseudo, data.id));
     }
 
     private void onDiscoverRequest(String src)
@@ -267,12 +268,27 @@ public class ClavarChatAPI implements Listener
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
         this.userManager.addUser(data.pseudo, data.id, data.avatar);
         this.userManager.addIpToUser(data.id, src);
+        this.createConversation(data.id);
         this.discover.onDiscoverInformation(data, src);
     }
 
     private void onTextMessage(TextMessage data, String src)
     {
         Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
-        this.eventManager.notiy(new MessageEvent(data.pseudo, data.id, data.message));
+        this.eventManager.notify(new MessageEvent(data.pseudo, data.id, data.message));
+    }
+
+    private void createConversation(int userId)
+    {
+        if (this.dataBaseAPI.userExist(userId))
+        {
+            Log.Warning(this.getClass().getName() + " user : " + userId + " already in dataBase");
+            return;
+        }
+
+        String pseudo = this.userManager.getPseudo(userId);
+        byte[] avatar = this.userManager.getAvatar(userId);
+        this.dataBaseAPI.addUser(pseudo, userId, avatar);
+        this.dataBaseAPI.createConversation(pseudo, this.getId(), userId);
     }
 }

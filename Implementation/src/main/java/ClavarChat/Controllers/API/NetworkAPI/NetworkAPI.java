@@ -10,7 +10,6 @@ import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPIN;
 import ClavarChat.Controllers.ThreadExecutable.Network.Messagin.TCPOUT;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.TcpServer;
 import ClavarChat.Controllers.ThreadExecutable.Network.Server.UdpServer;
-import ClavarChat.Models.BytesImage.BytesImage;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Network.ConnectionEvent;
 import ClavarChat.Models.Events.Event;
@@ -65,12 +64,12 @@ public class NetworkAPI implements Listener
         this.eventManager.addEvent(ConnectionEvent.CONNECTION_NEW);
         this.eventManager.addEvent(SocketDataEvent.SOCKET_DATA);
 
-        this.eventManager.addListenner(this, SocketSendingEndEvent.FINISHED_SENDING);
-        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_SUCCESS);
-        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_FAILED);
-        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_ENDED);
-        this.eventManager.addListenner(this, ConnectionEvent.CONNECTION_NEW);
-        this.eventManager.addListenner(this, SocketDataEvent.SOCKET_DATA);
+        this.eventManager.addListener(this, SocketSendingEndEvent.FINISHED_SENDING);
+        this.eventManager.addListener(this, ConnectionEvent.CONNECTION_SUCCESS);
+        this.eventManager.addListener(this, ConnectionEvent.CONNECTION_FAILED);
+        this.eventManager.addListener(this, ConnectionEvent.CONNECTION_ENDED);
+        this.eventManager.addListener(this, ConnectionEvent.CONNECTION_NEW);
+        this.eventManager.addListener(this, SocketDataEvent.SOCKET_DATA);
     }
 
     public ArrayList<String> getBroadcastAddresses()
@@ -233,7 +232,7 @@ public class NetworkAPI implements Listener
 
         if (!ips.contains(event.srcIp))
         {
-            this.eventManager.notiy(new NetworkPacketEvent(event.srcIp, event.srcPort, event.data));
+            this.eventManager.notify(new NetworkPacketEvent(event.srcIp, event.srcPort, event.data));
         }
         else
         {

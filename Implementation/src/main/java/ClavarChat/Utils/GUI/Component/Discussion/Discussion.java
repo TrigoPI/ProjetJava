@@ -17,12 +17,11 @@ public class Discussion extends HBox
     private boolean selected;
 
     private final int userId;
-
     private final int conversationId;
     private final String pseudo;
     private final Avatar avatar;
 
-    public Discussion(int conversationId, int userId, boolean connected, Image img, String pseudo, String text)
+    public Discussion(int conversationId, int userId, Image img, String pseudo, String text)
     {
         super();
 
@@ -30,7 +29,7 @@ public class Discussion extends HBox
         this.userId = userId;
         this.conversationId = conversationId;
         this.selected = false;
-        this.avatar = new Avatar(img, 35, connected);
+        this.avatar = new Avatar(img, 35, false);
 
         VBox vBox = new VBox();
         Label pseudoLabel = new Label(pseudo);
@@ -59,7 +58,7 @@ public class Discussion extends HBox
         vBox.getChildren().add(pseudoLabel);
         vBox.getChildren().add(textLabel);
 
-        this.getChildren().add(avatar);
+        this.getChildren().add(this.avatar);
         this.getChildren().add(vBox);
 
         this.setOnMouseEntered(this::onMouseEntered);
@@ -79,6 +78,11 @@ public class Discussion extends HBox
     public String getPseudo()
     {
         return this.pseudo;
+    }
+
+    public void setStatus(boolean isConnected)
+    {
+        this.avatar.setStatus(isConnected);
     }
 
     public void select()

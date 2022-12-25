@@ -30,7 +30,7 @@ public class EventManager
         }
     }
 
-    public void addListenner(Listener listener, String eventType)
+    public void addListener(Listener listener, String eventType)
     {
         if (!this.listenners.containsKey(eventType))
         {
@@ -42,7 +42,7 @@ public class EventManager
         }
     }
 
-    public void notiy(Event event)
+    public void notify(Event event)
     {
         if (!this.listenners.containsKey(event.type))
         {

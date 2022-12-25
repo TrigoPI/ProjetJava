@@ -82,24 +82,21 @@ public class ClavarChatController implements Initializable
         this.initDiscussionContainer();
     }
 
-    public void onRemoveUser(String pseudo)
-    {
-//        Platform.runLater(() -> {
-//            Discussion container = this.usersGUI.get(pseudo);
-//
-//            if (this.selectedUser != null)
-//            {
-//                if (this.selectedUser.getPseudo().equals(pseudo)) this.chatContainer.setVisible(false);
-//            }
-//
-//            this.userPreviewContainer.getChildren().remove(container);
-//        });
-    }
-
-    public void onNewUser(String pseudo)
+    public void onRemoveUser(int userId)
     {
         Platform.runLater(() -> {
-//            this.createUserDiscussion(pseudo, this.api.getId(pseudo));
+            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
+            int conversationId = conversationsId.get(0);
+            Discussion discussion = this.usersGUI.get(conversationId);
+            discussion.setStatus(false);
+        });
+    }
+
+    public void onNewUser(int userId)
+    {
+        Platform.runLater(() -> {
+            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
+            this.createUserDiscussion(userId, conversationsId.get(0));
 //            this.selectUser(this.usersGUI.get(pseudo));
         });
     }
@@ -138,11 +135,21 @@ public class ClavarChatController implements Initializable
         InputStream in = buffer.toInputStream();
         Image avatar = new Image(in);
 
-        Discussion discussion = new Discussion(conversationId, userId, this.api.isConnected(userId), avatar, pseudo, pseudo + " : blablabla");
-        discussion.setOnMouseClicked(this::onMouseClick);
+        if (this.usersGUI.containsKey(conversationId))
+        {
+            Discussion discussion = this.usersGUI.get(conversationId);
+            discussion.setStatus(true);
+        }
+        else
+        {
+            Discussion discussion = new Discussion(conversationId, userId, avatar, pseudo, pseudo + " : blablabla");
+            discussion.setStatus(this.api.isConnected(userId));
+            discussion.setOnMouseClicked(this::onMouseClick);
 
-        this.userPreviewContainer.getChildren().add(discussion);
-        this.usersGUI.put(conversationId, discussion);
+            this.userPreviewContainer.getChildren().add(discussion);
+            this.usersGUI.put(conversationId, discussion);
+        }
+
     }
 
     private void addMessage(int conversationId, int userId, String message)
@@ -229,13 +236,6 @@ public class ClavarChatController implements Initializable
     private void onMouseClick(MouseEvent event)
     {
         this.selectUser((Discussion)event.getSource());
-    }
-
-    private void createConversation(String conversationName)
-    {
-        this.api.createConversation();
-//        this.usersMessageBox.put(conversationName, new MessageBox());
-//        for (Message message : this.api.getConversation(conversationName)) this.updateChatBox(conversationName, message.srcPseudo, message.text);
     }
 
     @FXML

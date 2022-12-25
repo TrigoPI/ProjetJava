@@ -64,6 +64,15 @@ public class DataBaseAPI
         return users;
     }
 
+    public ArrayList<Integer> getConversationWith(int userId)
+    {
+        int id = this.userManager.getId();
+        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Read WHERE user_id = %d OR user_id = %d GROUP BY conversation_id HAVING COUNT(conversation_id) > 1", id, userId);
+        ArrayList<Integer> conversationsId = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return conversationsId;
+    }
+
     public ArrayList<Integer> getConversationsId()
     {
         int id = this.userManager.getId();

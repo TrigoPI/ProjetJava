@@ -51,14 +51,14 @@ public class TCPOUT extends TcpMessagin
                 if (code == -1)
                 {
                     Log.Error(this.getClass().getName() + " Error in TCP Send " + dstIp + ":" + dstPort);
-                    this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
+                    this.eventManager.notify(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
                 }
             }
             else
             {
                 if (isSending)
                 {
-                    this.eventManager.notiy(new SocketSendingEndEvent(this.socketId, dstIp));
+                    this.eventManager.notify(new SocketSendingEndEvent(this.socketId, dstIp));
                     isSending = false;
                 }
             }

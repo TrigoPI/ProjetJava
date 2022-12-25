@@ -29,11 +29,11 @@ public class GUIControllers implements Listener
 
         this.eventManager = EventManager.getInstance();
 
-        eventManager.addListenner(this, MessageEvent.TEXT_MESSAGE);
-        eventManager.addListenner(this, LoginEvent.LOGIN_SUCCESS);
-        eventManager.addListenner(this, LoginEvent.LOGIN_FAILED);
-        eventManager.addListenner(this, NewUserEvent.NEW_USER);
-        eventManager.addListenner(this, RemoveUserEvent.REMOVE_USER);
+        eventManager.addListener(this, MessageEvent.TEXT_MESSAGE);
+        eventManager.addListener(this, LoginEvent.LOGIN_SUCCESS);
+        eventManager.addListener(this, LoginEvent.LOGIN_FAILED);
+        eventManager.addListener(this, NewUserEvent.NEW_USER);
+        eventManager.addListener(this, RemoveUserEvent.REMOVE_USER);
     }
 
     @Override
@@ -51,11 +51,11 @@ public class GUIControllers implements Listener
                 break;
             case NewUserEvent.NEW_USER:
                 NewUserEvent newUserEvent = (NewUserEvent)event;
-                this.onNewUser(newUserEvent.pseudo);
+                this.onNewUser(newUserEvent.userId);
                 break;
             case RemoveUserEvent.REMOVE_USER:
                 RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
-                this.onRemoveUser(removeUserEvent.pseudo);
+                this.onRemoveUser(removeUserEvent.id);
                 break;
             case MessageEvent.TEXT_MESSAGE:
                 MessageEvent messageEvent = (MessageEvent)event;
@@ -79,13 +79,13 @@ public class GUIControllers implements Listener
         this.clavarChatController.onTextMessage(pseudo, message);
     }
 
-    private void onRemoveUser(String pseudo)
+    private void onRemoveUser(int userId)
     {
-        this.clavarChatController.onRemoveUser(pseudo);
+        this.clavarChatController.onRemoveUser(userId);
     }
 
-    private void onNewUser(String pseudo)
+    private void onNewUser(int userId)
     {
-        this.clavarChatController.onNewUser(pseudo);
+        this.clavarChatController.onNewUser(userId);
     }
 }

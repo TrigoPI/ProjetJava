@@ -24,11 +24,11 @@ public class LoginExecutable implements ThreadExecutable
 
         if (response == Response.DISCOVER_ERROR || response == Response.INVALID_PSEUDO)
         {
-            this.eventManager.notiy(new LoginEvent(LoginEvent.LOGIN_FAILED));
+            this.eventManager.notify(new LoginEvent(LoginEvent.LOGIN_FAILED));
         }
         else
         {
-            this.eventManager.notiy(new LoginEvent(LoginEvent.LOGIN_SUCCESS));
+            this.eventManager.notify(new LoginEvent(LoginEvent.LOGIN_SUCCESS));
         }
     }
 }

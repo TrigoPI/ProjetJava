@@ -60,8 +60,8 @@ public class LoginController implements Initializable
     {
         Log.Print(this.getClass().getName() + " Initialized");
 
-        this.usernameTextField.setText("Alexis");
-        this.idTextField.setText("6969");
+        this.usernameTextField.setText("Clément");
+        this.idTextField.setText("9090");
         this.passwordTextField.setText("qsdfjsdfji");
 
         this.spinnerBar.setVisible(false);
@@ -146,7 +146,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, Integer.parseInt(id), Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\avatar.jpg");
+            this.api.login(pseudo, Integer.parseInt(id), Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
         }
     }
 }

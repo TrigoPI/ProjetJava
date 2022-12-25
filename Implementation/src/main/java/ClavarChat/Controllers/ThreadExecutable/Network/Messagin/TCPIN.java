@@ -30,12 +30,12 @@ public class TCPIN extends TcpMessagin
             if (paquet != null)
             {
                 Log.Info(this.getClass().getName() + " New TCP paquet " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
-                this.eventManager.notiy(new SocketDataEvent(dstIp, dstPort, srcIp, srcPort, (ClavarChatMessage)paquet.data));
+                this.eventManager.notify(new SocketDataEvent(dstIp, dstPort, srcIp, srcPort, (ClavarChatMessage)paquet.data));
             }
             else
             {
                 Log.Error(this.getClass().getName() + " Error in TCP Receive " + dstIp + ":" + dstPort);
-                this.eventManager.notiy(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
+                this.eventManager.notify(new ConnectionEvent(ConnectionEvent.CONNECTION_FAILED, dstIp, dstPort, this.socketId));
             }
         }
     }

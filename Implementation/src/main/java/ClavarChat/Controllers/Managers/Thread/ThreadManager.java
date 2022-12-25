@@ -21,7 +21,7 @@ public class ThreadManager implements Listener
         this.threads = new HashMap<>();
 
         this.eventManager.addEvent(ThreadEvent.THREAD_FINISHED);
-        this.eventManager.addListenner(this, ThreadEvent.THREAD_FINISHED);
+        this.eventManager.addListener(this, ThreadEvent.THREAD_FINISHED);
     }
 
     public int createThread()

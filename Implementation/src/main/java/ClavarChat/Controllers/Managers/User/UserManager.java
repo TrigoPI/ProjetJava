@@ -150,7 +150,7 @@ public class UserManager
             return this.avatar;
         }
 
-        if (this.idToIndex.containsKey(userId))
+        if (!this.idToIndex.containsKey(userId))
         {
             Log.Warning(this.getClass().getName() + " No user with id : " + userId);
             return null;
