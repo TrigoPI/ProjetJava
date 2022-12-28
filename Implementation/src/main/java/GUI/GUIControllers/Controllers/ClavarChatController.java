@@ -1,7 +1,7 @@
 package GUI.GUIControllers.Controllers;
 
 import javafx.fxml.FXML;
-import ClavarChat.Models.BytesImage.BytesImage;
+import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.GUI.Component.MessageBox.MessageBox;

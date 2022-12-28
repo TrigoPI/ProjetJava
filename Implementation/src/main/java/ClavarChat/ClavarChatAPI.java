@@ -1,7 +1,7 @@
 package ClavarChat;
 
 import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
-import ClavarChat.Controllers.ThreadExecutable.Login.LoginExecutable;
+import ClavarChat.Controllers.ClavarChatRunnable.Login.LoginExecutable;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Event.Listener;
@@ -9,7 +9,7 @@ import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Chain.Discover;
 import ClavarChat.Controllers.Chain.PseudoVerify;
-import ClavarChat.Models.BytesImage.BytesImage;
+import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Events.Event;
 import ClavarChat.Models.ClavarChatMessage.*;
 import ClavarChat.Models.Events.Login.LoginEvent;
@@ -20,7 +20,6 @@ import ClavarChat.Models.Events.Network.NetworkPacketEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.Path.Path;
 
 import java.util.ArrayList;
 
