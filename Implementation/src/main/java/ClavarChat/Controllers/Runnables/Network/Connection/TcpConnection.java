@@ -31,9 +31,6 @@ public class TcpConnection implements TMRunnable
             return;
         }
 
-        String srcIp = this.networkManager.getLocalSocketIp(this.socket.getSocketId());
-        int srcPort = this.networkManager.getLocalSocketPort(this.socket.getSocketId());
-
         Log.Print(this.getClass().getName() + " Connection success with : " + this.socket.getDstIp() + ":" + this.socket.getDstPort());
         this.listener.onConnectionSuccess(this.socket.getDstIp());
     }

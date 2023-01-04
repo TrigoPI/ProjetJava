@@ -21,11 +21,11 @@ public class SessionHandler implements MessageListener
     }
 
     @Override
-    public void onData(String dstIp, ClvcMessage message)
+    public void onData(String srcIp, ClvcMessage message)
     {
         switch (message.type)
         {
-            case LoginMessage.LOGIN -> this.onLogin((LoginMessage)message, dstIp);
+            case LoginMessage.LOGIN -> this.onLogin((LoginMessage)message, srcIp);
             case LoginMessage.LOGOUT -> this.onLogout((LoginMessage)message);
         }
     }

@@ -243,6 +243,8 @@ public class NetworkAPI implements NetworkListener
         Client client = this.clients.get(dstIp);
         ClvcSocket socket = client.socket;
 
+        System.out.println(socket + " " + dstIp);
+
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
 
@@ -300,7 +302,7 @@ public class NetworkAPI implements NetworkListener
 
         for (MessageListener listener : this.listeners)
         {
-            listener.onData(dstIp, data);
+            listener.onData(srcIp, data);
         }
     }
 
@@ -334,6 +336,7 @@ public class NetworkAPI implements NetworkListener
             client.status = STATUS.CONNECTING;
 
             ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
+            client.socket = socket;
 
             this.clients.put(ip, client);
             this.threadManager.setRunnable(threadId, new TcpConnection(socket, this.networkManager, this));

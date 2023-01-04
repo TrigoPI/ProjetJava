@@ -1,6 +1,5 @@
 package ClavarChat.Controllers.Handlers;
 
-import ClavarChat.Controllers.API.EventAPI.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
@@ -54,12 +53,12 @@ public class DiscoverHandler implements MessageListener
     }
 
     @Override
-    public void onData(String dstIp, ClvcMessage message)
+    public void onData(String srcIp, ClvcMessage message)
     {
         switch (message.type)
         {
-            case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, dstIp);
-            case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(dstIp);
+            case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
+            case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(srcIp);
         }
     }
 
