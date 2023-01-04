@@ -191,4 +191,12 @@ public class DataBaseAPI
         this.dataBaseManager.executePreparedStatement(statementId);
         this.dataBaseManager.removePreparedStatement(statementId);
     }
+
+    public void clear()
+    {
+        this.dataBaseManager.execute("DELETE FROM User");
+        this.dataBaseManager.execute("DELETE FROM Conversation");
+        this.dataBaseManager.execute("DELETE FROM Read");
+        this.dataBaseManager.execute("DELETE FROM Message");
+    }
 }

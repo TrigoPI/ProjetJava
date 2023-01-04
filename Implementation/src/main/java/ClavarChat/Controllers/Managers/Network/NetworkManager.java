@@ -84,17 +84,17 @@ public class NetworkManager
 
         try
         {
-            String srcIp = NetworkUtils.getSocketLocalIp(socket);
-            String dstIp = NetworkUtils.getSocketDistantIp(socket);
-
-            int srcPort = NetworkUtils.getSocketLocalPort(socket);
-            int dstPort = NetworkUtils.getSocketDistantPort(socket);
+//            String srcIp = NetworkUtils.getSocketLocalIp(socket);
+//            String dstIp = NetworkUtils.getSocketDistantIp(socket);
+//
+//            int srcPort = NetworkUtils.getSocketLocalPort(socket);
+//            int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
             InputStream in = socket.getInputStream();
             ObjectInputStream iin = new ObjectInputStream(in);
             data = (NetworkPaquet)iin.readObject();
 
-            Log.Print(this.getClass().getName() + " data from " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+            Log.Print(this.getClass().getName() + " data from " + data.srcIp + ":" + data.srcPort + " <-- " + data.dstIp + ":" + data.dstPort);
         }
         catch (IOException | ClassNotFoundException e)
         {

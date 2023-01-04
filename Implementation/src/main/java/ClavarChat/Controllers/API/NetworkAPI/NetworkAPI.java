@@ -1,16 +1,17 @@
 package ClavarChat.Controllers.API.NetworkAPI;
 
-import ClavarChat.Controllers.ClavarChatRunnable.Network.TCPIN.TCPIN;
-import ClavarChat.Controllers.ClavarChatRunnable.Network.TCPOUT.TCPOUT;
+import ClavarChat.Controllers.Runnables.Network.TCPIN.TCPIN;
+import ClavarChat.Controllers.Runnables.Network.TCPOUT.TCPOUT;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Controllers.ClavarChatRunnable.Network.Connection.TcpConnection;
-import ClavarChat.Controllers.ClavarChatRunnable.Network.Server.TcpServer;
-import ClavarChat.Controllers.ClavarChatRunnable.Network.Server.UdpServer;
-import ClavarChat.Models.ClavarChatListener.NetworkListener;
-import ClavarChat.Models.ClavarChatMessage.*;
-import ClavarChat.Models.ClavarChatSocket.ClavarChatSocket;
+import ClavarChat.Controllers.Runnables.Network.Connection.TcpConnection;
+import ClavarChat.Controllers.Runnables.Network.Server.TcpServer;
+import ClavarChat.Controllers.Runnables.Network.Server.UdpServer;
+import ClavarChat.Models.ClvcListener.MessageListener;
+import ClavarChat.Models.ClvcListener.NetworkListener;
+import ClavarChat.Models.ClvcMessage.*;
+import ClavarChat.Models.ClvcSocket.ClvcSocket;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 
@@ -31,24 +32,26 @@ public class NetworkAPI implements NetworkListener
     private final NetworkManager networkManager;
 
     private final HashMap<String, Client> clients;
+    private final ArrayList<MessageListener> listeners;
 
     private final int tcpServerID;
     private final int udpServerID;
 
-    public NetworkAPI(ThreadManager threadManager, UserManager userManager, int tcpPort, int udpPort)
+    public NetworkAPI(UserManager userManager, int tcpPort, int udpPort)
     {
         this.tcpPort = tcpPort;
         this.udpPort = udpPort;
 
         this.networkManager = new NetworkManager();
+        this.threadManager = new ThreadManager();
 
-        this.threadManager = threadManager;
         this.userManager = userManager;
 
         this.tcpServerID = this.networkManager.createTcpServer();
         this.udpServerID = this.networkManager.createUdpServer();
 
         this.clients = new HashMap<>();
+        this.listeners = new ArrayList<>();
     }
 
     public ArrayList<String> getBroadcastAddresses()
@@ -173,6 +176,17 @@ public class NetworkAPI implements NetworkListener
         }
     }
 
+    public void addListener(MessageListener listener)
+    {
+        if (this.listeners.contains(listener))
+        {
+            Log.Warning(this.getClass().getName() + " Listener already registered");
+            return;
+        }
+
+        this.listeners.add(listener);
+    }
+
     @Override
     public void onFinishedSending(int socketId, String dstIp)
     {
@@ -198,7 +212,7 @@ public class NetworkAPI implements NetworkListener
     public void onNewConnection(int socketId, String srcIp, int srcPort, String dstIp, int dstPort)
     {
         Client client = new Client(socketId);
-        ClavarChatSocket socket = new ClavarChatSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
+        ClvcSocket socket = new ClvcSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
 
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
@@ -227,7 +241,7 @@ public class NetworkAPI implements NetworkListener
     public void onConnectionSuccess(String dstIp)
     {
         Client client = this.clients.get(dstIp);
-        ClavarChatSocket socket = client.socket;
+        ClvcSocket socket = client.socket;
 
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
@@ -274,17 +288,19 @@ public class NetworkAPI implements NetworkListener
     }
 
     @Override
-    public void onData(String srcIp, int srcPort, String dstIp, int dstPort, ClavarChatMessage data)
+    public void onPacket(String srcIp, int srcPort, String dstIp, int dstPort, ClvcMessage data)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
 
-        if (!ips.contains(srcIp))
-        {
-//            this.eventManager.notify(new NetworkPacketEvent(event.srcIp, event.srcPort, event.data));
-        }
-        else
+        if (ips.contains(srcIp))
         {
             Log.Print(this.getClass().getName() + " Dropping packet from " + srcIp + ":" + srcPort);
+            return;
+        }
+
+        for (MessageListener listener : this.listeners)
+        {
+            listener.onData(dstIp, data);
         }
     }
 
@@ -297,12 +313,12 @@ public class NetworkAPI implements NetworkListener
         }
     }
 
-    private void sendUDP(String ip, int port, ClavarChatMessage data)
+    private void sendUDP(String ip, int port, ClvcMessage data)
     {
         this.networkManager.udpSend(data, ip, port);
     }
 
-    private void sendTCP(String ip, int port, ClavarChatMessage data)
+    private void sendTCP(String ip, int port, ClvcMessage data)
     {
         Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
 
@@ -317,7 +333,7 @@ public class NetworkAPI implements NetworkListener
             Client client = new Client(socketId);
             client.status = STATUS.CONNECTING;
 
-            ClavarChatSocket socket = new ClavarChatSocket(socketId, ip, port, this.networkManager);
+            ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
 
             this.clients.put(ip, client);
             this.threadManager.setRunnable(threadId, new TcpConnection(socket, this.networkManager, this));
@@ -350,7 +366,7 @@ public class NetworkAPI implements NetworkListener
     private static class Client
     {
         public STATUS status;
-        public ClavarChatSocket socket;
+        public ClvcSocket socket;
         public TCPIN in;
         public TCPOUT out;
         public int socketId;
