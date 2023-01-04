@@ -1,20 +1,23 @@
 package ClavarChat.Controllers.Handlers;
 
+import ClavarChat.Controllers.API.EventAPI.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcMessage.*;
-import ClavarChat.Utils.Log.Log;
 
 public class SessionHandler implements MessageListener
 {
-    private final UserManager userManager;
     private final NetworkAPI networkAPI;
+    private final EventAPI eventAPI;
+    private final UserManager userManager;
 
-    public SessionHandler(UserManager userManager, NetworkAPI networkAPI)
+    public SessionHandler(NetworkAPI networkAPI, EventAPI eventAPI, UserManager userManager)
     {
-        this.userManager = userManager;
         this.networkAPI = networkAPI;
+        this.eventAPI = eventAPI;
+        this.userManager = userManager;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class SessionHandler implements MessageListener
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
 //        this.createConversation(data.id, data.pseudo, data.img);
-//        this.eventManager.notify(new NewUserEvent(data.id, data.pseudo));
+        this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
     private void onLogout(LoginMessage data)

@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Handlers;
 
+import ClavarChat.Controllers.API.EventAPI.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
@@ -16,7 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DiscoverHandler implements MessageListener
 {
     private final NetworkAPI networkAPI;
+
+    private final PseudoHandler pseudoHandler;
     private final UserManager userManager;
+
+
 
     private final int timeout;
 
@@ -24,21 +29,28 @@ public class DiscoverHandler implements MessageListener
     public final AtomicInteger currentNumberOfUsers;
     public final AtomicBoolean finished;
 
-    public DiscoverHandler(NetworkAPI networkAPI, UserManager userManager)
+    public DiscoverHandler(NetworkAPI networkAPI, UserManager userManager, PseudoHandler pseudoHandler)
     {
         this.networkAPI = networkAPI;
         this.userManager = userManager;
+        this.pseudoHandler = pseudoHandler;
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
         this.timeout = 3;
     }
 
-    public void discover()
+    public boolean discover()
     {
         this.waitResponse();
-        this.hasSucceed();
-        this.reset();
+
+        if (!this.hasSucceed())
+        {
+            this.reset();
+            return false;
+        }
+
+        return this.pseudoHandler.checkPseudo();
     }
 
     @Override
@@ -49,6 +61,25 @@ public class DiscoverHandler implements MessageListener
             case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, dstIp);
             case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(dstIp);
         }
+    }
+
+    private boolean hasSucceed()
+    {
+        if (this.numberOfUsers.get() == -1)
+        {
+            Log.Info(DiscoverHandler.class.getName() + " Success alone on network");
+            return true;
+        }
+
+        if (this.numberOfUsers.get() != this.currentNumberOfUsers.get())
+        {
+            Log.Error(DiscoverHandler.class.getName() + " ERROR missing response");
+            return false;
+        }
+
+        Log.Info(DiscoverHandler.class.getName() + " Success Discover");
+        for (User user : this.userManager.getUsers()) Log.Info(DiscoverHandler.class.getName() + " Discovered : " + user.pseudo + "/#" + user.id);
+        return true;
     }
 
     private void onDiscoverRequest(String dstIp)
@@ -78,24 +109,6 @@ public class DiscoverHandler implements MessageListener
         Clock clock = new Clock();
         this.networkAPI.sendDiscoverRequest();
         while (clock.timeSecond() < timeout && !this.finished.get());
-    }
-
-    private void hasSucceed()
-    {
-        if (this.numberOfUsers.get() == -1)
-        {
-            Log.Info(DiscoverHandler.class.getName() + " Success alone on network");
-            return;
-        }
-
-        if (this.numberOfUsers.get() != this.currentNumberOfUsers.get())
-        {
-            Log.Error(DiscoverHandler.class.getName() + " ERROR missing response");
-            return;
-        }
-
-        Log.Info(DiscoverHandler.class.getName() + " Success Discover");
-        for (User user : this.userManager.getUsers()) Log.Info(DiscoverHandler.class.getName() + " Discovered : " + user.pseudo + "/#" + user.id);
     }
 
     private void reset()

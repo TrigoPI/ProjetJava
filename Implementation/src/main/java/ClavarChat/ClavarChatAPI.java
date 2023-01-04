@@ -1,19 +1,16 @@
 package ClavarChat;
 
 import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
+import ClavarChat.Controllers.API.EventAPI.EventAPI;
 import ClavarChat.Controllers.Handlers.DiscoverHandler;
 import ClavarChat.Controllers.Handlers.PseudoHandler;
 import ClavarChat.Controllers.Handlers.SessionHandler;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
-import ClavarChat.Controllers.Managers.Event.EventManager;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Runnables.Discover.Discover;
+import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Utils.BytesImage.BytesImage;
-import ClavarChat.Models.Events.Login.LoginEvent;
-import ClavarChat.Models.Events.Login.NewUserEvent;
-import ClavarChat.Models.Events.Login.RemoveUserEvent;
-import ClavarChat.Models.Events.Message.MessageEvent;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
@@ -22,9 +19,9 @@ import java.util.ArrayList;
 
 public class ClavarChatAPI
 {
-    private final EventManager eventManager;
     private final UserManager userManager;
 
+    private final EventAPI eventAPI;
     private final DataBaseAPI dataBaseAPI;
     private final NetworkAPI networkAPI;
     private final SessionHandler sessionHandler;
@@ -35,25 +32,19 @@ public class ClavarChatAPI
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
 
-        this.eventManager = EventManager.getInstance();
         this.userManager = new UserManager();
         this.threadManager = new ThreadManager();
 
         this.networkAPI = new NetworkAPI(this.userManager, tcpPort, udpPort);
         this.dataBaseAPI = new DataBaseAPI(this.userManager);
+        this.eventAPI = new EventAPI();
 
-        this.sessionHandler = new SessionHandler(this.userManager, this.networkAPI);
-        this.pseudoHandler = new PseudoHandler(this.userManager);
-        this.discoverHandler = new DiscoverHandler(this.networkAPI, this.userManager);
+        this.sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.userManager);
+        this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI);
+        this.discoverHandler = new DiscoverHandler(this.networkAPI, this.userManager, this.pseudoHandler);
 
         this.networkAPI.addListener(this.sessionHandler);
         this.networkAPI.addListener(this.discoverHandler);
-
-        this.eventManager.addEvent(MessageEvent.TEXT_MESSAGE);
-        this.eventManager.addEvent(LoginEvent.LOGIN_SUCCESS);
-        this.eventManager.addEvent(LoginEvent.LOGIN_FAILED);
-        this.eventManager.addEvent(NewUserEvent.NEW_USER);
-        this.eventManager.addEvent(RemoveUserEvent.REMOVE_USER);
 
         this.networkAPI.startServer();
 
@@ -187,7 +178,8 @@ public class ClavarChatAPI
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
 
-        int threadId = this.threadManager.createThread(new Discover(this.discoverHandler));
+        Discover discover = new Discover(this.discoverHandler, this.eventAPI);
+        int threadId = this.threadManager.createThread(discover);
         BytesImage avatar = new BytesImage(path);
 
         this.userManager.setUser(id, pseudo, avatar.getBytes());
@@ -198,12 +190,6 @@ public class ClavarChatAPI
     public void logout()
     {
         this.networkAPI.sendLogout();
-    }
-
-    public void saveMessage(int conversationId, int userId, String text)
-    {
-        Log.Print(this.getClass().getName() + " Saving message : [" + userId + "] : " + text);
-        this.dataBaseAPI.addMessage(conversationId, userId, text);
     }
 
     public void sendMessage(int srcId, int dstId, int conversationId, String message)
@@ -229,6 +215,12 @@ public class ClavarChatAPI
 //        this.eventManager.notify(new MessageEvent(data.pseudo, data.id, data.message));
 //    }
 //
+
+    public void addListener(ClvcListener listener, String eventName)
+    {
+        this.eventAPI.addListener(listener, eventName);
+    }
+
     private void createConversation(int userId, String pseudo, byte[] avatar)
     {
         this.dataBaseAPI.addUser(userId, pseudo, avatar);

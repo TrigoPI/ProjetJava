@@ -1,23 +1,19 @@
 package GUI.GUIControllers;
 
 import ClavarChat.ClavarChatAPI;
-import ClavarChat.Controllers.Managers.Event.EventManager;
-import ClavarChat.Models.Events.Login.LoginEvent;
-import ClavarChat.Models.Events.Login.NewUserEvent;
-import ClavarChat.Models.Events.Login.RemoveUserEvent;
-import ClavarChat.Models.Events.Message.MessageEvent;
+import ClavarChat.Models.ClvcEvent.ClvcEvent;
+import ClavarChat.Models.ClvcEvent.Login.LoginEvent;
+import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
+import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
-import ClavarChat.Controllers.Managers.Event.Listener;
-import ClavarChat.Models.Events.Event;
 
-public class GUIControllers implements Listener
+public class GUIControllers implements ClvcListener
 {
     private final LoginController loginController;
     private final ClavarChatController clavarChatController;
 
-    private final EventManager eventManager;
     private final ClavarChatAPI api;
 
     public GUIControllers(ClavarChatAPI api, LoginController loginController, ClavarChatController clavarChatController)
@@ -27,17 +23,13 @@ public class GUIControllers implements Listener
         this.loginController = loginController;
         this.clavarChatController = clavarChatController;
 
-        this.eventManager = EventManager.getInstance();
-
-        eventManager.addListener(this, MessageEvent.TEXT_MESSAGE);
-        eventManager.addListener(this, LoginEvent.LOGIN_SUCCESS);
-        eventManager.addListener(this, LoginEvent.LOGIN_FAILED);
-        eventManager.addListener(this, NewUserEvent.NEW_USER);
-        eventManager.addListener(this, RemoveUserEvent.REMOVE_USER);
+        api.addListener(this, LoginEvent.LOGIN_SUCCESS);
+        api.addListener(this, LoginEvent.LOGIN_FAILED);
+        api.addListener(this, NewUserEvent.NEW_USER);
     }
 
     @Override
-    public void onEvent(Event event)
+    public void onEvent(ClvcEvent event)
     {
         Log.Info(this.getClass().getName() + " ---> " + event.type);
 
@@ -53,14 +45,14 @@ public class GUIControllers implements Listener
                 NewUserEvent newUserEvent = (NewUserEvent)event;
                 this.onNewUser(newUserEvent.userId);
                 break;
-            case RemoveUserEvent.REMOVE_USER:
-                RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
-                this.onRemoveUser(removeUserEvent.id);
-                break;
-            case MessageEvent.TEXT_MESSAGE:
-                MessageEvent messageEvent = (MessageEvent)event;
-                this.onTextMessage(messageEvent.pseudo, messageEvent.message);
-                break;
+//            case RemoveUserEvent.REMOVE_USER:
+//                RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
+//                this.onRemoveUser(removeUserEvent.id);
+//                break;
+//            case MessageEvent.TEXT_MESSAGE:
+//                MessageEvent messageEvent = (MessageEvent)event;
+//                this.onTextMessage(messageEvent.pseudo, messageEvent.message);
+//                break;
         }
     }
 
