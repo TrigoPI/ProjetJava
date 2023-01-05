@@ -146,7 +146,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(Integer.parseInt(id), pseudo, Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+            this.api.login(Integer.parseInt(id), pseudo, Path.getWorkingPath() + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
         }
     }
 }
