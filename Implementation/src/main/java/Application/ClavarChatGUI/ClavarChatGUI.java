@@ -29,6 +29,7 @@ public class ClavarChatGUI extends Application
 
         URL loginFXML = ClavarChatGUI.class.getResource("LoginGUI.fxml");
         URL clavarChatFXML = ClavarChatGUI.class.getResource("ClavarChatGUI.fxml");
+        URL settingsFXML = ClavarChatGUI.class.getResource("SettingsPage.fxml");
 
         ClavarChatController clavarChatController = new ClavarChatController(this.clavarChatAPI);
         FXMLLoader fxmlLoaderClavarChat = new FXMLLoader(clavarChatFXML);
@@ -39,9 +40,12 @@ public class ClavarChatGUI extends Application
         fxmlLoaderLogin.setController(loginController);
 
         SettingsController settingsController = new SettingsController(clavarChatAPI);
+        FXMLLoader fxmlLoaderSettings = new FXMLLoader(settingsFXML);
+        fxmlLoaderSettings.setController(settingsController);
 
-        Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
+        //Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
 //        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);
+        Scene scene = new Scene(fxmlLoaderSettings.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
         stage.getIcons().add(new Image("file:" + Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png"));
