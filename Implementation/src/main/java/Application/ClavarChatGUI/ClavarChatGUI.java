@@ -23,7 +23,7 @@ public class ClavarChatGUI extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        Log.clearLogFile();
+        //Log.clearLogFile();
 
         this.clavarChatAPI = new ClavarChatAPI(8080, 7070);
 

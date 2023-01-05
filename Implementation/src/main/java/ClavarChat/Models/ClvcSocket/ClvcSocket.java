@@ -101,6 +101,7 @@ public class ClvcSocket
 
         this.srcIp   = this.networkManager.getLocalSocketIp(this.socketId);
         this.srcPort = this.networkManager.getLocalSocketPort(this.socketId);
+        this.state.set(SOCKET_STATE.CONNECTED);
 
         return code;
     }
