@@ -223,6 +223,8 @@ public class NetworkAPI implements NetworkListener
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
 
+        Log.Warning(this.getClass().getName() + " Packet from : " + srcIp + ":" + srcPort);
+
         if (ips.contains(srcIp))
         {
             Log.Print(this.getClass().getName() + " Dropping packet from " + srcIp + ":" + srcPort);

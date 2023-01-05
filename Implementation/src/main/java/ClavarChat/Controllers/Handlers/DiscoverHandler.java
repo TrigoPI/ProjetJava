@@ -36,7 +36,7 @@ public class DiscoverHandler implements MessageListener
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
-        this.timeout = 3;
+        this.timeout = 10;
     }
 
     public boolean discover()
@@ -98,8 +98,17 @@ public class DiscoverHandler implements MessageListener
     public void updateUserCount(DiscoverResponseMessage data)
     {
         this.currentNumberOfUsers.incrementAndGet();
-        if (this.numberOfUsers.get() == -1) this.numberOfUsers.set(data.count);
-        if (this.currentNumberOfUsers.get() == this.numberOfUsers.get()) this.finished.set(true);
+
+        if (this.numberOfUsers.get() == -1)
+        {
+            Log.Info(this.getClass().getName() + " Waiting for : " + data.count);
+            this.numberOfUsers.set(data.count);
+        }
+
+        if (this.currentNumberOfUsers.get() == this.numberOfUsers.get())
+        {
+            this.finished.set(true);
+        }
     }
 
     private void waitResponse()

@@ -88,7 +88,7 @@ public class NetworkManager
             ObjectInputStream iin = new ObjectInputStream(in);
             data = (NetworkPaquet)iin.readObject();
 
-            Log.Print(this.getClass().getName() + " data from " + data.srcIp + ":" + data.srcPort + " <-- " + data.dstIp + ":" + data.dstPort);
+            Log.Print(this.getClass().getName() + " data from " + data.dstIp + ":" + data.dstPort + " <-- " + data.srcIp + ":" + data.srcPort);
         }
         catch (IOException | ClassNotFoundException e)
         {

@@ -28,7 +28,7 @@ public class ClvcSocket
     public ClvcSocket(int socketId, String srcIp, int srcPort, String dstIp, int dstPort, NetworkManager networkManager)
     {
         this.buffer = new LinkedBlockingQueue<>();
-        this.state = new AtomicReference<>(SOCKET_STATE.IDLE);
+        this.state = new AtomicReference<>(SOCKET_STATE.CONNECTED);
         this.networkManager = networkManager;
         this.socketId = socketId;
         this.srcIp = srcIp;
@@ -95,6 +95,9 @@ public class ClvcSocket
             Log.Warning(this.getClass().getName() + " Connection failed with : " + this.dstIp + ":" + this.dstPort);
             return code;
         }
+
+
+        this.state.set(SOCKET_STATE.CONNECTED);
 
         this.srcIp   = this.networkManager.getLocalSocketIp(this.socketId);
         this.srcPort = this.networkManager.getLocalSocketPort(this.socketId);

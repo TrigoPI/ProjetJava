@@ -51,20 +51,20 @@ public class ClavarChatAPI
 
         this.dataBaseAPI.clear();
 
-        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
-        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
-        BytesImage img3 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
-        BytesImage img4 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
-
-        this.userManager.addUser("user1", 1111, img1.getBytes());
-        this.userManager.addUser("user2", 2222, img2.getBytes());
-        this.userManager.addUser("user3", 3333, img3.getBytes());
-        this.userManager.addUser("user4", 4444, img4.getBytes());
-
-        this.userManager.addIpToUser(1111, "192.168.1.11");
-        this.userManager.addIpToUser(2222, "192.168.1.22");
-        this.userManager.addIpToUser(3333, "192.168.1.33");
-        this.userManager.addIpToUser(4444, "192.168.1.44");
+//        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
+//        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
+//        BytesImage img3 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
+//        BytesImage img4 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
+//
+//        this.userManager.addUser("user1", 1111, img1.getBytes());
+//        this.userManager.addUser("user2", 2222, img2.getBytes());
+//        this.userManager.addUser("user3", 3333, img3.getBytes());
+//        this.userManager.addUser("user4", 4444, img4.getBytes());
+//
+//        this.userManager.addIpToUser(1111, "192.168.1.11");
+//        this.userManager.addIpToUser(2222, "192.168.1.22");
+//        this.userManager.addIpToUser(3333, "192.168.1.33");
+//        this.userManager.addIpToUser(4444, "192.168.1.44");
 
 //        this.dataBaseAPI.addUser(1111, "user1", this.userManager.getAvatar(1111));
 //        this.dataBaseAPI.addUser(2222, "user2", this.userManager.getAvatar(2222));

@@ -5,8 +5,6 @@ import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcMessage.ClvcMessage;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class TCPIN implements TMRunnable
 {
     private final ClvcSocket socket;

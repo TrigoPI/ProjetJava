@@ -24,11 +24,11 @@ public class TcpServer extends Server
 
             if (socketId >= 0)
             {
-                String srcIp = this.networkManager.getLocalSocketIp(socketId);
-                String dstIp = this.networkManager.getDistantSocketIp(socketId);
+                String srcIp = this.networkManager.getDistantSocketIp(socketId);
+                String dstIp = this.networkManager.getLocalSocketIp(socketId);
 
-                int srcPort = this.networkManager.getLocalSocketPort(socketId);
-                int dstPort = this.networkManager.getDistantSocketPort(socketId);
+                int srcPort = this.networkManager.getDistantSocketPort(socketId);
+                int dstPort = this.networkManager.getLocalSocketPort(socketId);
 
                 this.listener.onNewConnection(socketId, srcIp, srcPort, dstIp, dstPort);
             }
