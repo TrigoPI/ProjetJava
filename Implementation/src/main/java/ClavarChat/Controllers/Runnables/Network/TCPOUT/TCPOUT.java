@@ -17,7 +17,9 @@ public class TCPOUT implements TMRunnable
     @Override
     public void run()
     {
+        String distantIp = this.socket.getDistantIp();
+
         while (!this.socket.isClosed()) this.socket.send();
-        this.listener.onConnectionFailed(this.socket.getSocketId(), this.socket.getDistantIp());
+        this.listener.onConnectionFailed(this.socket.getSocketId(), distantIp);
     }
 }
