@@ -19,7 +19,7 @@ public class Discover implements TMRunnable
     @Override
     public void run()
     {
-        boolean success =  this.discoverHandler.discover();
+        boolean success = this.discoverHandler.discover();
 
         if (success)
         {

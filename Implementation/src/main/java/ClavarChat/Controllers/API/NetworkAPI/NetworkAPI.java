@@ -15,10 +15,8 @@ import ClavarChat.Models.ClvcSocket.ClvcSocket;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class NetworkAPI implements NetworkListener
 {
@@ -31,7 +29,7 @@ public class NetworkAPI implements NetworkListener
     private final UserManager userManager;
     private final NetworkManager networkManager;
 
-    private final HashMap<String, Client> clients;
+    private final HashMap<String, Messenger> messengers;
     private final ArrayList<MessageListener> listeners;
 
     private final int tcpServerID;
@@ -50,7 +48,7 @@ public class NetworkAPI implements NetworkListener
         this.tcpServerID = this.networkManager.createTcpServer();
         this.udpServerID = this.networkManager.createUdpServer();
 
-        this.clients = new HashMap<>();
+        this.messengers = new HashMap<>();
         this.listeners = new ArrayList<>();
     }
 
@@ -145,35 +143,14 @@ public class NetworkAPI implements NetworkListener
 
     public void closeAllClients()
     {
-        for (String key : this.clients.keySet())
+        for (String key : this.messengers.keySet())
         {
             Log.Info(this.getClass().getName() + " Closing " + key);
-
-            Client client = this.clients.get(key);
-
-            if (client.status == STATUS.CONNECTING)
-            {
-                Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is connecting --> CLOSE_WAIT");
-                client.status = STATUS.CLOSE_WAIT;
-            }
-
-            if (client.status == STATUS.CONNECTED)
-            {
-                if (client.isSending)
-                {
-                    Log.Info(this.getClass().getName() + " Cannot close : " + key + " because socket is sending --> CLOSE_WAIT");
-                    client.status = STATUS.CLOSE_WAIT;
-                }
-                else
-                {
-                    client.status = STATUS.CLOSED;
-                    client.out.stop();
-                    client.in.stop();
-
-                    this.networkManager.closeTcpSocket(client.socketId);
-                }
-            }
+            Messenger messenger = this.messengers.get(key);
+            messenger.socket.close();
         }
+
+        this.messengers.clear();
     }
 
     public void addListener(MessageListener listener)
@@ -188,104 +165,56 @@ public class NetworkAPI implements NetworkListener
     }
 
     @Override
-    public void onFinishedSending(int socketId, String dstIp)
-    {
-        Client client = this.clients.get(dstIp);
-        client.isSending = false;
-
-        Log.Print(this.getClass().getName() + " [" + dstIp + "] Socket id : " + socketId + " finished sending");
-        Log.Print(this.getClass().getName() + " [" + dstIp + "] Socket id : " + socketId + " Status : " + client.status);
-
-        if (client.status == STATUS.CLOSE_WAIT)
-        {
-            Log.Print(this.getClass().getName() + " Closing client : " + dstIp);
-
-            client.in.stop();
-            client.out.stop();
-
-            this.clients.remove(dstIp);
-            this.networkManager.closeTcpSocket(socketId);
-        }
-    }
-
-    @Override
     public void onNewConnection(int socketId, String srcIp, int srcPort, String dstIp, int dstPort)
     {
-        Client client = new Client(socketId);
         ClvcSocket socket = new ClvcSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
+        TCPIN in  = new TCPIN(socket, this);
+        TCPOUT out = new TCPOUT(socket);
+        Messenger messenger = new Messenger(socket, in, out);
 
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
 
-        TCPIN in  = new TCPIN(socket, this);
-        TCPOUT out = new TCPOUT(socket, this);
-
-        client.in  = in;
-        client.out = out;
-
-        client.status = STATUS.CONNECTED;
-
-        this.threadManager.setRunnable(threadInId, in);
-        this.threadManager.setRunnable(threadOutId, out);
+        this.threadManager.setRunnable(threadInId, messenger.in);
+        this.threadManager.setRunnable(threadOutId, messenger.out);
 
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
 
-        this.clients.put(srcIp, client);
+        this.messengers.put(dstIp, messenger);
 
-        Log.Print(this.getClass().getName() + " TCPIN  : " + dstIp + ":" + dstPort + " <-- " + srcIp + ":" + srcPort);
-        Log.Print(this.getClass().getName() + " TCPOUT : " + dstIp + ":" + dstPort + " --> " + srcIp + ":" + srcPort);
+        Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
+        Log.Print(this.getClass().getName() + " TCPOUT : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
     }
 
     @Override
     public void onConnectionSuccess(String dstIp)
     {
-        Client client = this.clients.get(dstIp);
-        ClvcSocket socket = client.socket;
-
-        System.out.println(socket + " " + dstIp);
+        Messenger messenger = this.messengers.get(dstIp);
 
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
 
-        TCPIN in  = new TCPIN(socket, this);
-        TCPOUT out = new TCPOUT(socket, this);
-
-        client.in  = in;
-        client.out = out;
-
-        client.status = (client.status == STATUS.CLOSE_WAIT)?STATUS.CLOSE_WAIT:STATUS.CONNECTED;
-        client.isSending = !client.pendingDataBuffer.isEmpty();
-
-        this.threadManager.setRunnable(threadInId, in);
-        this.threadManager.setRunnable(threadOutId, out);
+        this.threadManager.setRunnable(threadInId, messenger.in);
+        this.threadManager.setRunnable(threadOutId, messenger.out);
 
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
 
-        Log.Print(this.getClass().getName() + " Socket state : " + client.status);
-        Log.Print(this.getClass().getName() + " TCPIN  : " + socket.getSrcIp() + ":" + socket.getSrcPort() + " <-- " + socket.getDstIp() + ":" + socket.getDstPort());
-        Log.Print(this.getClass().getName() + " TCPOUT : " + socket.getSrcIp() + ":" + socket.getSrcPort() + " --> " + socket.getDstIp() + ":" + socket.getDstPort());
-
-        this.flushPendingData(client);
+        Log.Print(this.getClass().getName() + " Socket state : " + messenger.socket.getState());
+        Log.Print(this.getClass().getName() + " TCPIN  : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " <-- " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
+        Log.Print(this.getClass().getName() + " TCPOUT : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " --> " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
     }
 
     @Override
     public void onConnectionFailed(int socketId, String dstIp)
     {
-        if (clients.containsKey(dstIp))
+        if (messengers.containsKey(dstIp))
         {
             Log.Print(this.getClass().getName() + " Removing client : " + dstIp);
-
-            Client client = this.clients.get(dstIp);
-
-            if (client.status == STATUS.CONNECTED)
-            {
-                client.in.stop();
-                client.out.stop();
-            }
-
-            this.clients.remove(dstIp);
+            Messenger messenger = this.messengers.get(dstIp);
+            messenger.socket.close();
+            this.messengers.remove(dstIp);
         }
     }
 
@@ -306,15 +235,6 @@ public class NetworkAPI implements NetworkListener
         }
     }
 
-    private void flushPendingData(Client client)
-    {
-        if (client.pendingDataBuffer.size() > 0)
-        {
-            Log.Print(this.getClass().getName() + " Flushing data to TCP Out : ");
-            while (!client.pendingDataBuffer.isEmpty()) client.out.put(client.pendingDataBuffer.removeLast());
-        }
-    }
-
     private void sendUDP(String ip, int port, ClvcMessage data)
     {
         this.networkManager.udpSend(data, ip, port);
@@ -324,7 +244,7 @@ public class NetworkAPI implements NetworkListener
     {
         Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
 
-        if (!this.clients.containsKey(ip))
+        if (!this.messengers.containsKey(ip))
         {
             Log.Print(this.getClass().getName() + " No client with ip : " + ip);
             Log.Print(this.getClass().getName() + " Creating client : " + ip);
@@ -332,63 +252,34 @@ public class NetworkAPI implements NetworkListener
             int socketId = this.networkManager.createSocket();
             int threadId = this.threadManager.createThread();
 
-            Client client = new Client(socketId);
-            client.status = STATUS.CONNECTING;
 
             ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
-            client.socket = socket;
+            TCPIN  in  = new TCPIN(socket, this);
+            TCPOUT out = new TCPOUT(socket);
+            Messenger messenger = new Messenger(socket, in, out);
 
-            this.clients.put(ip, client);
-            this.threadManager.setRunnable(threadId, new TcpConnection(socket, this.networkManager, this));
+            this.messengers.put(ip, messenger);
+
+            this.threadManager.setRunnable(threadId, new TcpConnection(socket, this));
             this.threadManager.startThread(threadId);
         }
 
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
-        Client client = this.clients.get(ip);
-
-        if (client.status != STATUS.CLOSED && client.status != STATUS.CLOSE_WAIT)
-        {
-            if (client.status == STATUS.CONNECTING)
-            {
-                Log.Print(this.getClass().getName() + " client : " + ip + " not connected, adding data to pending buffer");
-                client.pendingDataBuffer.push(data);
-            }
-            else
-            {
-                Log.Print(this.getClass().getName() + " sending data to " + ip + ":" + port);
-                client.isSending = true;
-                client.out.put(data);
-            }
-        }
-        else
-        {
-            Log.Info(this.getClass().getName() + " Cannot send data because client is : " + client.status);
-        }
+        Messenger messenger = this.messengers.get(ip);
+        messenger.socket.put(data);
     }
 
-    private static class Client
+    private static class Messenger
     {
-        public STATUS status;
         public ClvcSocket socket;
-        public TCPIN in;
+        public TCPIN  in;
         public TCPOUT out;
-        public int socketId;
-        public boolean isSending;
 
-        public LinkedList<Serializable> pendingDataBuffer;
-
-        public Client(int socketId)
+        public Messenger(ClvcSocket socket, TCPIN in, TCPOUT out)
         {
-            this.status = STATUS.IDLE;
-
-            this.isSending = false;
-            this.socketId = socketId;
-
-            this.socket = null;
-            this.in = null;
-            this.out = null;
-
-            this.pendingDataBuffer = new LinkedList<>();
+            this.socket = socket;
+            this.in  = in;
+            this.out = out;
         }
     }
 }

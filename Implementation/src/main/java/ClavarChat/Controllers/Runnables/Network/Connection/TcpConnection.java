@@ -11,11 +11,8 @@ public class TcpConnection implements TMRunnable
     private final ClvcSocket socket;
     private final NetworkListener listener;
 
-    private final NetworkManager networkManager;
-
-    public TcpConnection(ClvcSocket socket, NetworkManager networkManager, NetworkListener listener)
+    public TcpConnection(ClvcSocket socket, NetworkListener listener)
     {
-        this.networkManager = networkManager;
         this.listener = listener;
         this.socket = socket;
     }

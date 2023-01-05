@@ -78,18 +78,12 @@ public class NetworkManager
 
         if (socket == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR socket is null ");
+            Log.Error(this.getClass().getName() + " ERROR socket is null");
             return null;
         }
 
         try
         {
-//            String srcIp = NetworkUtils.getSocketLocalIp(socket);
-//            String dstIp = NetworkUtils.getSocketDistantIp(socket);
-//
-//            int srcPort = NetworkUtils.getSocketLocalPort(socket);
-//            int dstPort = NetworkUtils.getSocketDistantPort(socket);
-
             InputStream in = socket.getInputStream();
             ObjectInputStream iin = new ObjectInputStream(in);
             data = (NetworkPaquet)iin.readObject();
