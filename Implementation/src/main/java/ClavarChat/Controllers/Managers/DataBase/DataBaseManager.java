@@ -104,4 +104,7 @@ public class DataBaseManager
     /* request select
     select id_conv FROM conversation
      */
+
+    //public static void main(String[] args)
+
 }
