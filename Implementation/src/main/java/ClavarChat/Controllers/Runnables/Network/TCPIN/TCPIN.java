@@ -18,11 +18,8 @@ public class TCPIN implements TMRunnable
 
     public void run()
     {
-        while (!this.socket.isClosed())
-        {
-            NetworkPaquet packet = this.socket.receive();
-            this.notify(packet);
-        }
+        while (!this.socket.isClosed()) this.notify(this.socket.receive());
+        this.listener.onConnectionFailed(this.socket.getSocketId(), this.socket.getDistantIp());
     }
 
     private void notify(NetworkPaquet packet)

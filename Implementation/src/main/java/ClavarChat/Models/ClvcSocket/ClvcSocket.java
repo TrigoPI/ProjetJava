@@ -49,6 +49,16 @@ public class ClvcSocket
         this.dstPort = dstPort;
     }
 
+    public int getLocalPort()
+    {
+        return this.networkManager.getLocalSocketPort(this.socketId);
+    }
+
+    public int getDistantPort()
+    {
+        return this.networkManager.getDistantSocketPort(this.socketId);
+    }
+
     public int getSocketId()
     {
         return socketId;
@@ -69,11 +79,6 @@ public class ClvcSocket
         return this.state.get() == SOCKET_STATE.CLOSED;
     }
 
-    public SOCKET_STATE getState()
-    {
-        return this.state.get();
-    }
-
     public String getSrcIp()
     {
         return srcIp;
@@ -82,6 +87,21 @@ public class ClvcSocket
     public String getDstIp()
     {
         return dstIp;
+    }
+
+    public String getLocalIp()
+    {
+        return this.networkManager.getLocalSocketIp(this.socketId);
+    }
+
+    public String getDistantIp()
+    {
+        return this.networkManager.getDistantSocketIp(this.socketId);
+    }
+
+    public SOCKET_STATE getState()
+    {
+        return this.state.get();
     }
 
     public int connect()
@@ -162,11 +182,20 @@ public class ClvcSocket
             return;
         }
 
-        if (this.buffer.isEmpty()) return;
+        if (this.buffer.isEmpty())
+        {
+            return;
+        }
 
-        if (this.state.get() == SOCKET_STATE.CONNECTING) this.state.set(SOCKET_STATE.SENDING);
+        if (this.state.get() == SOCKET_STATE.CONNECTED)
+        {
+            this.state.set(SOCKET_STATE.SENDING);
+        }
 
-        while (!this.buffer.isEmpty()) this.networkManager.tcpSend(this.socketId, this.buffer.poll());
+        while (!this.buffer.isEmpty())
+        {
+            this.networkManager.tcpSend(this.socketId, this.buffer.poll());
+        }
 
         if (this.state.get() == SOCKET_STATE.CLOSE_WAIT)
         {

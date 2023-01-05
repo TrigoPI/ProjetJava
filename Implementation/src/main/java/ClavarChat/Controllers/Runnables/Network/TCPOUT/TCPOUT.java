@@ -4,27 +4,20 @@ import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
 
-import java.io.Serializable;
-
 public class TCPOUT implements TMRunnable
 {
     private final ClvcSocket socket;
-    public TCPOUT(ClvcSocket socket)
+    private final NetworkListener listener;
+    public TCPOUT(ClvcSocket socket, NetworkListener listener)
     {
         this.socket = socket;
-    }
-
-    public void put(Serializable data)
-    {
-        this.socket.put(data);
+        this.listener = listener;
     }
 
     @Override
     public void run()
     {
-        while (!this.socket.isClosed())
-        {
-            this.socket.send();
-        }
+        while (!this.socket.isClosed()) this.socket.send();
+        this.listener.onConnectionFailed(this.socket.getSocketId(), this.socket.getDistantIp());
     }
 }

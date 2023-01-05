@@ -40,7 +40,7 @@ public class ClavarChatAPI
         this.dataBaseAPI = new DataBaseAPI(this.userManager);
         this.eventAPI = new EventAPI();
 
-        this.sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.userManager);
+        this.sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
         this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.userManager, this.pseudoHandler);
 

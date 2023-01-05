@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Handlers;
 
+import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
 import ClavarChat.Controllers.API.EventAPI.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
@@ -11,12 +12,14 @@ public class SessionHandler implements MessageListener
 {
     private final NetworkAPI networkAPI;
     private final EventAPI eventAPI;
+    private final DataBaseAPI dataBaseAPI;
     private final UserManager userManager;
 
-    public SessionHandler(NetworkAPI networkAPI, EventAPI eventAPI, UserManager userManager)
+    public SessionHandler(NetworkAPI networkAPI, EventAPI eventAPI, DataBaseAPI dataBaseAPI, UserManager userManager)
     {
         this.networkAPI = networkAPI;
         this.eventAPI = eventAPI;
+        this.dataBaseAPI = dataBaseAPI;
         this.userManager = userManager;
     }
 
@@ -32,14 +35,20 @@ public class SessionHandler implements MessageListener
 
     private void onLogin(LoginMessage data, String dstIp)
     {
+        this.createConversation(data.id, data.pseudo, data.img);
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
-//        this.createConversation(data.id, data.pseudo, data.img);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
     private void onLogout(LoginMessage data)
     {
         this.userManager.removeUser(data.id);
+    }
+
+    private void createConversation(int userId, String pseudo, byte[] avatar)
+    {
+        this.dataBaseAPI.addUser(userId, pseudo, avatar);
+        if (!this.dataBaseAPI.userExist(userId)) this.dataBaseAPI.createConversation(pseudo, this.userManager.getId(), userId);
     }
 }

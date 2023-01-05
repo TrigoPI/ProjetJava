@@ -149,8 +149,6 @@ public class NetworkAPI implements NetworkListener
             Messenger messenger = this.messengers.get(key);
             messenger.socket.close();
         }
-
-        this.messengers.clear();
     }
 
     public void addListener(MessageListener listener)
@@ -171,7 +169,7 @@ public class NetworkAPI implements NetworkListener
 
         ClvcSocket socket = new ClvcSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
         TCPIN in  = new TCPIN(socket, this);
-        TCPOUT out = new TCPOUT(socket);
+        TCPOUT out = new TCPOUT(socket, this);
         Messenger messenger = new Messenger(socket, in, out);
 
         int threadInId  = this.threadManager.createThread();
@@ -257,7 +255,7 @@ public class NetworkAPI implements NetworkListener
 
             ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
             TCPIN  in  = new TCPIN(socket, this);
-            TCPOUT out = new TCPOUT(socket);
+            TCPOUT out = new TCPOUT(socket, this);
             Messenger messenger = new Messenger(socket, in, out);
 
             this.messengers.put(ip, messenger);
