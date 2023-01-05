@@ -152,12 +152,25 @@ public class ClvcSocket
         }
 
         NetworkPaquet data = this.networkManager.tcpReceive(this.socketId);
-        if (data != null) Log.Info(this.getClass().getName() + " Receiving data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
+
+        if (data == null)
+        {
+            Log.Error(this.getClass().getName() + " Error in socket " + this.socketId);
+            this.state.set(SOCKET_STATE.CLOSED);
+            return null;
+        }
+
+        Log.Info(this.getClass().getName() + " Receiving data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
         return data;
     }
 
     public void send()
     {
+        if (this.buffer.isEmpty())
+        {
+            return;
+        }
+
         if (this.state.get() == SOCKET_STATE.IDLE)
         {
             Log.Warning(this.getClass().getName() + " Cannot send data, socket is IDLE");
@@ -182,10 +195,6 @@ public class ClvcSocket
             return;
         }
 
-        if (this.buffer.isEmpty())
-        {
-            return;
-        }
 
         if (this.state.get() == SOCKET_STATE.CONNECTED)
         {
@@ -199,13 +208,13 @@ public class ClvcSocket
 
         if (this.state.get() == SOCKET_STATE.CLOSE_WAIT)
         {
-            this.close();
+            this.state.set(SOCKET_STATE.CLOSED);
+            this.networkManager.closeTcpSocket(this.socketId);
         }
         else
         {
             this.state.set(SOCKET_STATE.CONNECTED);
         }
-
     }
 
     public void put(Serializable data)
@@ -230,6 +239,12 @@ public class ClvcSocket
         if (this.state.get() == SOCKET_STATE.IDLE)
         {
             Log.Warning(this.getClass().getName() + " Cannot close socket IDLE");
+            return;
+        }
+
+        if (this.state.get() == SOCKET_STATE.CLOSE_WAIT)
+        {
+            Log.Warning(this.getClass().getName() + " Cannot close socket CLOSE_WAIT");
             return;
         }
 

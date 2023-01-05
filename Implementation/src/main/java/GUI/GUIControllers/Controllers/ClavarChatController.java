@@ -105,6 +105,8 @@ public class ClavarChatController implements Initializable
     {
         for (int conversationId : this.api.getConversationsIdInDataBase())
         {
+            System.out.println(conversationId);
+
             ArrayList<Integer> usersId = this.api.getUserIdInConversation(conversationId);
             this.messagesBoxGui.put(conversationId, new MessageBox());
             this.createUserDiscussion(usersId.get(0), conversationId);

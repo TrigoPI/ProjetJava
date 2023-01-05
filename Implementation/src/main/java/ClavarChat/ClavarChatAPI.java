@@ -65,16 +65,16 @@ public class ClavarChatAPI
 //        this.userManager.addIpToUser(2222, "192.168.1.22");
 //        this.userManager.addIpToUser(3333, "192.168.1.33");
 //        this.userManager.addIpToUser(4444, "192.168.1.44");
-
+//
 //        this.dataBaseAPI.addUser(1111, "user1", this.userManager.getAvatar(1111));
 //        this.dataBaseAPI.addUser(2222, "user2", this.userManager.getAvatar(2222));
 //        this.dataBaseAPI.addUser(3333, "user3", this.userManager.getAvatar(3333));
 //        this.dataBaseAPI.addUser(4444, "user4", this.userManager.getAvatar(4444));
 //
-//        this.dataBaseAPI.createConversation("user1", 6969, 1111);
-//        this.dataBaseAPI.createConversation("user2", 6969, 2222);
-//        this.dataBaseAPI.createConversation("user3", 6969, 3333);
-//        this.dataBaseAPI.createConversation("user4", 6969, 4444);
+//        this.dataBaseAPI.createConversation("user1", 7070, 1111);
+//        this.dataBaseAPI.createConversation("user2", 7070, 2222);
+//        this.dataBaseAPI.createConversation("user3", 7070, 3333);
+//        this.dataBaseAPI.createConversation("user4", 7070, 4444);
     }
 
     public boolean isConnected(int userId)
@@ -220,11 +220,5 @@ public class ClavarChatAPI
     public void addListener(ClvcListener listener, String eventName)
     {
         this.eventAPI.addListener(listener, eventName);
-    }
-
-    private void createConversation(int userId, String pseudo, byte[] avatar)
-    {
-        this.dataBaseAPI.addUser(userId, pseudo, avatar);
-        if (!this.dataBaseAPI.userExist(userId)) this.dataBaseAPI.createConversation(pseudo, this.getId(), userId);
     }
 }

@@ -6,6 +6,7 @@ import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class DataBaseAPI
 {
@@ -167,17 +168,19 @@ public class DataBaseAPI
         this.dataBaseManager.execute("INSERT INTO Message(date, text, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d')", message, conversationId, userId);
     }
 
-    public void createConversation(String conversationName, int userId1, int userId2)
+    public void createConversation(String conversationName, int userId)
     {
-        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT INTO Conversation(conversation_name) VALUES(?)");
+        String sharedId = UUID.randomUUID().toString();
+        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT INTO Conversation(conversation_name, shared_id) VALUES(?, ?)");
         this.dataBaseManager.setString(preparedStatementId, 1, conversationName);
+        this.dataBaseManager.setString(preparedStatementId, 2, sharedId);
         this.dataBaseManager.executePreparedStatement(preparedStatementId);
 
         int conversationId = this.dataBaseManager.getIdGenerated(preparedStatementId);
         if (conversationId == -1) return;
 
-        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId1, conversationId);
-        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId2, conversationId);
+        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", this.userManager.getId(), conversationId);
+        this.dataBaseManager.execute("INSERT INTO Read(user_id, conversation_id) VALUES(%d, %d)", userId, conversationId);
 
         this.dataBaseManager.removePreparedStatement(preparedStatementId);
     }

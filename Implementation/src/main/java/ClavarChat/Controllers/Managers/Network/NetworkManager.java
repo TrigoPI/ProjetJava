@@ -78,7 +78,7 @@ public class NetworkManager
 
         if (socket == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR socket is null");
+            Log.Error(this.getClass().getName() + " ERROR in TCP receive socket : " + socketId + " is null");
             return null;
         }
 
@@ -92,7 +92,7 @@ public class NetworkManager
         }
         catch (IOException | ClassNotFoundException e)
         {
-            Log.Error(this.getClass().getName() + " ERROR in TCP receive");
+            Log.Error(this.getClass().getName() + " ERROR in TCP receive ");
             Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
             this.sockets.remove(socketId);
         }
@@ -235,7 +235,7 @@ public class NetworkManager
 
         if (socket == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR socket is null ");
+            Log.Error(this.getClass().getName() + " ERROR in TCP Send socket : " + socketId + " is null");
             return -1;
         }
 
@@ -277,7 +277,7 @@ public class NetworkManager
 
         if (socket == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR socket is null");
+            Log.Error(this.getClass().getName() + " ERROR in TCP Connect socket : " + socketId + " is null");
             return -1;
         }
 
@@ -311,7 +311,7 @@ public class NetworkManager
 
         if (server == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR TCP server is null ");
+            Log.Error(this.getClass().getName() + " ERROR TCP server : " + serverId + " is null");
             return -1;
         }
 
@@ -385,7 +385,7 @@ public class NetworkManager
 
         if (server == null)
         {
-            Log.Error(this.getClass().getName() + " ERROR TCP server is null ");
+            Log.Error(this.getClass().getName() + " ERROR UDP server is null ");
             return -1;
         }
 

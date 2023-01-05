@@ -35,20 +35,15 @@ public class SessionHandler implements MessageListener
 
     private void onLogin(LoginMessage data, String dstIp)
     {
-        this.createConversation(data.id, data.pseudo, data.img);
         this.userManager.addUser(data.pseudo, data.id, data.img);
+        this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
+//        this.dataBaseAPI.createConversation(data.pseudo, data.id);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
     private void onLogout(LoginMessage data)
     {
         this.userManager.removeUser(data.id);
-    }
-
-    private void createConversation(int userId, String pseudo, byte[] avatar)
-    {
-        this.dataBaseAPI.addUser(userId, pseudo, avatar);
-        if (!this.dataBaseAPI.userExist(userId)) this.dataBaseAPI.createConversation(pseudo, this.userManager.getId(), userId);
     }
 }

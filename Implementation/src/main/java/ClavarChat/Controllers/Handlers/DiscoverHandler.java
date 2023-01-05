@@ -36,7 +36,7 @@ public class DiscoverHandler implements MessageListener
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
-        this.timeout = 10;
+        this.timeout = 2;
     }
 
     public boolean discover()
