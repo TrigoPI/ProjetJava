@@ -167,6 +167,8 @@ public class NetworkAPI implements NetworkListener
     @Override
     public void onNewConnection(int socketId, String srcIp, int srcPort, String dstIp, int dstPort)
     {
+        Log.Print(this.getClass().getName() + " Creating client " + srcIp);
+
         ClvcSocket socket = new ClvcSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
         TCPIN in  = new TCPIN(socket, this);
         TCPOUT out = new TCPOUT(socket);
@@ -181,7 +183,7 @@ public class NetworkAPI implements NetworkListener
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
 
-        this.messengers.put(dstIp, messenger);
+        this.messengers.put(srcIp, messenger);
 
         Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
         Log.Print(this.getClass().getName() + " TCPOUT : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
@@ -222,8 +224,6 @@ public class NetworkAPI implements NetworkListener
     public void onPacket(String srcIp, int srcPort, String dstIp, int dstPort, ClvcMessage data)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
-
-        Log.Warning(this.getClass().getName() + " Packet from : " + srcIp + ":" + srcPort);
 
         if (ips.contains(srcIp))
         {

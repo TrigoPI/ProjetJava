@@ -4,6 +4,7 @@ import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
 import GUI.GUIControllers.Controllers.ClavarChatController;
 import GUI.GUIControllers.Controllers.LoginController;
+import GUI.GUIControllers.Controllers.SettingsController;
 import GUI.GUIControllers.GUIControllers;
 import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
@@ -36,6 +37,8 @@ public class ClavarChatGUI extends Application
         LoginController loginController = new LoginController(this.clavarChatAPI, fxmlLoaderClavarChat);
         FXMLLoader fxmlLoaderLogin = new FXMLLoader(loginFXML);
         fxmlLoaderLogin.setController(loginController);
+
+        SettingsController settingsController = new SettingsController(clavarChatAPI);
 
         Scene scene = new Scene(fxmlLoaderLogin.load(), 1080, 720);
 //        Scene scene = new Scene(fxmlLoaderClavarChat.load(), 1080, 720);

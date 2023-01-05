@@ -132,7 +132,7 @@ public class ClvcSocket
         }
 
         NetworkPaquet data = this.networkManager.tcpReceive(this.socketId);
-        Log.Info(this.getClass().getName() + " Receiving data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
+        if (data != null) Log.Info(this.getClass().getName() + " Receiving data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
         return data;
     }
 
@@ -163,7 +163,9 @@ public class ClvcSocket
         }
 
         if (this.buffer.isEmpty()) return;
-        this.state.set(SOCKET_STATE.SENDING);
+
+        if (this.state.get() == SOCKET_STATE.CONNECTING) this.state.set(SOCKET_STATE.SENDING);
+
         while (!this.buffer.isEmpty()) this.networkManager.tcpSend(this.socketId, this.buffer.poll());
 
         if (this.state.get() == SOCKET_STATE.CLOSE_WAIT)
