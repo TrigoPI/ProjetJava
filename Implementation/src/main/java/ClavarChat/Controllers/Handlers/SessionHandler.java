@@ -1,8 +1,8 @@
 package ClavarChat.Controllers.Handlers;
 
-import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
-import ClavarChat.Controllers.API.EventAPI.EventAPI;
-import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.DataBaseAPI;
+import ClavarChat.Controllers.API.EventAPI;
+import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
@@ -28,9 +28,15 @@ public class SessionHandler implements MessageListener
     {
         switch (message.type)
         {
+            case SharedIdMessage.SHARED_ID -> this.onSharedId((SharedIdMessage)message);
             case LoginMessage.LOGIN -> this.onLogin((LoginMessage)message, srcIp);
             case LoginMessage.LOGOUT -> this.onLogout((LoginMessage)message);
         }
+    }
+
+    private void onSharedId(SharedIdMessage data)
+    {
+        this.dataBaseAPI.createConversation(data.pseudo, data.sharedId, data.id);
     }
 
     private void onLogin(LoginMessage data, String dstIp)
@@ -38,11 +44,14 @@ public class SessionHandler implements MessageListener
         if (!this.dataBaseAPI.userExist(data.id))
         {
             this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
-            this.dataBaseAPI.createConversation(data.pseudo, data.id);
+            int id = this.dataBaseAPI.createConversation(data.pseudo, data.id);
+            String sharedId = this.dataBaseAPI.getConversationSharedId(id);
+            this.networkAPI.sendSharedConversationId(data.id, sharedId);
         }
 
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
+        this.networkAPI.closeClient(data.id);
 
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }

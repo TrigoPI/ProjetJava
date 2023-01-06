@@ -207,7 +207,15 @@
                   </VBox>
                </content>
             </MFXScrollPane>
-            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0" styleClass="clvc-gear-container">
+               <children>
+                  <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                     <styleClass>
+                        <String fx:value="clvc-gear-icon" />
+                        <String fx:value="clvc-american-river" />
+                     </styleClass>
+                  </Button>
+               </children></HBox>
          </children>
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">

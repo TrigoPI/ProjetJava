@@ -18,16 +18,18 @@ public class Discussion extends HBox
     private final int userId;
     private final int conversationId;
     private final Label pseudoLabel;
+    private final Avatar avatar;
+    private final String sharedId;
     private String pseudo;
-    private Avatar avatar;
 
-    public Discussion(int conversationId, int userId, Image img, String pseudo, String text)
+    public Discussion(int conversationId, String sharedId, int userId, Image img, String pseudo, String text)
     {
         super();
 
         this.pseudo = pseudo;
         this.userId = userId;
         this.conversationId = conversationId;
+        this.sharedId = sharedId;
         this.selected = false;
         this.avatar = new Avatar(img, 35, false);
         this.pseudoLabel = new Label(pseudo);
@@ -73,6 +75,11 @@ public class Discussion extends HBox
     public int getConversationId()
     {
         return this.conversationId;
+    }
+
+    public String getSharedId()
+    {
+        return this.sharedId;
     }
 
     public String getPseudo()

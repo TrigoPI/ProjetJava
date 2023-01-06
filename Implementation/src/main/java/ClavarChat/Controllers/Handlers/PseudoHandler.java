@@ -1,7 +1,6 @@
 package ClavarChat.Controllers.Handlers;
 
-import ClavarChat.Controllers.API.EventAPI.EventAPI;
-import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Utils.Log.Log;
 

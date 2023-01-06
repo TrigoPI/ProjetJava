@@ -1,4 +1,4 @@
-@import "color.css"
+@import "color.css";
 
 .clvc-control-container {
     -fx-padding: 0px 20px;
@@ -30,4 +30,8 @@
 
 .clvc-message-input {
     -fx-padding: 10px 0px
+}
+
+.clvc-gear-container {
+    -fx-padding: 10px;
 }

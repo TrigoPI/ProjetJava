@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Managers.DataBase;
 
-import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
+import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
 

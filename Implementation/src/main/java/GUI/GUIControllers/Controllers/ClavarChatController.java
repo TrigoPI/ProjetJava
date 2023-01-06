@@ -13,6 +13,7 @@ import ClavarChat.Utils.Log.Log;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -29,7 +30,7 @@ public class ClavarChatController implements Initializable
 {
     private final ClavarChatAPI api;
     private final HashMap<Integer, Discussion> usersGUI;
-    private final HashMap<Integer, MessageBox> messagesBoxGui;
+    private final HashMap<String, MessageBox> messagesBoxGui;
     private Discussion selectedUser;
 
     @FXML
@@ -55,6 +56,9 @@ public class ClavarChatController implements Initializable
 
     @FXML
     private MFXTextField messageInput;
+
+    @FXML
+    private Button settingButton;
 
     public ClavarChatController(ClavarChatAPI api)
     {
@@ -96,8 +100,8 @@ public class ClavarChatController implements Initializable
     public void onNewUser(int userId)
     {
         Platform.runLater(() -> {
-            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
-            this.createUserDiscussion(userId, conversationsId.get(0));
+//            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
+//            this.createUserDiscussion(userId, conversationsId.get(0));
         });
     }
 
@@ -106,15 +110,16 @@ public class ClavarChatController implements Initializable
         for (int conversationId : this.api.getConversationsIdInDataBase())
         {
             ArrayList<Integer> usersId = this.api.getUserIdInConversation(conversationId);
-            this.messagesBoxGui.put(conversationId, new MessageBox());
-            this.createUserDiscussion(usersId.get(0), conversationId);
-            this.initMessageBox(conversationId);
+            String sharedId = this.api.getConversationSharedId(conversationId);
+            this.messagesBoxGui.put(sharedId, new MessageBox());
+            this.createUserDiscussion(usersId.get(0), conversationId, sharedId);
+            this.initMessageBox(sharedId, conversationId);
         }
     }
 
-    private void initMessageBox(int conversationId)
+    private void initMessageBox(String sharedId, int conversationId)
     {
-        MessageBox messageBox = this.messagesBoxGui.get(conversationId);
+        MessageBox messageBox = this.messagesBoxGui.get(sharedId);
 
         for (int id : this.api.getMessagesIdInDataBase(conversationId))
         {
@@ -127,7 +132,7 @@ public class ClavarChatController implements Initializable
         }
     }
 
-    private void createUserDiscussion(int userId, int conversationId)
+    private void createUserDiscussion(int userId, int conversationId, String sharedId)
     {
         String pseudo = this.api.getPseudoFromDataBase(userId);
         BytesImage buffer = this.api.getAvatarFromDataBase(userId);
@@ -143,7 +148,7 @@ public class ClavarChatController implements Initializable
         }
         else
         {
-            Discussion discussion = new Discussion(conversationId, userId, avatar, pseudo, pseudo + " : blablabla");
+            Discussion discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, pseudo + " : blablabla");
             discussion.setStatus(this.api.isConnected(userId));
             discussion.setOnMouseClicked(this::onMouseClick);
 
@@ -152,9 +157,9 @@ public class ClavarChatController implements Initializable
         }
     }
 
-    private void addMessage(int conversationId, int userId, String message)
+    private void addMessage(String sharedId, int userId, String message)
     {
-        MessageBox messageBox =  this.messagesBoxGui.get(conversationId);
+        MessageBox messageBox =  this.messagesBoxGui.get(sharedId);
         String pseudo = this.api.getPseudoFromDataBase(userId);
         BytesImage buffer = this.api.getAvatarFromDataBase(userId);
         InputStream in = buffer.toInputStream();
@@ -188,7 +193,7 @@ public class ClavarChatController implements Initializable
         if (this.selectedUser != null) this.selectedUser.deselect();
 
         this.selectedUser = discussion;
-        this.messagesContainer.setContent(this.messagesBoxGui.get(discussion.getConversationId()));
+        this.messagesContainer.setContent(this.messagesBoxGui.get(discussion.getSharedId()));
         this.selectedUser.select();
 
         this.updateChatContainer(discussion.getUserId());
@@ -232,16 +237,23 @@ public class ClavarChatController implements Initializable
     @FXML
     private void onSendMessage()
     {
-        int userId = this.api.getId();
-        int otherUserId = this.selectedUser.getUserId();
+        int userId  = this.api.getId();
+        int otherId = this.selectedUser.getUserId();
         int conversationId = this.selectedUser.getConversationId();
+        String sharedId = this.selectedUser.getSharedId();
         String message = this.messageInput.getText().trim();
 
         if (!message.isEmpty())
         {
-            this.addMessage(conversationId, userId, message);
-            this.api.sendMessage(userId, otherUserId, conversationId, message);
+            this.addMessage(sharedId, userId, message);
+            this.api.sendMessage(userId, otherId, conversationId, message);
             this.messageInput.clear();
         }
+    }
+
+    @FXML
+    private void onSettings()
+    {
+        System.out.println("OOOOOOOOOOOOOOOOK");
     }
 }

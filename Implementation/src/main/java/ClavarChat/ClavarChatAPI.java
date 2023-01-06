@@ -1,11 +1,11 @@
 package ClavarChat;
 
-import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
-import ClavarChat.Controllers.API.EventAPI.EventAPI;
+import ClavarChat.Controllers.API.DataBaseAPI;
+import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.Handlers.DiscoverHandler;
 import ClavarChat.Controllers.Handlers.PseudoHandler;
 import ClavarChat.Controllers.Handlers.SessionHandler;
-import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Runnables.Discover.Discover;
@@ -50,13 +50,13 @@ public class ClavarChatAPI
 
         this.networkAPI.startServer();
 
-        this.dataBaseAPI.clear();
+//        this.dataBaseAPI.clear();
 
 //        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
 //        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
 //        BytesImage img3 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
 //        BytesImage img4 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user2.jpg");
-//
+
 //        this.userManager.addUser("user1", 1111, img1.getBytes());
 //        this.userManager.addUser("user2", 2222, img2.getBytes());
 //        this.userManager.addUser("user3", 3333, img3.getBytes());
@@ -72,10 +72,10 @@ public class ClavarChatAPI
 //        this.dataBaseAPI.addUser(3333, "user3", this.userManager.getAvatar(3333));
 //        this.dataBaseAPI.addUser(4444, "user4", this.userManager.getAvatar(4444));
 //
-//        this.dataBaseAPI.createConversation("user1", 7070, 1111);
-//        this.dataBaseAPI.createConversation("user2", 7070, 2222);
-//        this.dataBaseAPI.createConversation("user3", 7070, 3333);
-//        this.dataBaseAPI.createConversation("user4", 7070, 4444);
+//        this.dataBaseAPI.createConversation("user1", 1111);
+//        this.dataBaseAPI.createConversation("user2", 2222);
+//        this.dataBaseAPI.createConversation("user3", 3333);
+//        this.dataBaseAPI.createConversation("user4", 4444);
     }
 
     public boolean isConnected(int userId)
@@ -136,6 +136,11 @@ public class ClavarChatAPI
     public String getPseudo(int id)
     {
         return this.userManager.getPseudo(id);
+    }
+
+    public String getConversationSharedId(int conversationId)
+    {
+        return this.dataBaseAPI.getConversationSharedId(conversationId);
     }
 
     public User getUserInDataBase(int userId)

@@ -11,7 +11,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="clvc-dracula-orchid" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" spacing="20.0" styleClass="clvc-control-container">
+      <VBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" spacing="10.0" styleClass="clvc-control-container">
          <children>
             <HBox fx:id="userAvatarContainer" alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="175.0" spacing="10.0" styleClass="clvc-user-avatar-container">
                <children>
@@ -48,11 +48,26 @@
                   </HBox>
                </children>
             </VBox>
-            <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid">
-               <content>
-                  <VBox fx:id="userPreviewContainer" spacing="10.0" />
-               </content>
-            </MFXScrollPane>
+            <VBox VBox.vgrow="ALWAYS">
+               <children>
+                  <MFXScrollPane fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="userPreviewContainer" spacing="10.0" />
+                     </content>
+                  </MFXScrollPane>
+                  <HBox styleClass="clvc-gear-container">
+                     <children>
+                        <Button fx:id="settingButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSettings" prefHeight="30.0" prefWidth="30.0">
+                           <styleClass>
+                              <String fx:value="clvc-gear-icon" />
+                              <String fx:value="clvc-american-river" />
+                              <String fx:value="clvc-cursor-hand" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </VBox>
       <VBox fx:id="chatContainer" styleClass="clvc-chat-container" HBox.hgrow="ALWAYS">

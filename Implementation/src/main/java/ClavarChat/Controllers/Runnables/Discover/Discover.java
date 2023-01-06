@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.Runnables.Discover;
 
-import ClavarChat.Controllers.API.EventAPI.EventAPI;
+import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.Handlers.DiscoverHandler;
 import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcEvent.Login.LoginEvent;

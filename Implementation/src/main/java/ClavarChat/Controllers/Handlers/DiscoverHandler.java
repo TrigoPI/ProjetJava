@@ -1,7 +1,7 @@
 package ClavarChat.Controllers.Handlers;
 
-import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
-import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
+import ClavarChat.Controllers.API.DataBaseAPI;
+import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcMessage.ClvcMessage;
@@ -93,12 +93,7 @@ public class DiscoverHandler implements MessageListener
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
 
-        if (!this.dataBaseAPI.userExist(data.id))
-        {
-            this.dataBaseAPI.addUser(data.id, data.pseudo, data.avatar);
-            this.dataBaseAPI.createConversation(data.pseudo, data.id);
-        }
-
+        if (!this.dataBaseAPI.userExist(data.id)) this.dataBaseAPI.addUser(data.id, data.pseudo, data.avatar);
         this.userManager.addUser(data.pseudo, data.id, data.avatar);
         this.userManager.addIpToUser(data.id, dstIp);
         this.updateUserCount(data);
