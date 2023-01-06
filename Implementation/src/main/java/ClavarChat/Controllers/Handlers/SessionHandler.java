@@ -41,16 +41,12 @@ public class SessionHandler implements MessageListener
 
     private void onLogin(LoginMessage data, String dstIp)
     {
-        if (!this.dataBaseAPI.userExist(data.id))
-        {
-            this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
-            int id = this.dataBaseAPI.createConversation(data.pseudo, data.id);
-            String sharedId = this.dataBaseAPI.getConversationSharedId(id);
-            this.networkAPI.sendSharedConversationId(data.id, sharedId);
-        }
 
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
+
+        this.createSharedConversation(data.id, data.pseudo, data.img);
+
         this.networkAPI.closeClient(data.id);
 
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
@@ -59,5 +55,16 @@ public class SessionHandler implements MessageListener
     private void onLogout(LoginMessage data)
     {
         this.userManager.removeUser(data.id);
+    }
+
+    private void createSharedConversation(int userId, String pseudo, byte[] img)
+    {
+        if (this.dataBaseAPI.userExist(userId)) return;
+
+        this.dataBaseAPI.addUser(userId, pseudo, img);
+        int id = this.dataBaseAPI.createConversation(pseudo, userId);
+        String sharedId = this.dataBaseAPI.getConversationSharedId(id);
+        this.networkAPI.sendSharedConversationId(userId, sharedId);
+
     }
 }

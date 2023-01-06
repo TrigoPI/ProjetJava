@@ -87,7 +87,7 @@ public class NetworkAPI implements NetworkListener
         }
     }
 
-    public void sendMessage(int userId, String text)
+    public void sendMessage(int userId, String sharedId, String text)
     {
         if (this.userManager.isLogged())
         {
@@ -104,7 +104,7 @@ public class NetworkAPI implements NetworkListener
         User user = this.userManager.getUser();
         String ip = this.userManager.getUserIP(userId).get(0);
 
-        TextMessage mgs = new TextMessage(user.pseudo, user.id, text);
+        TextMessage mgs = new TextMessage(user.id, sharedId, user.pseudo, text);
         this.sendTCP(ip, this.tcpPort, mgs);
     }
 

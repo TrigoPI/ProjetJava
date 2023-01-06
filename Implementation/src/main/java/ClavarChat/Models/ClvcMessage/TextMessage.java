@@ -4,13 +4,15 @@ public class TextMessage extends ClvcMessage
 {
     public static final String TEXT_MESSAGE = "TEXT_MESSAGE";
 
-    public String pseudo;
-    public String message;
-    public int id;
+    public final String sharedId;
+    public final String pseudo;
+    public final String message;
+    public final int id;
 
-    public TextMessage(String pseudo, int id, String message)
+    public TextMessage(int id, String sharedId, String pseudo, String message)
     {
         super(TEXT_MESSAGE);
+        this.sharedId = sharedId;
         this.pseudo = pseudo;
         this.message = message;
         this.id = id;

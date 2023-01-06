@@ -3,6 +3,7 @@ package ClavarChat;
 import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.Handlers.DiscoverHandler;
+import ClavarChat.Controllers.Handlers.MessageHandler;
 import ClavarChat.Controllers.Handlers.PseudoHandler;
 import ClavarChat.Controllers.Handlers.SessionHandler;
 import ClavarChat.Controllers.API.NetworkAPI;
@@ -38,16 +39,18 @@ public class ClavarChatAPI
         this.dataBaseAPI = new DataBaseAPI(this.userManager);
         this.eventAPI = new EventAPI();
 
-        PseudoHandler pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI);
+        MessageHandler messageHandler = new MessageHandler();
+        PseudoHandler pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI);
         SessionHandler sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
         this.networkAPI.addListener(this.discoverHandler);
         this.networkAPI.addListener(sessionHandler);
+        this.networkAPI.addListener(messageHandler);
 
         this.networkAPI.startServer();
 
-//        this.dataBaseAPI.clear();
+        this.dataBaseAPI.clear();
 
 //        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
 //        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
@@ -187,7 +190,6 @@ public class ClavarChatAPI
         BytesImage avatar = new BytesImage(path);
 
         this.userManager.setUser(id, pseudo, avatar.getBytes());
-        this.dataBaseAPI.addUser(id, pseudo, avatar.getBytes());
         this.threadManager.startThread(threadId);
     }
 
@@ -199,8 +201,9 @@ public class ClavarChatAPI
     public void sendMessage(int srcId, int dstId, int conversationId, String message)
     {
         Log.Print(this.getClass().getName() + " Saving message : [" + srcId + "] " + srcId + " --> " + dstId + " : " + message);
+        String sharedId = this.getConversationSharedId(conversationId);
         this.dataBaseAPI.addMessage(conversationId, srcId, message);
-        this.networkAPI.sendMessage(dstId, message);
+        this.networkAPI.sendMessage(dstId, sharedId, message);
     }
 
     public void closeServers()
