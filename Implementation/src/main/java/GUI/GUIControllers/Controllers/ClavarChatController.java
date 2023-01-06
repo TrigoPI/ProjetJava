@@ -92,10 +92,13 @@ public class ClavarChatController implements Initializable
     public void onRemoveUser(int userId)
     {
         Platform.runLater(() -> {
-//            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
-//            int conversationId = conversationsId.get(0);
-//            Discussion discussion = this.usersGUI.get(conversationId);
-//            discussion.setStatus(false);
+            ArrayList<Integer> conversationsId = this.api.getConversationIdWith(userId);
+            for (int conversationId : conversationsId)
+            {
+                String sharedId = this.api.getConversationSharedId(conversationId);
+                Discussion discussion = this.usersGUI.get(sharedId);
+                discussion.setStatus(false);
+            }
         });
     }
 
@@ -112,6 +115,11 @@ public class ClavarChatController implements Initializable
                 {
                     this.createUserDiscussion(userId, conversationId, sharedId);
                     this.messagesBoxGui.put(sharedId, new MessageBox());
+                }
+                else
+                {
+                    Discussion discussion = this.usersGUI.get(sharedId);
+                    discussion.setStatus(true);
                 }
             }
         });
@@ -183,10 +191,9 @@ public class ClavarChatController implements Initializable
         messageBox.addMessage(userId, pseudo, avatar, message, this.api.getId() != userId);
     }
 
-    public void onTextMessage(int userId, String message)
+    public void onTextMessage(String sharedId, int userId, String message)
     {
-//        String dst = this.api.getUser().pseudo;
-//        Platform.runLater(() -> this.updateChatBox(src, src, message));
+        Platform.runLater(() -> this.updateChatBox(sharedId, userId, message));
     }
 
     private void addAvatar(Pane container, Image img, boolean connected, double radius, int index)
@@ -197,9 +204,13 @@ public class ClavarChatController implements Initializable
         });
     }
 
-    private void updateChatBox(int conversationId, String src, String text)
+    private void updateChatBox(String sharedId, int userId, String text)
     {
-//        messageBox.addMessage(src, this.api.getAvatar(src), text, !this.api.getPseudo().equals(src));
+        String pseudo = this.api.getPseudo(userId);
+        BytesImage avatar = this.api.getAvatar(userId);
+        Image image = new Image(avatar.toInputStream());
+        MessageBox messageBox = this.messagesBoxGui.get(sharedId);
+        messageBox.addMessage(userId, pseudo, image, text, !(this.api.getId() == userId));
         this.messagesContainer.setVvalue(1.0);
     }
 

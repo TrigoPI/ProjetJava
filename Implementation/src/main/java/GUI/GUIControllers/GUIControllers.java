@@ -4,6 +4,8 @@ import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.ClvcEvent.ClvcEvent;
 import ClavarChat.Models.ClvcEvent.Login.LoginEvent;
 import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
+import ClavarChat.Models.ClvcEvent.Login.RemoveUserEvent;
+import ClavarChat.Models.ClvcEvent.Message.MessageEvent;
 import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
@@ -23,9 +25,10 @@ public class GUIControllers implements ClvcListener
         this.loginController = loginController;
         this.clavarChatController = clavarChatController;
 
-        api.addListener(this, LoginEvent.LOGIN_SUCCESS);
-        api.addListener(this, LoginEvent.LOGIN_FAILED);
-        api.addListener(this, NewUserEvent.NEW_USER);
+        this.api.addListener(this, MessageEvent.TEXT_MESSAGE);
+        this.api.addListener(this, LoginEvent.LOGIN_SUCCESS);
+        this.api.addListener(this, LoginEvent.LOGIN_FAILED);
+        this.api.addListener(this, NewUserEvent.NEW_USER);
     }
 
     @Override
@@ -45,14 +48,14 @@ public class GUIControllers implements ClvcListener
                 NewUserEvent newUserEvent = (NewUserEvent)event;
                 this.onNewUser(newUserEvent.userId);
                 break;
-//            case RemoveUserEvent.REMOVE_USER:
-//                RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
-//                this.onRemoveUser(removeUserEvent.id);
-//                break;
-//            case MessageEvent.TEXT_MESSAGE:
-//                MessageEvent messageEvent = (MessageEvent)event;
-//                this.onTextMessage(messageEvent.pseudo, messageEvent.message);
-//                break;
+            case RemoveUserEvent.REMOVE_USER:
+                RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
+                this.onRemoveUser(removeUserEvent.id);
+                break;
+            case MessageEvent.TEXT_MESSAGE:
+                MessageEvent messageEvent = (MessageEvent)event;
+                this.onTextMessage(messageEvent.sharedId, messageEvent.id, messageEvent.message);
+                break;
         }
     }
 
@@ -66,9 +69,9 @@ public class GUIControllers implements ClvcListener
         this.loginController.onLoginSuccess();
     }
 
-    private void onTextMessage(String pseudo, String message)
+    private void onTextMessage(String sharedId, int userId, String message)
     {
-//        this.clavarChatController.onTextMessage(pseudo, message);
+        this.clavarChatController.onTextMessage(sharedId, userId, message);
     }
 
     private void onRemoveUser(int userId)

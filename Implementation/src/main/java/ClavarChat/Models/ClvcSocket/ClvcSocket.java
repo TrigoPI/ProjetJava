@@ -216,6 +216,12 @@ public class ClvcSocket
 
     public void forceClose()
     {
+        if (this.state.get() == SOCKET_STATE.CLOSED)
+        {
+            Log.Warning(this.getClass().getName() + " [ socket : " + this.socketId + " ] " + " socket already CLOSED");
+            return;
+        }
+
         this.state.set(SOCKET_STATE.CLOSED);
         this.networkManager.closeTcpSocket(this.socketId);
     }
