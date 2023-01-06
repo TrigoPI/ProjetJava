@@ -198,6 +198,7 @@ public class NetworkAPI implements NetworkListener
         if (!messenger.out.isFinished()) return;
         if (!messenger.in.isFinished()) return;
         Log.Print(this.getClass().getName() + " Removing client : " + dstIp + " connection ended");
+        messenger.socket.close();
         this.messengers.remove(dstIp);
     }
 

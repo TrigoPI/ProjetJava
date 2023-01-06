@@ -37,6 +37,7 @@ public class SessionHandler implements MessageListener
     private void onSharedId(SharedIdMessage data)
     {
         this.dataBaseAPI.createConversation(data.pseudo, data.sharedId, data.id);
+        this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
     private void onLogin(LoginMessage data, String dstIp)
