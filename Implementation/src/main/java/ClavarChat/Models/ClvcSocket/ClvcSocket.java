@@ -214,6 +214,12 @@ public class ClvcSocket
         this.buffer.add(data);
     }
 
+    public void forceClose()
+    {
+        this.state.set(SOCKET_STATE.CLOSED);
+        this.networkManager.closeTcpSocket(this.socketId);
+    }
+
     public void close()
     {
         if (this.state.get() == SOCKET_STATE.CLOSED)
