@@ -151,6 +151,7 @@ public class ClvcSocket
             return null;
         }
 
+        Log.Info(this.getClass().getName() + "[ socket : " + this.socketId + " ] " + " Waiting for data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
         NetworkPaquet data = this.networkManager.tcpReceive(this.socketId);
 
         if (data == null)
