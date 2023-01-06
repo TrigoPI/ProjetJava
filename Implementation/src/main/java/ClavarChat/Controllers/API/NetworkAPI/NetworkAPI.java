@@ -155,11 +155,17 @@ public class NetworkAPI implements NetworkListener
     {
         if (this.listeners.contains(listener))
         {
-            Log.Warning(this.getClass().getName() + " Listener already registered");
+            Log.Warning(this.getClass().getName() + " Listener " + listener.getClass().getName() + " already registered");
             return;
         }
 
         this.listeners.add(listener);
+    }
+
+    @Override
+    public void onMessengerFinished(String dstIp)
+    {
+        System.out.println("Finished");
     }
 
     @Override
@@ -172,15 +178,7 @@ public class NetworkAPI implements NetworkListener
         TCPOUT out = new TCPOUT(socket, this);
         Messenger messenger = new Messenger(socket, in, out);
 
-        int threadInId  = this.threadManager.createThread();
-        int threadOutId = this.threadManager.createThread();
-
-        this.threadManager.setRunnable(threadInId, messenger.in);
-        this.threadManager.setRunnable(threadOutId, messenger.out);
-
-        this.threadManager.startThread(threadInId);
-        this.threadManager.startThread(threadOutId);
-
+        this.runMessenger(messenger);
         this.messengers.put(srcIp, messenger);
 
         Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
@@ -191,16 +189,7 @@ public class NetworkAPI implements NetworkListener
     public void onConnectionSuccess(String dstIp)
     {
         Messenger messenger = this.messengers.get(dstIp);
-
-        int threadInId  = this.threadManager.createThread();
-        int threadOutId = this.threadManager.createThread();
-
-        this.threadManager.setRunnable(threadInId, messenger.in);
-        this.threadManager.setRunnable(threadOutId, messenger.out);
-
-        this.threadManager.startThread(threadInId);
-        this.threadManager.startThread(threadOutId);
-
+        this.runMessenger(messenger);
         Log.Print(this.getClass().getName() + " Socket state : " + messenger.socket.getState());
         Log.Print(this.getClass().getName() + " TCPIN  : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " <-- " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
         Log.Print(this.getClass().getName() + " TCPOUT : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " --> " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
@@ -209,29 +198,31 @@ public class NetworkAPI implements NetworkListener
     @Override
     public void onConnectionFailed(int socketId, String dstIp)
     {
-        if (messengers.containsKey(dstIp))
-        {
-            Log.Print(this.getClass().getName() + " Removing client : " + dstIp);
-            Messenger messenger = this.messengers.get(dstIp);
-            messenger.socket.close();
-            this.messengers.remove(dstIp);
-        }
+        if (!this.messengers.containsKey(dstIp)) return;
+
+        Messenger messenger = this.messengers.get(dstIp);
+        Log.Print(this.getClass().getName() + " Removing client : " + dstIp);
+        messenger.socket.close();
+        this.messengers.remove(dstIp);
+
     }
 
     @Override
-    public void onPacket(String srcIp, int srcPort, String dstIp, int dstPort, ClvcMessage data)
+    public void onPacket(String from, int tcpPort, ClvcMessage data)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
 
-        if (ips.contains(srcIp))
+        System.out.println();
+
+        if (ips.contains(from))
         {
-            Log.Print(this.getClass().getName() + " Dropping packet from " + srcIp + ":" + srcPort);
+            Log.Print(this.getClass().getName() + " Dropping packet from " + from + ":" + tcpPort);
             return;
         }
 
         for (MessageListener listener : this.listeners)
         {
-            listener.onData(srcIp, data);
+            listener.onData(from, data);
         }
     }
 
@@ -243,30 +234,58 @@ public class NetworkAPI implements NetworkListener
     private void sendTCP(String ip, int port, ClvcMessage data)
     {
         Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
+        this.createNewClient(ip, port);
+        this.putDataToSocket(ip, data);
+        this.sendDataToNetwork(ip);
+    }
 
-        if (!this.messengers.containsKey(ip))
-        {
-            Log.Print(this.getClass().getName() + " No client with ip : " + ip);
-            Log.Print(this.getClass().getName() + " Creating client : " + ip);
+    private void sendDataToNetwork(String ip)
+    {
+        Messenger messenger = this.messengers.get(ip);
+        if (!messenger.out.isFinished()) return;
+        int threadId = this.threadManager.createThread(messenger.out);
+        this.threadManager.startThread(threadId);
+    }
 
-            int socketId = this.networkManager.createSocket();
-            int threadId = this.threadManager.createThread();
-
-
-            ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
-            TCPIN  in  = new TCPIN(socket, this);
-            TCPOUT out = new TCPOUT(socket, this);
-            Messenger messenger = new Messenger(socket, in, out);
-
-            this.messengers.put(ip, messenger);
-
-            this.threadManager.setRunnable(threadId, new TcpConnection(socket, this));
-            this.threadManager.startThread(threadId);
-        }
-
+    private void putDataToSocket(String ip, ClvcMessage data)
+    {
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
         Messenger messenger = this.messengers.get(ip);
         messenger.socket.put(data);
+    }
+
+    private void createNewClient(String ip, int port)
+    {
+        if (this.messengers.containsKey(ip)) return;
+
+        Log.Print(this.getClass().getName() + " No client with ip : " + ip);
+        Log.Print(this.getClass().getName() + " Creating client : " + ip);
+
+        int socketId = this.networkManager.createSocket();
+        int threadId = this.threadManager.createThread();
+
+        ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
+        TCPIN  in  = new TCPIN(socket, this);
+        TCPOUT out = new TCPOUT(socket, this);
+        Messenger messenger = new Messenger(socket, in, out);
+
+        this.messengers.put(ip, messenger);
+
+        this.threadManager.setRunnable(threadId, new TcpConnection(socket, this));
+        this.threadManager.startThread(threadId);
+
+    }
+
+    private void runMessenger(Messenger messenger)
+    {
+        int threadInId  = this.threadManager.createThread();
+        int threadOutId = this.threadManager.createThread();
+
+        this.threadManager.setRunnable(threadInId, messenger.in);
+        this.threadManager.setRunnable(threadOutId, messenger.out);
+
+        this.threadManager.startThread(threadInId);
+        this.threadManager.startThread(threadOutId);
     }
 
     private static class Messenger

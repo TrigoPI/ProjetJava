@@ -26,7 +26,7 @@ public class UdpServer extends Server
 
             if (paquet != null)
             {
-                this.listener.onPacket(paquet.srcIp, paquet.srcPort, paquet.dstIp, paquet.dstPort, (ClvcMessage)paquet.data);
+                this.listener.onPacket(paquet.srcIp, paquet.srcPort, (ClvcMessage)paquet.data);
             }
             else
             {

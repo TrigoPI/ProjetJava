@@ -1,85 +1,112 @@
-[14:29:31] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Connection to SQLite has been established.
-[14:29:31] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.Runnables.Network.Server.TcpServer
-[14:29:31] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 1 --> ClavarChat.Controllers.Runnables.Network.Server.UdpServer
-[14:29:31] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
-[14:29:31] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 1
-[14:29:31] ClavarChat.Controllers.Managers.Network.NetworkManager Start TCP server on port : 8080
-[14:29:31] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM User
-[14:29:31] ClavarChat.Controllers.Managers.Network.NetworkManager Start UDP server on port : 7070
-[14:29:31] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Conversation
-[14:29:31] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Read
-[14:29:31] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Message
-[14:29:31] GUI.GUIControllers.Controllers.LoginController Initialized
-[14:29:35] ClavarChat.ClavarChatAPI Trying to login with : Alexis/#7070
-[14:29:35] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.Runnables.Discover.Discover
-[14:29:35] ClavarChat.Controllers.Managers.User.UserManager Register main user : Alexis / #7070
-[14:29:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT user_id FROM User WHERE user_id = 7070
-[14:29:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting INT to preparedStatement width id : 0 value : 7070
-[14:29:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting STRING to preparedStatement width id : 0 value : Alexis
-[14:29:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting BLOB to preparedStatement width id : 0 value : [B@421e8be7
-[14:29:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing preparedStatement with id : 0
-[14:29:35] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
-[14:29:35] ClavarChat.Controllers.Handlers.DiscoverHandler Waiting for response
-[14:29:35] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.1:58583
-[14:29:35] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Dropping packet from 192.168.1.1:58583
-[14:29:35] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.208.147:58584
-[14:29:35] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Dropping packet from 10.188.208.147:58584
-[14:29:37] ClavarChat.Controllers.Handlers.DiscoverHandler Success alone on network
-[14:29:37] ClavarChat.Controllers.Handlers.PseudoHandler Pseudo Success
-[14:29:37] GUI.GUIControllers.GUIControllers ---> LOGIN_SUCCESS
-[14:29:37] GUI.GUIControllers.Controllers.ClavarChatController Initialized
-[14:29:37] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT conversation_id FROM Read WHERE user_id = 7070
-[14:29:37] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 0
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.203.233:63727
-[14:29:40] ClavarChat.Controllers.Handlers.DiscoverHandler Discover from : 10.188.203.233
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Trying to send data to : 10.188.203.233:8080
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI No client with ip : 10.188.203.233
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Creating client : 10.188.203.233
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 2
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 2
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Getting client : 10.188.203.233
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.2:63730
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 10.188.203.233:8080 --> socket id : 0
-[14:29:40] ClavarChat.Controllers.Handlers.DiscoverHandler Discover from : 192.168.1.2
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Trying to send data to : 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI No client with ip : 192.168.1.2
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Creating client : 192.168.1.2
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 3
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 3
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Getting client : 192.168.1.2
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 192.168.1.2:8080 --> socket id : 1
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Connection success with : 192.168.1.2:8080 --> socket id : 1
-[14:29:40] ClavarChat.Controllers.Runnables.Network.Connection.TcpConnection Connection success with : 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 4
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 5
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 4
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 5
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Socket state : CONNECTED
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI TCPIN  : 192.168.1.1:41534 <-- 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Send data : 192.168.1.1:41534 --> 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI TCPOUT : 192.168.1.1:41534 --> 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 3
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager data from 192.168.1.1:41534 <-- 192.168.1.2:8080
-[14:29:40] ClavarChat.Models.ClvcSocket.ClvcSocket Receiving data : 192.168.1.1:41534 <-- 192.168.1.2:8080
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Dropping packet from 192.168.1.1:41534
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP receive 
-[14:29:40] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket : 1
-[14:29:40] ClavarChat.Models.ClvcSocket.ClvcSocket Error in socket 1
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
-[14:29:40] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
-[14:29:40] ClavarChat.Models.ClvcSocket.ClvcSocket socket already CLOSED
-[14:29:40] ClavarChat.Models.ClvcSocket.ClvcSocket socket already CLOSED
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 5
-[14:29:40] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 4
-[14:29:45] ClavarChat.Controllers.Managers.Network.NetworkManager Cannot connect to : 10.188.203.233:8080
-[14:29:45] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket with id : 0
-[14:29:45] ClavarChat.Models.ClvcSocket.ClvcSocket Connection failed with : 10.188.203.233:8080
-[14:29:45] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 10.188.203.233
-[14:29:45] ClavarChat.Models.ClvcSocket.ClvcSocket socket already CLOSED
-[14:29:45] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 2
-[14:30:00] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR UDP server closed
-[14:30:00] ClavarChat.Controllers.Managers.Network.NetworkManager Closing UDP server with id : 0 --> 7070
-[14:30:00] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 1
-[14:30:00] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP server
-[14:30:00] ClavarChat.Controllers.Managers.Network.NetworkManager Closing TCP server with id : 0 --> 8080
-[14:30:00] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 0
+[16:20:30] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Connection to SQLite has been established.
+[16:20:30] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Listener already registered
+[16:20:30] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.Runnables.Network.Server.TcpServer
+[16:20:30] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 1 --> ClavarChat.Controllers.Runnables.Network.Server.UdpServer
+[16:20:30] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
+[16:20:30] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 1
+[16:20:30] ClavarChat.Controllers.Managers.Network.NetworkManager Start TCP server on port : 8080
+[16:20:30] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM User
+[16:20:30] ClavarChat.Controllers.Managers.Network.NetworkManager Start UDP server on port : 7070
+[16:20:30] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Conversation
+[16:20:30] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Read
+[16:20:30] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : DELETE FROM Message
+[16:20:31] GUI.GUIControllers.Controllers.LoginController Initialized
+[16:20:33] ClavarChat.ClavarChatAPI Trying to login with : Alexis/#7070
+[16:20:33] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 0 --> ClavarChat.Controllers.Runnables.Discover.Discover
+[16:20:33] ClavarChat.Controllers.Managers.User.UserManager Register main user : Alexis / #7070
+[16:20:33] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting INT to preparedStatement width id : 0 value : 7070
+[16:20:33] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting STRING to preparedStatement width id : 0 value : Alexis
+[16:20:33] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting BLOB to preparedStatement width id : 0 value : [B@5f70ccbb
+[16:20:33] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing preparedStatement with id : 0
+[16:20:33] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 0
+[16:20:33] ClavarChat.Controllers.Handlers.DiscoverHandler Waiting for response
+[16:20:33] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.1:63029
+[16:20:33] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Dropping packet from 192.168.1.1:63029
+[16:20:33] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.208.147:63030
+[16:20:33] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Dropping packet from 10.188.208.147:63030
+[16:20:35] ClavarChat.Controllers.Handlers.DiscoverHandler Success alone on network
+[16:20:35] ClavarChat.Controllers.Handlers.PseudoHandler Pseudo Success
+[16:20:35] GUI.GUIControllers.GUIControllers ---> LOGIN_SUCCESS
+[16:20:35] GUI.GUIControllers.Controllers.ClavarChatController Initialized
+[16:20:35] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT conversation_id FROM Read WHERE user_id = 7070
+[16:20:35] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 0
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 10.188.203.233:54480
+[16:20:42] ClavarChat.Controllers.Handlers.DiscoverHandler Discover from : 10.188.203.233
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Trying to send data to : 10.188.203.233:8080
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI No client with ip : 10.188.203.233
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Creating client : 10.188.203.233
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 2
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 2
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Getting client : 10.188.203.233
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Paquet from UDP 192.168.1.2:54483
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 10.188.203.233:8080 --> socket id : 0
+[16:20:42] ClavarChat.Controllers.Handlers.DiscoverHandler Discover from : 192.168.1.2
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Trying to send data to : 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI No client with ip : 192.168.1.2
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Creating client : 192.168.1.2
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 3
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 3
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Getting client : 192.168.1.2
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Trying to connect with : 192.168.1.2:8080 --> socket id : 1
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Connection success with : 192.168.1.2:8080 --> socket id : 1
+[16:20:42] ClavarChat.Controllers.Runnables.Network.Connection.TcpConnection Connection success with : 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 4
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager creating thread : 5
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 4
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 5
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Socket state : CONNECTED
+[16:20:42] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  send data to 192.168.1.2:8080, buffer size : 1
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI TCPIN  : 192.168.1.1:64763 <-- 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI TCPOUT : 192.168.1.1:64763 --> 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager Send data : 192.168.1.1:64763 --> 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 3
+[16:20:42] ClavarChat.Controllers.Managers.Network.NetworkManager data from 192.168.1.1:64763 <-- 192.168.1.2:8080
+[16:20:42] ClavarChat.Models.ClvcSocket.ClvcSocket[ socket : 1 ]  Receiving data : 192.168.1.1:64763 <-- 192.168.1.2:8080
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT user_id FROM User WHERE user_id = 1111
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting INT to preparedStatement width id : 0 value : 1111
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting STRING to preparedStatement width id : 0 value : ggfgf
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting BLOB to preparedStatement width id : 0 value : [B@1658f4b4
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing preparedStatement with id : 0
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting STRING to preparedStatement width id : 0 value : ggfgf
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Setting STRING to preparedStatement width id : 0 value : 19597796-f457-4fe3-bc94-8810eeb187ac
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing preparedStatement with id : 0
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : INSERT INTO Read(user_id, conversation_id) VALUES(7070, 74)
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : INSERT INTO Read(user_id, conversation_id) VALUES(1111, 74)
+[16:20:42] ClavarChat.Controllers.Managers.User.UserManager Adding new user : ggfgf / #1111
+[16:20:42] ClavarChat.Controllers.Managers.User.UserManager Adding ip : 192.168.1.2 to user : 1111
+[16:20:42] GUI.GUIControllers.GUIControllers ---> NEW_USER
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT conversation_id FROM Read WHERE user_id = 7070 OR user_id = 1111 GROUP BY conversation_id HAVING COUNT(conversation_id) > 1
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT user_id FROM User WHERE user_id = 1111
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT pseudo FROM User WHERE user_id = 1111
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT user_id FROM User WHERE user_id = 1111
+[16:20:42] ClavarChat.Controllers.Managers.DataBase.DataBaseManager Executing : SELECT avatar FROM User WHERE user_id = 1111
+[16:20:47] ClavarChat.Controllers.Managers.Network.NetworkManager Cannot connect to : 10.188.203.233:8080
+[16:20:47] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket with id : 0
+[16:20:47] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 0 ] Connection failed with : 10.188.203.233:8080
+[16:20:47] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 10.188.203.233
+[16:20:47] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 0 ]  socket already CLOSED
+[16:20:47] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 2
+[16:21:14] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Trying to send data to : 192.168.1.2:8080
+[16:21:14] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Getting client : 192.168.1.2
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  send data to 192.168.1.2:8080, buffer size : 1
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP receive 
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager Closing UDP server with id : 0 --> 7070
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR UDP server closed
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager Send data : 192.168.1.1:64763 --> 192.168.1.2:8080
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager Removing socket : 1
+[16:21:14] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 1
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager Closing TCP server with id : 0 --> 8080
+[16:21:14] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR in TCP server
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  Error in socket 1
+[16:21:14] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Closing 192.168.1.2
+[16:21:14] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 0
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  socket already CLOSED
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  Cannot send data, socket is CLOSED
+[16:21:14] ClavarChat.Controllers.Runnables.Network.TCPIN.TCPIN TCPIN 192.168.1.2 finished
+[16:21:14] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
+[16:21:14] ClavarChat.Controllers.Runnables.Network.TCPOUT.TCPOUT TCPOUT 192.168.1.2 finished
+[16:21:14] ClavarChat.Controllers.API.NetworkAPI.NetworkAPI Removing client : 192.168.1.2
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  socket already CLOSED
+[16:21:14] ClavarChat.Models.ClvcSocket.ClvcSocket [ socket : 1 ]  socket already CLOSED
+[16:21:14] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 4
+[16:21:14] ClavarChat.Controllers.Managers.Thread.ThreadManager removing thread : 5

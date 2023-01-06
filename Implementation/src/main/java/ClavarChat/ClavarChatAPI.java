@@ -46,6 +46,7 @@ public class ClavarChatAPI
 
         this.networkAPI.addListener(this.sessionHandler);
         this.networkAPI.addListener(this.discoverHandler);
+        this.networkAPI.addListener(this.sessionHandler);
 
         this.networkAPI.startServer();
 

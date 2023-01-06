@@ -148,19 +148,12 @@ public class DataBaseAPI
 
     public void addUser(int userId, String pseudo, byte[] avatar)
     {
-        if (this.userExist(userId))
-        {
-            this.updateUser(userId, pseudo, avatar);
-        }
-        else
-        {
-            int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT OR IGNORE INTO User(user_id, pseudo, avatar) VALUES(?, ?, ?)");
-            this.dataBaseManager.setInt(preparedStatementId, 1, userId);
-            this.dataBaseManager.setString(preparedStatementId, 2, pseudo);
-            this.dataBaseManager.setBytes(preparedStatementId, 3, avatar);
-            this.dataBaseManager.executePreparedStatement(preparedStatementId);
-            this.dataBaseManager.removePreparedStatement(preparedStatementId);
-        }
+        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT OR IGNORE INTO User(user_id, pseudo, avatar) VALUES(?, ?, ?)");
+        this.dataBaseManager.setInt(preparedStatementId, 1, userId);
+        this.dataBaseManager.setString(preparedStatementId, 2, pseudo);
+        this.dataBaseManager.setBytes(preparedStatementId, 3, avatar);
+        this.dataBaseManager.executePreparedStatement(preparedStatementId);
+        this.dataBaseManager.removePreparedStatement(preparedStatementId);
     }
 
     public void addMessage(int conversationId, int userId, String message)

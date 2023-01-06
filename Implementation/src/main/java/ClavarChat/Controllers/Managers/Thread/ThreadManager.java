@@ -3,6 +3,7 @@ package ClavarChat.Controllers.Managers.Thread;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadManager
 {
@@ -74,10 +75,8 @@ public class ThreadManager
     private static class TMThread extends Thread
     {
         private final int id;
-
         private final ThreadManager threadManager;
         private TMRunnable runnable;
-
         public TMThread(ThreadManager threadManager, TMRunnable runnable, int id)
         {
             this.id = id;
