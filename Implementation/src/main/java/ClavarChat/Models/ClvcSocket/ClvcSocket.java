@@ -125,7 +125,7 @@ public class ClvcSocket
 
     public NetworkPaquet receive()
     {
-        if (this.buffer.isEmpty()) return null;
+//        if (this.buffer.isEmpty()) return null;
 
         if (this.state.get() == SOCKET_STATE.IDLE)
         {
