@@ -3,6 +3,7 @@ package GUI.GUIControllers.Controllers;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.GUI.Component.Avatar.Avatar;
 import ClavarChat.Utils.Log.Log;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
@@ -18,6 +19,7 @@ public class SettingsController implements Initializable
 
     @FXML
     private HBox modifpage;
+    private MFXTextField pseudoField;
 
     public SettingsController(ClavarChatAPI api)
     {

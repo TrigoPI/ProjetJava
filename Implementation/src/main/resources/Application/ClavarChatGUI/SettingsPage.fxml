@@ -45,7 +45,7 @@
                   <String fx:value="clvc-vboxradius" />
                </styleClass>
                <children>
-                  <MFXTextField floatMode="ABOVE" floatingText="Nouveau Pseudonyme" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" selectable="false" textLimit="500">
+                  <MFXTextField fx:id="pseudoField" floatMode="ABOVE" floatingText="Nouveau Pseudonyme" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" selectable="false" textLimit="500">
                      <styleClass>
                         <String fx:value="clvc-input" />
                         <String fx:value="clvc-pseudo-field" />
