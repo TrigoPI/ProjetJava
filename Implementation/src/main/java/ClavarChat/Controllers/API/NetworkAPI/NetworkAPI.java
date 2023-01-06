@@ -165,7 +165,12 @@ public class NetworkAPI implements NetworkListener
     @Override
     public void onMessengerFinished(String dstIp)
     {
-        System.out.println("Finished");
+        Messenger messenger = this.messengers.get(dstIp);
+
+        if (!messenger.out.isFinished()) return;
+        if (!messenger.in.isFinished()) return;
+        Log.Print(this.getClass().getName() + " Removing client : " + dstIp + " connection ended");
+        this.messengers.remove(dstIp);
     }
 
     @Override
@@ -199,10 +204,7 @@ public class NetworkAPI implements NetworkListener
     public void onConnectionFailed(int socketId, String dstIp)
     {
         if (!this.messengers.containsKey(dstIp)) return;
-
-        Messenger messenger = this.messengers.get(dstIp);
-        Log.Print(this.getClass().getName() + " Removing client : " + dstIp);
-        messenger.socket.close();
+        Log.Print(this.getClass().getName() + " Removing client : " + dstIp + " connection failed");
         this.messengers.remove(dstIp);
 
     }
@@ -211,8 +213,6 @@ public class NetworkAPI implements NetworkListener
     public void onPacket(String from, int tcpPort, ClvcMessage data)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
-
-        System.out.println();
 
         if (ips.contains(from))
         {
