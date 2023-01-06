@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class Log
 {
-    private static String path = "./src/main/java/ClavarChat/Utils/Log/log.txt";
+    private static final String path = "./src/main/java/ClavarChat/Utils/Log/log.txt";
     private static boolean active = true;
     private static boolean save = false;
     private static final ArrayList<String> logs = new ArrayList<String>();
@@ -77,9 +77,9 @@ public class Log
         String date = format.format(new Date());
         String msgFormat = "[" + date + "] " + a;
 
-        writeLog(msgFormat);
+//        writeLog(msgFormat);
 
-        if (save) logs.add(color + msgFormat + ConsoleColors.RESET);
+//        if (save) logs.add(color + msgFormat + ConsoleColors.RESET);
         if (active) System.out.println(color + msgFormat + ConsoleColors.RESET);
     }
 

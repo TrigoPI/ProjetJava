@@ -30,11 +30,17 @@ public class TCPIN implements TMRunnable
     public void run()
     {
         String distantIp = this.socket.getDistantIp();
+        String localIp   = this.socket.getLocalIp();
+        int distantPort  = this.socket.getDistantPort();
+        int localPort    = this.socket.getLocalPort();
+
+        Log.Print(this.getClass().getName() + " Starting TCPIN : " + localIp + ":" + localPort + " <-- " + distantIp + ":" + distantPort);
 
         if (this.isCloseWait()) return;
 
         while (!this.socket.isClosed()) this.notify(this.socket.receive());
         this.finished.set(true);
+
         Log.Print(this.getClass().getName() + " [ " + distantIp + " ] finished");
         this.listener.onMessengerFinished(distantIp);
     }
@@ -42,10 +48,13 @@ public class TCPIN implements TMRunnable
     private boolean isCloseWait()
     {
         String distantIp = this.socket.getDistantIp();
+
         if (this.socket.getState() != ClvcSocket.SOCKET_STATE.CLOSE_WAIT) return false;
         this.finished.set(true);
+
         Log.Print(this.getClass().getName() + " [ " + distantIp + " ] finished");
         this.listener.onMessengerFinished(distantIp);
+
         return true;
     }
 

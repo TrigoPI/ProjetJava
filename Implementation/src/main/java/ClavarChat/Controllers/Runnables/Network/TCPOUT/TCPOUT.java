@@ -30,8 +30,15 @@ public class TCPOUT implements TMRunnable
     public void run()
     {
         String distantIp = this.socket.getDistantIp();
+        String localIp   = this.socket.getLocalIp();
+        int distantPort  = this.socket.getDistantPort();
+        int localPort    = this.socket.getLocalPort();
+
+        Log.Print(this.getClass().getName() + " Starting TCPOUT : " + localIp + ":" + localPort + " --> " + distantIp + ":" + distantPort);
+
         this.socket.send();
         this.finished.set(true);
+
         Log.Print(this.getClass().getName() + " [ " + distantIp + " ] finished");
         this.listener.onMessengerFinished(distantIp);
     }

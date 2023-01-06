@@ -69,7 +69,7 @@ public class NetworkAPI implements NetworkListener
             this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, avatar));
         }
 
-        this.closeAllClients();
+//        this.closeAllClients();
     }
 
     public void sendLogout()
@@ -185,9 +185,6 @@ public class NetworkAPI implements NetworkListener
 
         this.runMessenger(messenger);
         this.messengers.put(srcIp, messenger);
-
-        Log.Print(this.getClass().getName() + " TCPIN  : " + srcIp + ":" + srcPort + " <-- " + dstIp + ":" + dstPort);
-        Log.Print(this.getClass().getName() + " TCPOUT : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
     }
 
     @Override
@@ -196,8 +193,6 @@ public class NetworkAPI implements NetworkListener
         Messenger messenger = this.messengers.get(dstIp);
         this.runMessenger(messenger);
         Log.Print(this.getClass().getName() + " Socket state : " + messenger.socket.getState());
-        Log.Print(this.getClass().getName() + " TCPIN  : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " <-- " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
-        Log.Print(this.getClass().getName() + " TCPOUT : " + messenger.socket.getSrcIp() + ":" + messenger.socket.getSrcPort() + " --> " + messenger.socket.getDstIp() + ":" + messenger.socket.getDstPort());
     }
 
     @Override
