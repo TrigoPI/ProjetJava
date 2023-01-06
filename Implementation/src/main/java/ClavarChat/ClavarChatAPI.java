@@ -25,9 +25,7 @@ public class ClavarChatAPI
     private final EventAPI eventAPI;
     private final DataBaseAPI dataBaseAPI;
     private final NetworkAPI networkAPI;
-    private final SessionHandler sessionHandler;
     private final DiscoverHandler discoverHandler;
-    private final PseudoHandler pseudoHandler;
     private final ThreadManager threadManager;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
@@ -40,13 +38,12 @@ public class ClavarChatAPI
         this.dataBaseAPI = new DataBaseAPI(this.userManager);
         this.eventAPI = new EventAPI();
 
-        this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI);
-        this.sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
-        this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, this.pseudoHandler);
+        PseudoHandler pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI);
+        SessionHandler sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
+        this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
-        this.networkAPI.addListener(this.sessionHandler);
         this.networkAPI.addListener(this.discoverHandler);
-        this.networkAPI.addListener(this.sessionHandler);
+        this.networkAPI.addListener(sessionHandler);
 
         this.networkAPI.startServer();
 

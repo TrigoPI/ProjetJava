@@ -15,7 +15,7 @@ public class DataBaseAPI
 
     public DataBaseAPI(UserManager userManager)
     {
-        this.dataBaseManager = new DataBaseManager(Path.getWorkingPath() + "/src/main/resources/BDD/Connect/ClavarDataBase.db");
+        this.dataBaseManager = new DataBaseManager(Path.getWorkingPath() + "/src/main/resources/BDD/ClavarDataBase.db");
         this.userManager = userManager;
     }
 
