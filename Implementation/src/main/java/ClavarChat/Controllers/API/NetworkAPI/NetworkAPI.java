@@ -69,7 +69,7 @@ public class NetworkAPI implements NetworkListener
             this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, avatar));
         }
 
-//        this.closeAllClients();
+        this.closeAllClients();
     }
 
     public void sendLogout()

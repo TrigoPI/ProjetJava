@@ -125,8 +125,6 @@ public class ClvcSocket
 
     public NetworkPaquet receive()
     {
-//        if (this.buffer.isEmpty()) return null;
-
         if (this.state.get() == SOCKET_STATE.IDLE)
         {
             Log.Warning(this.getClass().getName() + " [ socket : " + this.socketId + " ] " + " Cannot receive data, socket is IDLE");
