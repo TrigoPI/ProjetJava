@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.Handlers;
 
+import ClavarChat.Controllers.API.DataBaseAPI.DataBaseAPI;
 import ClavarChat.Controllers.API.NetworkAPI.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
@@ -16,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DiscoverHandler implements MessageListener
 {
     private final NetworkAPI networkAPI;
+    private final DataBaseAPI dataBaseAPI;
 
     private final PseudoHandler pseudoHandler;
     private final UserManager userManager;
-
 
 
     private final int timeout;
@@ -28,9 +29,10 @@ public class DiscoverHandler implements MessageListener
     public final AtomicInteger currentNumberOfUsers;
     public final AtomicBoolean finished;
 
-    public DiscoverHandler(NetworkAPI networkAPI, UserManager userManager, PseudoHandler pseudoHandler)
+    public DiscoverHandler(NetworkAPI networkAPI, DataBaseAPI dataBaseAPI, UserManager userManager, PseudoHandler pseudoHandler)
     {
         this.networkAPI = networkAPI;
+        this.dataBaseAPI = dataBaseAPI;
         this.userManager = userManager;
         this.pseudoHandler = pseudoHandler;
         this.numberOfUsers = new AtomicInteger(-1);
@@ -90,6 +92,13 @@ public class DiscoverHandler implements MessageListener
     private void onDiscoverResponse(DiscoverResponseMessage data, String dstIp)
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
+
+        if (!this.dataBaseAPI.userExist(data.id))
+        {
+            this.dataBaseAPI.addUser(data.id, data.pseudo, data.avatar);
+            this.dataBaseAPI.createConversation(data.pseudo, data.id);
+        }
+
         this.userManager.addUser(data.pseudo, data.id, data.avatar);
         this.userManager.addIpToUser(data.id, dstIp);
         this.updateUserCount(data);
