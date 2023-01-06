@@ -191,6 +191,7 @@ public class ClvcSocket
 
         if (this.state.get() == SOCKET_STATE.CLOSE_WAIT)
         {
+            Log.Info(this.getClass().getName() + " [ socket : " + this.socketId + " ] " + " Closing socket " + this.socketId);
             this.state.set(SOCKET_STATE.CLOSED);
             this.networkManager.closeTcpSocket(this.socketId);
         }
