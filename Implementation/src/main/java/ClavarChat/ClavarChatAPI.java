@@ -50,7 +50,7 @@ public class ClavarChatAPI
 
         this.networkAPI.startServer();
 
-        this.dataBaseAPI.clear();
+//        this.dataBaseAPI.clear();
 
 //        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
 //        BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");

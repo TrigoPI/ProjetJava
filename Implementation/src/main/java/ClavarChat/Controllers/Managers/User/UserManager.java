@@ -228,7 +228,7 @@ public class UserManager
     public void reset()
     {
         Log.Print(this.getClass().getName() + " Resetting User Manager");
-        this.user = new User("", -1);
+        this.user.pseudo = "";
         this.users.clear();
         this.pseudoToIndex.clear();
         this.idToIndex.clear();
