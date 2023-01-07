@@ -47,10 +47,9 @@ public class SessionHandler implements MessageListener
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
 
-        this.createSharedConversation(data.id, data.pseudo, data.img);
+        this.createSharedConversation(data.id, data.pseudo);
 
-        this.networkAPI.closeClient(data.id);
-
+        this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
@@ -60,14 +59,14 @@ public class SessionHandler implements MessageListener
         this.eventAPI.notify(new RemoveUserEvent(data.pseudo, data.id));
     }
 
-    private void createSharedConversation(int userId, String pseudo, byte[] img)
+    private void createSharedConversation(int userId, String pseudo)
     {
-        this.dataBaseAPI.addUser(userId, pseudo, img);
         if (this.dataBaseAPI.userExist(userId)) return;
 
         int id = this.dataBaseAPI.createConversation(pseudo, userId);
         String sharedId = this.dataBaseAPI.getConversationSharedId(id);
-        this.networkAPI.sendSharedConversationId(userId, sharedId);
 
+        this.networkAPI.sendSharedConversationId(userId, sharedId);
+        this.networkAPI.closeClient(userId);
     }
 }
