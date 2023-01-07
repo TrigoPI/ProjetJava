@@ -61,8 +61,8 @@ public class LoginController implements Initializable
         Log.Print(this.getClass().getName() + " Initialized");
 
         this.usernameTextField.setText("Alexis");
-        this.idTextField.setText("7070");
         this.passwordTextField.setText("qsdfjsdfji");
+        this.idTextField.setText("" + this.api.getId());
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
@@ -131,14 +131,12 @@ public class LoginController implements Initializable
     private void handleButtonLogin()
     {
         String pseudo = this.usernameTextField.getText().trim();
-        String id = this.idTextField.getText().trim();
         String password = this.passwordTextField.getText().trim();
 
         if (pseudo.isEmpty()) this.errorInput(usernameTextField);
-        if (id.isEmpty()) this.errorInput(idTextField);
         if (password.isEmpty()) this.errorInput(passwordTextField);
 
-        if (!pseudo.isEmpty() && !id.isEmpty() && !password.isEmpty())
+        if (!pseudo.isEmpty() && !password.isEmpty())
         {
             this.loginButton.setVisible(false);
             this.loginButton.setManaged(false);
@@ -146,7 +144,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(Integer.parseInt(id), pseudo, Path.getWorkingPath() + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
+            this.api.login(pseudo, Path.getWorkingPath() + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
         }
     }
 }

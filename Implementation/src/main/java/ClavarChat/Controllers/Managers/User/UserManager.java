@@ -3,12 +3,16 @@ package ClavarChat.Controllers.Managers.User;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
+import ClavarChat.Utils.Path.Path;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserManager
 {
+    private final String CONFIG_FILE_PATH = Path.getWorkingPath() + "/src/main/resources/Conf/Conf.json";
+
     private User user;
     private byte[] avatar;
 
@@ -20,7 +24,10 @@ public class UserManager
 
     public UserManager()
     {
-        this.user = null;
+        JSONObject jsonObject = Path.parseJSON(CONFIG_FILE_PATH);
+        String userId = (String)jsonObject.get("userId");
+
+        this.user = new User("", Integer.parseInt(userId));
         this.avatar = null;
         this.users = new PackedArray<>();
         this.idToIndex = new HashMap<>();
@@ -32,11 +39,6 @@ public class UserManager
     public boolean isConnected(int userId)
     {
         return this.idToIndex.containsKey(userId);
-    }
-
-    public boolean isConnected(String pseudo)
-    {
-        return this.pseudoToIndex.containsKey(pseudo);
     }
 
     public boolean isLogged()
@@ -61,7 +63,7 @@ public class UserManager
 
     public int getId()
     {
-        return (this.user == null)?null:this.user.id;
+        return this.user.id;
     }
 
     public int getId(String pseudo)
@@ -99,10 +101,7 @@ public class UserManager
 
     public User getUser(int userId)
     {
-        if (this.user != null && userId == this.user.id)
-        {
-            return this.user;
-        }
+        if (userId == this.user.id) return this.user;
 
         if (!this.idToIndex.containsKey(userId))
         {
@@ -117,15 +116,12 @@ public class UserManager
 
     public String getPseudo()
     {
-        return (this.user == null)?null:this.user.pseudo;
+        return this.user.pseudo;
     }
 
     public String getPseudo(int userId)
     {
-        if (this.user != null && userId == this.user.id)
-        {
-            return this.user.pseudo;
-        }
+        if (userId == this.user.id) return this.user.pseudo;
 
         if (!this.idToIndex.containsKey(userId))
         {
@@ -145,10 +141,7 @@ public class UserManager
 
     public byte[] getAvatar(int userId)
     {
-        if ( this.user != null && userId == this.user.id)
-        {
-            return this.avatar;
-        }
+        if (userId == this.user.id) return this.avatar;
 
         if (!this.idToIndex.containsKey(userId))
         {
@@ -167,11 +160,11 @@ public class UserManager
         this.logged = logged;
     }
 
-    public void setUser(int id, String pseudo, byte[] avatar)
+    public void setUser(String pseudo, byte[] avatar)
     {
-        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + id);
+        Log.Print(this.getClass().getName() + " Register main user : " + pseudo + " / #" + this.user.id);
         this.avatar = avatar;
-        this.user = new User(pseudo, id);
+        this.user.pseudo = pseudo;
     }
 
     public void addUser(String pseudo, int userId, byte[] avatar)
@@ -235,7 +228,7 @@ public class UserManager
     public void reset()
     {
         Log.Print(this.getClass().getName() + " Resetting User Manager");
-        this.user = null;
+        this.user = new User("", -1);
         this.users.clear();
         this.pseudoToIndex.clear();
         this.idToIndex.clear();

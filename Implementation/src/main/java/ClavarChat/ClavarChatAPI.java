@@ -181,15 +181,15 @@ public class ClavarChatAPI
         return new BytesImage(this.userManager.getAvatar(userId));
     }
 
-    public void login(int id, String pseudo, String path)
+    public void login(String pseudo, String path)
     {
-        Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo + "/#" + id);
+        Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo);
 
         Discover discover = new Discover(this.discoverHandler, this.eventAPI);
         int threadId = this.threadManager.createThread(discover);
         BytesImage avatar = new BytesImage(path);
 
-        this.userManager.setUser(id, pseudo, avatar.getBytes());
+        this.userManager.setUser(pseudo, avatar.getBytes());
         this.threadManager.startThread(threadId);
     }
 
@@ -215,13 +215,6 @@ public class ClavarChatAPI
     {
         this.networkAPI.closeAllClients();
     }
-
-//    private void onTextMessage(TextMessage data, String src)
-//    {
-//        Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
-//        this.eventManager.notify(new MessageEvent(data.pseudo, data.id, data.message));
-//    }
-//
 
     public void addListener(ClvcListener listener, String eventName)
     {

@@ -1,9 +1,14 @@
 package ClavarChat.Utils.Path;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class Path
@@ -44,5 +49,23 @@ public class Path
         }
 
         return buffer;
+    }
+
+    public static JSONObject parseJSON(String path)
+    {
+        JSONObject obj;
+
+        try
+        {
+            JSONParser parser = new JSONParser();
+            FileReader fileReader = new FileReader(path);
+            obj = (JSONObject)parser.parse(fileReader);
+        }
+        catch (IOException | ParseException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return obj;
     }
 }

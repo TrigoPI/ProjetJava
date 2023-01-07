@@ -98,6 +98,12 @@ public class ClavarChatController implements Initializable
                 String sharedId = this.api.getConversationSharedId(conversationId);
                 Discussion discussion = this.usersGUI.get(sharedId);
                 discussion.setStatus(false);
+
+                if (this.selectedUser.getSharedId().equals(sharedId))
+                {
+                    Avatar avatar = (Avatar)otherAvatarContainer.getChildren().get(0);
+                    avatar.setStatus(true);
+                }
             }
         });
     }
@@ -118,9 +124,25 @@ public class ClavarChatController implements Initializable
                 }
                 else
                 {
+                    BytesImage bytesImage = this.api.getAvatar(userId);
+                    Image image = new Image(bytesImage.toInputStream());
+                    String pseudo = this.api.getPseudo(userId);
+
                     Discussion discussion = this.usersGUI.get(sharedId);
                     discussion.setStatus(true);
+                    discussion.changeAvatar(image);
+                    discussion.changePseudo(pseudo);
+
+                    if (this.selectedUser.getSharedId().equals(sharedId))
+                    {
+                        Avatar avatar = (Avatar)otherAvatarContainer.getChildren().get(0);
+                        VBox vBox = (VBox)otherAvatarContainer.getChildren().get(1);
+                        Label pseudoLabel = (Label)vBox.getChildren().get(0);
+                        avatar.setStatus(true);
+                        pseudoLabel.setText(pseudo);
+                    }
                 }
+
             }
         });
     }

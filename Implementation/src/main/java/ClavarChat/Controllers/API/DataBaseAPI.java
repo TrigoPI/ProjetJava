@@ -149,7 +149,7 @@ public class DataBaseAPI
 
     public int getConversationId(String sharedId)
     {
-        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Conversation WHERE shared_id = %d", sharedId);
+        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Conversation WHERE shared_id='%s'", sharedId);
 
         if (resultId == -1)
         {
@@ -164,7 +164,7 @@ public class DataBaseAPI
 
     public int getMessageUserId(int messageId)
     {
-        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM Message WHERE message_id = %d", messageId);
+        int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM Message WHERE message_id='%d'", messageId);
 
         if (resultId == -1)
         {

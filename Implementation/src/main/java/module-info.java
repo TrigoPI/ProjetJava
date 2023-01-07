@@ -5,12 +5,14 @@ module Implementation
     requires MaterialFX;
     requires java.sql;
     requires org.apache.commons.io;
+    requires json.simple;
 
     opens Application.ClavarChatGUI to javafx.fxml;
     exports Application.ClavarChatGUI;
 
     opens GUI.GUIControllers to javafx.fxml;
     exports GUI.GUIControllers;
-    exports GUI.GUIControllers.Controllers;
+
     opens GUI.GUIControllers.Controllers to javafx.fxml;
+    exports GUI.GUIControllers.Controllers;
 }

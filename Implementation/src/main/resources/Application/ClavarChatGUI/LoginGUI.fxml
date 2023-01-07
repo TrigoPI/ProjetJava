@@ -29,20 +29,20 @@
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-id-icon" />
+                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-password-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="idTextField" floatMode="BORDER" floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="passwordTextField" floatMode="BORDER" floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-password-icon" />
+                              <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-id-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="passwordTextField" floatMode="BORDER" floatingText="Password" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                        <MFXTextField fx:id="idTextField" editable="false" floatMode="BORDER" floatingText="#0000" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
                      </children>
                   </HBox>
                </children>

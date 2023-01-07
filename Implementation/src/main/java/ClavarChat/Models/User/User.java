@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable
 {
     public String pseudo;
-    public int id;
+    public final int id;
 
     public User(String pseudo, int id)
     {
