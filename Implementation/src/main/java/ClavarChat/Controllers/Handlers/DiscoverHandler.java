@@ -52,6 +52,7 @@ public class DiscoverHandler implements MessageListener
             return false;
         }
 
+        this.reset();
         return this.pseudoHandler.checkPseudo();
     }
 
