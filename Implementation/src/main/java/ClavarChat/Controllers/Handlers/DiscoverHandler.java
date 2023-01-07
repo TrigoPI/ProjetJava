@@ -126,6 +126,7 @@ public class DiscoverHandler implements MessageListener
 
     private void reset()
     {
+        this.finished.set(false);
         this.numberOfUsers.set(-1);
         this.currentNumberOfUsers.set(0);
     }
