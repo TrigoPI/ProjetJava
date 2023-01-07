@@ -2,10 +2,10 @@ package GUI.GUIControllers;
 
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Models.ClvcEvent.ClvcEvent;
-import ClavarChat.Models.ClvcEvent.Login.LoginEvent;
-import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
-import ClavarChat.Models.ClvcEvent.Login.RemoveUserEvent;
-import ClavarChat.Models.ClvcEvent.Message.MessageEvent;
+import ClavarChat.Models.ClvcEvent.LoginEvent;
+import ClavarChat.Models.ClvcEvent.NewUserEvent;
+import ClavarChat.Models.ClvcEvent.RemoveUserEvent;
+import ClavarChat.Models.ClvcEvent.MessageEvent;
 import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Utils.Log.Log;
 import GUI.GUIControllers.Controllers.ClavarChatController;
@@ -25,7 +25,7 @@ public class GUIControllers implements ClvcListener
         this.loginController = loginController;
         this.clavarChatController = clavarChatController;
 
-        this.api.addListener(this, MessageEvent.TEXT_MESSAGE);
+        this.api.addListener(this, MessageEvent.MESSAGE_EVENT);
         this.api.addListener(this, RemoveUserEvent.REMOVE_USER);
         this.api.addListener(this, LoginEvent.LOGIN_SUCCESS);
         this.api.addListener(this, LoginEvent.LOGIN_FAILED);
@@ -53,9 +53,8 @@ public class GUIControllers implements ClvcListener
                 RemoveUserEvent removeUserEvent = (RemoveUserEvent)event;
                 this.onRemoveUser(removeUserEvent.id);
                 break;
-            case MessageEvent.TEXT_MESSAGE:
-                MessageEvent messageEvent = (MessageEvent)event;
-                this.onTextMessage(messageEvent.sharedId, messageEvent.id, messageEvent.message);
+            case MessageEvent.MESSAGE_EVENT:
+                this.onTextMessage();
                 break;
         }
     }
@@ -70,9 +69,9 @@ public class GUIControllers implements ClvcListener
         this.loginController.onLoginSuccess();
     }
 
-    private void onTextMessage(String sharedId, int userId, String message)
+    private void onTextMessage()
     {
-        this.clavarChatController.onTextMessage(sharedId, userId, message);
+        this.clavarChatController.onTextMessage();
     }
 
     private void onRemoveUser(int userId)

@@ -67,8 +67,7 @@ public class DataBaseAPI
 
     public ArrayList<Integer> getConversationWith(int userId)
     {
-        int id = this.userManager.getId();
-        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Read WHERE user_id = %d OR user_id = %d GROUP BY conversation_id HAVING COUNT(conversation_id) > 1", id, userId);
+        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Read WHERE user_id=%d", userId);
         ArrayList<Integer> conversationsId = this.dataBaseManager.decodeAsInt(resultId, 1);
         this.dataBaseManager.removeResultSet(resultId);
         return conversationsId;
@@ -114,6 +113,21 @@ public class DataBaseAPI
         ArrayList<Integer> users = this.dataBaseManager.decodeAsInt(resultId, 1);
         this.dataBaseManager.removeResultSet(resultId);
         return users;
+    }
+
+    public ArrayList<Integer> getUnsentMessage(int conversationId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT message_id FROM Message WHERE conversation_id='%d' AND sent='0'", conversationId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting users in conversation : " + conversationId);
+            return null;
+        }
+
+        ArrayList<Integer> ids = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return ids;
     }
 
     public String getMessageText(int messageId)
@@ -242,10 +256,10 @@ public class DataBaseAPI
         this.dataBaseManager.removePreparedStatement(preparedStatementId);
     }
 
-    public void addMessage(int conversationId, int userId, String message)
+    public void addMessage(int conversationId, int from, int to, String message)
     {
-        int sent = this.userManager.isConnected(userId)?1:0;
-        this.dataBaseManager.execute("INSERT INTO Message(date, text, sent, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d', '%d')", message, sent, conversationId, userId);
+        int sent = this.userManager.isConnected(to)?1:0;
+        this.dataBaseManager.execute("INSERT INTO Message(date, text, sent, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d', '%d')", message, sent, conversationId, from);
     }
 
     private void updateUser(int userId, String pseudo, byte[] avatar)

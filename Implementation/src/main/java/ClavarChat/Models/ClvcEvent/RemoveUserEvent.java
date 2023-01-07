@@ -1,4 +1,4 @@
-package ClavarChat.Models.ClvcEvent.Login;
+package ClavarChat.Models.ClvcEvent;
 
 import ClavarChat.Models.ClvcEvent.ClvcEvent;
 

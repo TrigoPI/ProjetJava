@@ -11,11 +11,11 @@ import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Runnables.Discover.Discover;
 import ClavarChat.Models.ClvcListener.ClvcListener;
+import ClavarChat.Models.ClvcMessage.TextMessage;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.Path.Path;
 
 import java.util.ArrayList;
 
@@ -27,6 +27,7 @@ public class ClavarChatAPI
     private final DataBaseAPI dataBaseAPI;
     private final NetworkAPI networkAPI;
     private final DiscoverHandler discoverHandler;
+    private final MessageHandler messageHandler;
     private final ThreadManager threadManager;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
@@ -39,18 +40,23 @@ public class ClavarChatAPI
         this.dataBaseAPI = new DataBaseAPI(this.userManager);
         this.eventAPI = new EventAPI();
 
-        MessageHandler messageHandler = new MessageHandler(this.eventAPI, this.dataBaseAPI);
         PseudoHandler pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI);
         SessionHandler sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
+        this.messageHandler = new MessageHandler(this.eventAPI, this.dataBaseAPI, this.userManager);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
         this.networkAPI.addListener(this.discoverHandler);
+        this.networkAPI.addListener(this.messageHandler);
         this.networkAPI.addListener(sessionHandler);
-        this.networkAPI.addListener(messageHandler);
 
         this.networkAPI.startServer();
 
-//        this.dataBaseAPI.clear();
+        this.dataBaseAPI.clear();
+    }
+
+    public boolean hasMessages()
+    {
+        return this.messageHandler.hasMessage();
     }
 
     public boolean isConnected(int userId)
@@ -66,6 +72,11 @@ public class ClavarChatAPI
     public int getId(String pseudo)
     {
         return this.userManager.getId(pseudo);
+    }
+
+    public TextMessage getLastMessage()
+    {
+        return this.messageHandler.getLastMessage();
     }
 
     public ArrayList<User> getUsers()
@@ -177,7 +188,7 @@ public class ClavarChatAPI
     {
         Log.Print(this.getClass().getName() + " Saving message : [" + srcId + "] " + srcId + " --> " + dstId + " : " + message);
         String sharedId = this.getConversationSharedId(conversationId);
-        this.dataBaseAPI.addMessage(conversationId, srcId, message);
+        this.dataBaseAPI.addMessage(conversationId, srcId, dstId, message);
         this.networkAPI.sendMessage(dstId, sharedId, message);
     }
 

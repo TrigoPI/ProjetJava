@@ -4,8 +4,8 @@ import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
-import ClavarChat.Models.ClvcEvent.Login.RemoveUserEvent;
+import ClavarChat.Models.ClvcEvent.NewUserEvent;
+import ClavarChat.Models.ClvcEvent.RemoveUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcMessage.*;
 
@@ -48,7 +48,9 @@ public class SessionHandler implements MessageListener
         this.userManager.addIpToUser(data.id, dstIp);
 
         this.createSharedConversation(data.id, data.pseudo);
+        this.sendUnsentMessages(data.id);
 
+        this.networkAPI.closeClient(data.id);
         this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
@@ -67,6 +69,19 @@ public class SessionHandler implements MessageListener
         String sharedId = this.dataBaseAPI.getConversationSharedId(id);
 
         this.networkAPI.sendSharedConversationId(userId, sharedId);
-        this.networkAPI.closeClient(userId);
+    }
+
+    private void sendUnsentMessages(int userId)
+    {
+        for (int conversationId : this.dataBaseAPI.getConversationWith(userId))
+        {
+            String shared_id = this.dataBaseAPI.getConversationSharedId(conversationId);
+
+            for (int messageId : this.dataBaseAPI.getUnsentMessage(conversationId))
+            {
+                String message = this.dataBaseAPI.getMessageText(messageId);
+                this.networkAPI.sendMessage(userId, shared_id, message);
+            }
+        }
     }
 }

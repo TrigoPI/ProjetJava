@@ -1,5 +1,7 @@
 package GUI.GUIControllers.Controllers;
 
+import ClavarChat.Models.ClvcMessage.ClvcMessage;
+import ClavarChat.Models.ClvcMessage.TextMessage;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
@@ -65,6 +67,8 @@ public class ClavarChatController implements Initializable
     @FXML
     private Button settingButton;
 
+    private boolean loaded;
+
     public ClavarChatController(ClavarChatAPI api, FXMLLoader settings)
     {
         this.settings = settings;
@@ -72,6 +76,7 @@ public class ClavarChatController implements Initializable
         this.usersGUI = new HashMap<>();
         this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
+        this.loaded = false;
     }
 
     @Override
@@ -93,6 +98,10 @@ public class ClavarChatController implements Initializable
 
         this.initDiscussionContainer();
         this.initMessageBox();
+
+        this.loaded = true;
+
+        this.onTextMessage();
     }
 
     public void onRemoveUser(int userId)
@@ -221,9 +230,17 @@ public class ClavarChatController implements Initializable
         messageBox.addMessage(userId, pseudo, avatar, message, this.api.getId() != userId);
     }
 
-    public void onTextMessage(String sharedId, int userId, String message)
+    public void onTextMessage()
     {
-        Platform.runLater(() -> this.updateChatBox(sharedId, userId, message));
+        if (!this.loaded) return;
+
+        Platform.runLater(() -> {
+            while (this.api.hasMessages())
+            {
+                TextMessage message = this.api.getLastMessage();
+                this.updateChatBox(message.sharedId, message.id, message.message);
+            }
+        });
     }
 
     private void addAvatar(Pane container, Image img, boolean connected, double radius, int index)
