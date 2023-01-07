@@ -31,7 +31,7 @@ public class MessageHandler implements MessageListener
         return this.buffer.isEmpty();
     }
 
-    public ClvcMessage getLastMessage()
+    public TextMessage getLastMessage()
     {
         return this.buffer.poll();
     }
