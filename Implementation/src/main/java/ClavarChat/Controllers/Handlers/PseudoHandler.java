@@ -33,6 +33,7 @@ public class PseudoHandler
         {
             Log.Error(PseudoHandler.class.getName() + " Pseudo already used");
 
+            this.networkAPI.closeAllClients();
             this.userManager.setLogged(false);
             this.userManager.reset();
 
