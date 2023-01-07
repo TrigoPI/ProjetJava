@@ -50,7 +50,7 @@ public class ClavarChatAPI
 
         this.networkAPI.startServer();
 
-        this.dataBaseAPI.clear();
+//        this.dataBaseAPI.clear();
     }
 
     public boolean isConnected(int userId)

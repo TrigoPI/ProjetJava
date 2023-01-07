@@ -38,6 +38,7 @@ public class UserManager
 
     public boolean isConnected(int userId)
     {
+        if (userId == this.user.id) return this.isLogged();
         return this.idToIndex.containsKey(userId);
     }
 
