@@ -244,7 +244,8 @@ public class DataBaseAPI
 
     public void addMessage(int conversationId, int userId, String message)
     {
-        this.dataBaseManager.execute("INSERT INTO Message(date, text, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d')", message, conversationId, userId);
+        int sent = this.userManager.isConnected(userId)?1:0;
+        this.dataBaseManager.execute("INSERT INTO Message(date, text, sent, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d', '%d')", message, conversationId, sent, userId);
     }
 
     private void updateUser(int userId, String pseudo, byte[] avatar)

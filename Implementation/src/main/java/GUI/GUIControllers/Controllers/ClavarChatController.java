@@ -11,8 +11,11 @@ import ClavarChat.Utils.GUI.Component.Discussion.Discussion;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -20,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ import java.util.ResourceBundle;
 
 public class ClavarChatController implements Initializable
 {
+    private final FXMLLoader settings;
     private final ClavarChatAPI api;
     private final HashMap<String, Discussion> usersGUI;
     private final HashMap<String, MessageBox> messagesBoxGui;
@@ -60,8 +65,9 @@ public class ClavarChatController implements Initializable
     @FXML
     private Button settingButton;
 
-    public ClavarChatController(ClavarChatAPI api)
+    public ClavarChatController(ClavarChatAPI api, FXMLLoader settings)
     {
+        this.settings = settings;
         this.api = api;
         this.usersGUI = new HashMap<>();
         this.messagesBoxGui = new HashMap<>();
@@ -305,6 +311,16 @@ public class ClavarChatController implements Initializable
     @FXML
     private void onSettings()
     {
-        System.out.println("OOOOOOOOOOOOOOOOK");
+        try
+        {
+            Parent root = this.settings.load();
+            Scene scene = this.settingButton.getScene();
+
+            scene.setRoot(root);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
