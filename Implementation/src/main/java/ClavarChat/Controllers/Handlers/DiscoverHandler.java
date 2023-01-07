@@ -95,7 +95,7 @@ public class DiscoverHandler implements MessageListener
     {
         Log.Info(this.getClass().getName() + " Discover information from user : " + data.pseudo + " / " + "#" + data.id);
 
-        if (!this.dataBaseAPI.userExist(data.id)) this.dataBaseAPI.addUser(data.id, data.pseudo, data.avatar);
+        this.dataBaseAPI.addUser(data.id, data.pseudo, data.avatar);
         this.userManager.addUser(data.pseudo, data.id, data.avatar);
         this.userManager.addIpToUser(data.id, dstIp);
         this.updateUserCount(data);

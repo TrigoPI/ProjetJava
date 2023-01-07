@@ -1,6 +1,7 @@
 package ClavarChat.Utils.GUI.Component.MessageBox;
 
 import ClavarChat.Utils.GUI.Component.ChatMessage.ChatMessage;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -27,6 +28,15 @@ public class MessageBox extends VBox
 
         this.getChildren().add(chatMessage);
         this.last = chatMessage;
+    }
+
+    public void updateDisplay(int userId, String pseudo, Image image)
+    {
+        for (Node node : this.getChildren())
+        {
+            ChatMessage message = (ChatMessage)node;
+            if (message.getUserId() == userId) message.update(pseudo, image);
+        }
     }
 
     public void addMessage(int userId, String pseudo, Image image, String text, boolean reverse)

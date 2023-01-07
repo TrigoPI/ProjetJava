@@ -10,19 +10,22 @@ import javafx.scene.layout.VBox;
 
 public class ChatMessage extends HBox
 {
+    private final Label pseudoLabel;
+    private final Avatar avatar;
+
     private final VBox messageContainer;
     private final String styleClass;
     private final int userId;
 
     public ChatMessage(int userId, String pseudo, Image img, boolean reverse)
     {
+        this.avatar = new Avatar(img, 25, false);
+        this.pseudoLabel = new Label(pseudo);
         this.messageContainer = new VBox();
         this.userId = userId;
         this.styleClass = (reverse)?"clvc-american-river":"clvc-shy-moment";
 
         Pos position = (reverse)?Pos.TOP_LEFT:Pos.TOP_RIGHT;
-        Avatar avatar = new Avatar(img, 25, false);
-        Label pseudoLabel = new Label(pseudo);
         VBox avatarContainer = new VBox();
         VBox messageAndNameContainer = new VBox();
 
@@ -83,5 +86,11 @@ public class ChatMessage extends HBox
 
         hBox.getChildren().add(messageLable);
         this.messageContainer.getChildren().add(hBox);
+    }
+
+    public void update(String pseudo, Image image)
+    {
+        this.pseudoLabel.setText(pseudo);
+        this.avatar.changeImage(image);
     }
 }

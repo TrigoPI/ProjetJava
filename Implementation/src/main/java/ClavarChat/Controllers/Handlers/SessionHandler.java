@@ -62,9 +62,9 @@ public class SessionHandler implements MessageListener
 
     private void createSharedConversation(int userId, String pseudo, byte[] img)
     {
+        this.dataBaseAPI.addUser(userId, pseudo, img);
         if (this.dataBaseAPI.userExist(userId)) return;
 
-        this.dataBaseAPI.addUser(userId, pseudo, img);
         int id = this.dataBaseAPI.createConversation(pseudo, userId);
         String sharedId = this.dataBaseAPI.getConversationSharedId(id);
         this.networkAPI.sendSharedConversationId(userId, sharedId);

@@ -99,10 +99,10 @@ public class ClavarChatController implements Initializable
                 Discussion discussion = this.usersGUI.get(sharedId);
                 discussion.setStatus(false);
 
-                if (this.selectedUser.getSharedId().equals(sharedId))
+                if (this.selectedUser != null && this.selectedUser.getUserId() == userId)
                 {
                     Avatar avatar = (Avatar)otherAvatarContainer.getChildren().get(0);
-                    avatar.setStatus(true);
+                    avatar.setStatus(false);
                 }
             }
         });
@@ -133,8 +133,10 @@ public class ClavarChatController implements Initializable
                     discussion.changeAvatar(image);
                     discussion.changePseudo(pseudo);
 
-                    if (this.selectedUser.getSharedId().equals(sharedId))
+                    if (this.selectedUser != null && this.selectedUser.getUserId() == userId)
                     {
+                        MessageBox messageBox = this.messagesBoxGui.get(sharedId);
+                        messageBox.updateDisplay(userId, pseudo, image);
                         Avatar avatar = (Avatar)otherAvatarContainer.getChildren().get(0);
                         VBox vBox = (VBox)otherAvatarContainer.getChildren().get(1);
                         Label pseudoLabel = (Label)vBox.getChildren().get(0);
