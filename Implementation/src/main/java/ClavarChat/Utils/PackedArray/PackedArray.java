@@ -2,41 +2,56 @@ package ClavarChat.Utils.PackedArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class PackedArray<T>
 {
-    private int id;
+//    private int id;
     private final ArrayList<T> datas;
+    private final LinkedList<Integer> freeId;
     private final HashMap<Integer, Integer> idToIndex;
     private final HashMap<Integer, Integer> indexToId;
 
     public PackedArray()
     {
+//        this.id = 0;
         this.datas = new ArrayList<>();
+        this.freeId = new LinkedList<>();
         this.idToIndex = new HashMap<>();
         this.indexToId = new HashMap<>();
     }
 
     public void debug()
     {
-        System.out.println("ID --> INDEX : ITEM");
+        int i = 0;
 
-        for (int id : this.idToIndex.keySet())
+        for (T data : this.datas)
         {
-            int index = this.idToIndex.get(id);
-            T item = this.datas.get(index);
+            System.out.println("index : " + i + " --> " + data);
+            i++;
+        }
 
-            System.out.println(id + " --> " + index + " : " + item);
+        System.out.println(" ");
+        System.out.println("ID | INDEX | DATA");
+
+        for (int key : this.idToIndex.keySet())
+        {
+            int index = this.idToIndex.get(key);
+            T data = this.datas.get(index);
+            System.out.println(key  + "  | " + index + "     | " + data);
         }
     }
 
     public int add(T object)
     {
-        this.datas.add(object);
-        this.idToIndex.put(this.id, this.datas.size() - 1);
-        this.indexToId.put(this.datas.size() - 1, this.id);
+        int id = (this.freeId.isEmpty())?this.datas.size():this.freeId.poll();
+        int index = this.datas.size();
 
-        return this.id++;
+        this.datas.add(object);
+        this.idToIndex.put(id, index);
+        this.indexToId.put(index, id);
+
+        return id;
     }
 
     public ArrayList<T> getDatas()
@@ -70,8 +85,8 @@ public class PackedArray<T>
 
         this.idToIndex.remove(id);
         this.indexToId.remove(indexOfLastItem);
-
-        this.id = indexOfLastItem;
+        this.freeId.add(id);
+//        this.id = indexOfLastItem;
 
         return item;
     }
@@ -81,6 +96,6 @@ public class PackedArray<T>
         this.datas.clear();
         this.indexToId.clear();
         this.idToIndex.clear();
-        this.id = 0;
+//        this.id = 0;
     }
 }

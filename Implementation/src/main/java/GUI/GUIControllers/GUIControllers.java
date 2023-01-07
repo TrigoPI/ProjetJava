@@ -26,6 +26,7 @@ public class GUIControllers implements ClvcListener
         this.clavarChatController = clavarChatController;
 
         this.api.addListener(this, MessageEvent.TEXT_MESSAGE);
+        this.api.addListener(this, RemoveUserEvent.REMOVE_USER);
         this.api.addListener(this, LoginEvent.LOGIN_SUCCESS);
         this.api.addListener(this, LoginEvent.LOGIN_FAILED);
         this.api.addListener(this, NewUserEvent.NEW_USER);

@@ -5,6 +5,7 @@ import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcEvent.Login.NewUserEvent;
+import ClavarChat.Models.ClvcEvent.Login.RemoveUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcMessage.*;
 
@@ -56,6 +57,7 @@ public class SessionHandler implements MessageListener
     private void onLogout(LoginMessage data)
     {
         this.userManager.removeUser(data.id);
+        this.eventAPI.notify(new RemoveUserEvent(data.pseudo, data.id));
     }
 
     private void createSharedConversation(int userId, String pseudo, byte[] img)

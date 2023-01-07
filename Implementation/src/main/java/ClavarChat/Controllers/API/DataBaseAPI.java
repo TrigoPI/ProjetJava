@@ -147,6 +147,21 @@ public class DataBaseAPI
         return sharedIds.get(0);
     }
 
+    public int getConversationId(String sharedId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Conversation WHERE shared_id = %d", sharedId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting conversation with shared_id : " + sharedId);
+            return -1;
+        }
+
+        ArrayList<Integer> conversationId = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return conversationId.get(0);
+    }
+
     public int getMessageUserId(int messageId)
     {
         int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM Message WHERE message_id = %d", messageId);
