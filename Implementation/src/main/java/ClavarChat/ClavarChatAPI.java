@@ -51,7 +51,7 @@ public class ClavarChatAPI
 
         this.networkAPI.startServer();
 
-        this.dataBaseAPI.clear();
+//        this.dataBaseAPI.clear();
     }
 
     public boolean hasMessages()
@@ -192,18 +192,16 @@ public class ClavarChatAPI
         this.networkAPI.sendMessage(dstId, sharedId, message);
     }
 
-    public void closeServers()
-    {
-        this.networkAPI.closeServer();
-    }
-
-    public void closeAllClients()
-    {
-        this.networkAPI.closeAllClients();
-    }
-
     public void addListener(ClvcListener listener, String eventName)
     {
         this.eventAPI.addListener(listener, eventName);
+    }
+
+    public void stop()
+    {
+        this.logout();
+        this.networkAPI.closeAllClients();
+        this.networkAPI.closeServer();
+        this.networkAPI.closeSocketObserver();
     }
 }

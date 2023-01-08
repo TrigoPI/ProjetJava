@@ -240,6 +240,11 @@ public class DataBaseAPI
         return conversationId;
     }
 
+    public void setToSent(int messageId)
+    {
+        this.dataBaseManager.execute("UPDATE Message SET sent='1' WHERE message_id='%d'", messageId);
+    }
+
     public void addUser(int userId, String pseudo, byte[] avatar)
     {
         if (this.userExist(userId))

@@ -33,7 +33,6 @@ public class PseudoHandler
         {
             Log.Error(PseudoHandler.class.getName() + " Pseudo already used");
 
-            this.networkAPI.closeAllClients();
             this.userManager.setLogged(false);
             this.userManager.reset();
 
@@ -42,9 +41,31 @@ public class PseudoHandler
 
         Log.Info(PseudoHandler.class.getName() + " Pseudo Success");
         this.dataBaseAPI.addUser(id, pseudo, avatar);
-        this.networkAPI.sendLogin();
         this.userManager.setLogged(true);
+        this.networkAPI.sendLogin();
+        this.sendUnsentMessages();
 
         return true;
+    }
+
+    private void sendUnsentMessages()
+    {
+        for (int conversationId : this.dataBaseAPI.getConversationsId())
+        {
+            String shared_id = this.dataBaseAPI.getConversationSharedId(conversationId);
+
+            for (int userId : this.dataBaseAPI.getUsersInConversation(conversationId))
+            {
+                if (this.userManager.isConnected(userId))
+                {
+                    for (int messageId : this.dataBaseAPI.getUnsentMessage(conversationId))
+                    {
+                        String message = this.dataBaseAPI.getMessageText(messageId);
+                        this.dataBaseAPI.setToSent(messageId);
+                        this.networkAPI.sendMessage(userId, shared_id, message);
+                    }
+                }
+            }
+        }
     }
 }

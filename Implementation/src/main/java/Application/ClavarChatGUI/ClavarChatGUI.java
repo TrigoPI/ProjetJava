@@ -57,9 +57,7 @@ public class ClavarChatGUI extends Application
     @Override
     public void stop()
     {
-        this.clavarChatAPI.logout();
-        this.clavarChatAPI.closeServers();
-        this.clavarChatAPI.closeAllClients();
+        this.clavarChatAPI.stop();
     }
 
     public void run()

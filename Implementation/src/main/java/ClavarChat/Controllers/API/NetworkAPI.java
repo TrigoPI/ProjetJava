@@ -1,5 +1,6 @@
 package ClavarChat.Controllers.API;
 
+import ClavarChat.Controllers.Runnables.Network.SocketObserver.SocketObserver;
 import ClavarChat.Controllers.Runnables.Network.TCPIN.TCPIN;
 import ClavarChat.Controllers.Runnables.Network.TCPOUT.TCPOUT;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
@@ -11,6 +12,7 @@ import ClavarChat.Controllers.Runnables.Network.Server.UdpServer;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcMessage.*;
+import ClavarChat.Models.ClvcMessenger.ClvcMessenger;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
@@ -29,8 +31,10 @@ public class NetworkAPI implements NetworkListener
     private final UserManager userManager;
     private final NetworkManager networkManager;
 
-    private final HashMap<String, Messenger> messengers;
+    private final HashMap<String, ClvcMessenger> messengers;
     private final ArrayList<MessageListener> listeners;
+
+    private final SocketObserver socketObserver;
 
     private final int tcpServerID;
     private final int udpServerID;
@@ -50,6 +54,11 @@ public class NetworkAPI implements NetworkListener
 
         this.messengers = new HashMap<>();
         this.listeners = new ArrayList<>();
+
+        this.socketObserver = new SocketObserver();
+
+        int threadId = this.threadManager.createThread(this.socketObserver);
+        this.threadManager.startThread(threadId);
     }
 
     public ArrayList<String> getBroadcastAddresses()
@@ -148,6 +157,11 @@ public class NetworkAPI implements NetworkListener
         this.threadManager.startThread(udpThreadID);
     }
 
+    public void closeSocketObserver()
+    {
+        this.socketObserver.stop();
+    }
+
     public void closeServer()
     {
         this.networkManager.closeUdpServer(this.udpServerID);
@@ -164,7 +178,7 @@ public class NetworkAPI implements NetworkListener
             return;
         }
 
-        Messenger messenger = this.messengers.get(ip);
+        ClvcMessenger messenger = this.messengers.get(ip);
         Log.Info(this.getClass().getName() + " Closing " + ip);
         messenger.socket.close();
     }
@@ -174,7 +188,7 @@ public class NetworkAPI implements NetworkListener
         for (String key : this.messengers.keySet())
         {
             Log.Info(this.getClass().getName() + " Closing " + key);
-            Messenger messenger = this.messengers.get(key);
+            ClvcMessenger messenger = this.messengers.get(key);
             messenger.socket.close();
         }
     }
@@ -193,7 +207,7 @@ public class NetworkAPI implements NetworkListener
     @Override
     public void onMessengerFinished(String dstIp)
     {
-        Messenger messenger = this.messengers.get(dstIp);
+        ClvcMessenger messenger = this.messengers.get(dstIp);
 
         if (!messenger.out.isFinished()) return;
         if (!messenger.in.isFinished()) return;
@@ -210,16 +224,18 @@ public class NetworkAPI implements NetworkListener
         ClvcSocket socket = new ClvcSocket(socketId, srcIp, srcPort, dstIp, dstPort, this.networkManager);
         TCPIN in  = new TCPIN(socket, this);
         TCPOUT out = new TCPOUT(socket, this);
-        Messenger messenger = new Messenger(socket, in, out);
+        ClvcMessenger messenger = new ClvcMessenger(socket, in, out);
 
         this.runMessenger(messenger);
+
         this.messengers.put(srcIp, messenger);
+        this.socketObserver.addMessenger(messenger);
     }
 
     @Override
     public void onConnectionSuccess(String dstIp)
     {
-        Messenger messenger = this.messengers.get(dstIp);
+        ClvcMessenger messenger = this.messengers.get(dstIp);
         this.runMessenger(messenger);
         Log.Print(this.getClass().getName() + " Socket state : " + messenger.socket.getState());
     }
@@ -248,6 +264,8 @@ public class NetworkAPI implements NetworkListener
         {
             listener.onData(from, data);
         }
+
+        this.messengers.get(from).resetTimer();
     }
 
     private void sendUDP(String ip, int port, ClvcMessage data)
@@ -265,7 +283,7 @@ public class NetworkAPI implements NetworkListener
 
     private void sendDataToNetwork(String ip)
     {
-        Messenger messenger = this.messengers.get(ip);
+        ClvcMessenger messenger = this.messengers.get(ip);
         if (!messenger.out.isFinished()) return;
         int threadId = this.threadManager.createThread(messenger.out);
         this.threadManager.startThread(threadId);
@@ -274,8 +292,9 @@ public class NetworkAPI implements NetworkListener
     private void putDataToSocket(String ip, ClvcMessage data)
     {
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
-        Messenger messenger = this.messengers.get(ip);
+        ClvcMessenger messenger = this.messengers.get(ip);
         messenger.socket.put(data);
+        messenger.resetTimer();
     }
 
     private void createNewClient(String ip, int port)
@@ -291,8 +310,9 @@ public class NetworkAPI implements NetworkListener
         ClvcSocket socket = new ClvcSocket(socketId, ip, port, this.networkManager);
         TCPIN  in  = new TCPIN(socket, this);
         TCPOUT out = new TCPOUT(socket, this);
-        Messenger messenger = new Messenger(socket, in, out);
+        ClvcMessenger messenger = new ClvcMessenger(socket, in, out);
 
+        this.socketObserver.addMessenger(messenger);
         this.messengers.put(ip, messenger);
 
         this.threadManager.setRunnable(threadId, new TcpConnection(socket, this));
@@ -300,7 +320,7 @@ public class NetworkAPI implements NetworkListener
 
     }
 
-    private void runMessenger(Messenger messenger)
+    private void runMessenger(ClvcMessenger messenger)
     {
         int threadInId  = this.threadManager.createThread();
         int threadOutId = this.threadManager.createThread();
@@ -310,19 +330,5 @@ public class NetworkAPI implements NetworkListener
 
         this.threadManager.startThread(threadInId);
         this.threadManager.startThread(threadOutId);
-    }
-
-    private static class Messenger
-    {
-        public ClvcSocket socket;
-        public TCPIN  in;
-        public TCPOUT out;
-
-        public Messenger(ClvcSocket socket, TCPIN in, TCPOUT out)
-        {
-            this.socket = socket;
-            this.in  = in;
-            this.out = out;
-        }
     }
 }

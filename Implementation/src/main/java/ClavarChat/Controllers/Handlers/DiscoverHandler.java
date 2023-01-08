@@ -47,7 +47,6 @@ public class DiscoverHandler implements MessageListener
 
         if (!this.hasSucceed())
         {
-            this.networkAPI.closeAllClients();
             this.reset();
             return false;
         }

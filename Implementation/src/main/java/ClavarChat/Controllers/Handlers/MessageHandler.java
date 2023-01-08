@@ -7,6 +7,7 @@ import ClavarChat.Models.ClvcEvent.MessageEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcMessage.ClvcMessage;
 import ClavarChat.Models.ClvcMessage.TextMessage;
+import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -28,7 +29,7 @@ public class MessageHandler implements MessageListener
 
     public boolean hasMessage()
     {
-        return this.buffer.isEmpty();
+        return !this.buffer.isEmpty();
     }
 
     public TextMessage getLastMessage()
@@ -47,8 +48,10 @@ public class MessageHandler implements MessageListener
 
     private void onTextMessage(TextMessage data)
     {
-        System.out.println("New Message from : [ " + data.pseudo + " / " + data.sharedId + " ] --> " + data.message);
+        Log.Info("New Message from : [ " + data.pseudo + " / " + data.sharedId + " ] --> " + data.message);
         int conversationId = this.dataBaseAPI.getConversationId(data.sharedId);
+
+        this.buffer.add(data);
         this.dataBaseAPI.addMessage(conversationId, data.id, this.userManager.getId(), data.message);
         this.eventAPI.notify(new MessageEvent());
     }

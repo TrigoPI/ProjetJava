@@ -43,14 +43,12 @@ public class SessionHandler implements MessageListener
 
     private void onLogin(LoginMessage data, String dstIp)
     {
-
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
 
         this.createSharedConversation(data.id, data.pseudo);
         this.sendUnsentMessages(data.id);
 
-        this.networkAPI.closeClient(data.id);
         this.dataBaseAPI.addUser(data.id, data.pseudo, data.img);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
@@ -80,6 +78,7 @@ public class SessionHandler implements MessageListener
             for (int messageId : this.dataBaseAPI.getUnsentMessage(conversationId))
             {
                 String message = this.dataBaseAPI.getMessageText(messageId);
+                this.dataBaseAPI.setToSent(messageId);
                 this.networkAPI.sendMessage(userId, shared_id, message);
             }
         }
