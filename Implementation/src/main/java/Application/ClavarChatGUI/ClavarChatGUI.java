@@ -1,5 +1,6 @@
 package Application.ClavarChatGUI;
 
+import ClavarChat.Utils.Audio.Audio;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
 import GUI.GUIControllers.Controllers.ClavarChatController;
@@ -24,6 +25,7 @@ public class ClavarChatGUI extends Application
     public void start(Stage stage) throws IOException
     {
         Log.clearLogFile();
+        Audio.init();
 
         this.clavarChatAPI = new ClavarChatAPI(8080, 7070);
 
@@ -58,6 +60,7 @@ public class ClavarChatGUI extends Application
     public void stop()
     {
         this.clavarChatAPI.stop();
+        Audio.shutdown();
     }
 
     public void run()

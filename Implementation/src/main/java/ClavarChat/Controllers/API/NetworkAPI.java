@@ -260,12 +260,16 @@ public class NetworkAPI implements NetworkListener
             return;
         }
 
+        if (this.messengers.containsKey(from))
+        {
+            this.messengers.get(from).resetTimer();
+        }
+
         for (MessageListener listener : this.listeners)
         {
             listener.onData(from, data);
         }
 
-        this.messengers.get(from).resetTimer();
     }
 
     private void sendUDP(String ip, int port, ClvcMessage data)

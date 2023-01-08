@@ -83,7 +83,7 @@
                               <Button alignment="CENTER" contentDisplay="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" styleClass="clvc-plane-icon" />
                            </children>
                         </VBox>
-                        <MFXTextField fx:id="messageInput" floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxWidth="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" prefWidth="625.0" styleClass="clvc-font-16px" />
+                        <MFXTextField fx:id="messageInput" floatMode="BORDER" floatingText="Aa" floatingTextGap="10.0" maxWidth="-Infinity" minWidth="-Infinity" onAction="#onSendMessage" onInputMethodTextChanged="#onKeyPressed" onKeyPressed="#onKeyPressed" prefWidth="625.0" styleClass="clvc-font-16px" />
                      </children>
                   </HBox>
                </children>

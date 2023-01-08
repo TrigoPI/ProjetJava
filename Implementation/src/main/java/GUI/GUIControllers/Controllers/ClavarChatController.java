@@ -2,6 +2,8 @@ package GUI.GUIControllers.Controllers;
 
 import ClavarChat.Models.ClvcMessage.ClvcMessage;
 import ClavarChat.Models.ClvcMessage.TextMessage;
+import ClavarChat.Utils.Audio.Audio;
+import ClavarChat.Utils.Path.Path;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
@@ -21,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -69,6 +72,8 @@ public class ClavarChatController implements Initializable
 
     private boolean loaded;
 
+    private final Audio notification;
+
     public ClavarChatController(ClavarChatAPI api, FXMLLoader settings)
     {
         this.settings = settings;
@@ -77,6 +82,7 @@ public class ClavarChatController implements Initializable
         this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
         this.loaded = false;
+        this.notification = new Audio("file:" + Path.getWorkingPath() + "/src/main/resources/Sounds/notification2.wav");
     }
 
     @Override
@@ -237,8 +243,10 @@ public class ClavarChatController implements Initializable
         Platform.runLater(() -> {
             while (this.api.hasMessages())
             {
+                this.notification.play();
                 TextMessage message = this.api.getLastMessage();
                 this.updateChatBox(message.sharedId, message.id, message.message);
+                this.messagesContainer.setVvalue(1.0);
             }
         });
     }
@@ -322,6 +330,7 @@ public class ClavarChatController implements Initializable
             this.addMessage(sharedId, userId, message);
             this.api.sendMessage(userId, otherId, conversationId, message);
             this.messageInput.clear();
+            this.messagesContainer.setVvalue(1.0);
         }
     }
 
@@ -339,5 +348,11 @@ public class ClavarChatController implements Initializable
         {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onKeyPressed(KeyEvent event)
+    {
+        System.out.println("OK");
     }
 }
