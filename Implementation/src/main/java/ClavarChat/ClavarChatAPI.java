@@ -51,6 +51,10 @@ public class ClavarChatAPI
 
         this.dataBaseAPI.clear();
 
+        BytesImage img1 = new BytesImage(Path.getWorkingPath() + "/src/main/resources/Application/ClavarChatGUI/IMG/Logo.png");
+        this.userManager.setUser(6969, "Clément", img1.getBytes());
+        this.dataBaseAPI.addUser(6969, "Clément", img1.getBytes());
+
         /*BytesImage img1 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\Logo.png");
         BytesImage img2 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\LogoText.png");
         BytesImage img3 = new BytesImage(Path.getWorkingPath() + "\\src\\main\\resources\\Application\\ClavarChatGUI\\IMG\\user1.jpg");
@@ -210,6 +214,8 @@ public class ClavarChatAPI
         this.networkAPI.closeAllClients();
     }
 
+
+    public void updateUser(int userId,String pseudo){this.dataBaseAPI.updatePseudo(userId,pseudo);}
 //    private void onTextMessage(TextMessage data, String src)
 //    {
 //        Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);

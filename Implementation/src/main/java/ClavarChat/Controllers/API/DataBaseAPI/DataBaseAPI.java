@@ -145,6 +145,11 @@ public class DataBaseAPI
         return messages.get(0);
     }
 
+    public void updatePseudo(int userId,String pseudo)
+    {
+        this.dataBaseManager.execute("UPDATE User SET pseudo='%s' WHERE user_id='%d'",pseudo,userId);
+    }
+
     public void addUser(int userId, String pseudo, byte[] avatar)
     {
         if (this.userExist(userId))
@@ -191,6 +196,7 @@ public class DataBaseAPI
         this.dataBaseManager.executePreparedStatement(statementId);
         this.dataBaseManager.removePreparedStatement(statementId);
     }
+
 
     public void clear()
     {
