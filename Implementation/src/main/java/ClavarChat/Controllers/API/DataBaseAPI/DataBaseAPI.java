@@ -150,6 +150,15 @@ public class DataBaseAPI
         this.dataBaseManager.execute("UPDATE User SET pseudo='%s' WHERE user_id='%d'",pseudo,userId);
     }
 
+    public void updateAvatar(int userId, byte[] avatar)
+    {
+        int ID = this.dataBaseManager.createPreparedStatement("UPDATE User SET avatar=? WHERE user_id=?");
+        this.dataBaseManager.setBytes(ID, 1 , avatar);
+        this.dataBaseManager.setInt(ID, 2, userId);
+        this.dataBaseManager.executePreparedStatement(ID);
+        this.dataBaseManager.removePreparedStatement(ID);
+    }
+
     public void addUser(int userId, String pseudo, byte[] avatar)
     {
         if (this.userExist(userId))

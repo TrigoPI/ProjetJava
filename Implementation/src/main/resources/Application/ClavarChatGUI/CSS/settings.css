@@ -39,3 +39,19 @@
     -fx-background-radius:50px;
     -fx-text-color:#ffffff;
 }
+
+.clvc-text-field
+{
+    -fx-background-color: none;
+    -fx-border-color: none;
+}
+
+
+.clvc-text-field:floating .floating-text
+{
+    -fx-background-color: #bdc3c7;
+    -fx-font-size:16px;
+    -fx-text-fill:#dfe6e9;
+    -fx-padding:5px;
+    -fx-background-radius:5px;
+}

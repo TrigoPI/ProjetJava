@@ -216,6 +216,8 @@ public class ClavarChatAPI
 
 
     public void updateUser(int userId,String pseudo){this.dataBaseAPI.updatePseudo(userId,pseudo);}
+
+    public void updateAvatar(int userId, byte[] avatar){this.dataBaseAPI.updateAvatar(userId, avatar);}
 //    private void onTextMessage(TextMessage data, String src)
 //    {
 //        Log.Info(this.getClass().getName() + " Message from [" + src + "] --> " + data.pseudo + "/#" + data.id + " : " + data.message);
