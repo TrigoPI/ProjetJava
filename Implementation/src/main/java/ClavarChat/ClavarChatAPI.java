@@ -16,6 +16,7 @@ import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
+import Resources.Resources;
 
 import java.util.ArrayList;
 
@@ -169,13 +170,25 @@ public class ClavarChatAPI
         return new BytesImage(this.userManager.getAvatar(userId));
     }
 
-    public void login(String pseudo, String path)
+    public void login(String pseudo)
     {
         Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo);
 
+        BytesImage avatar;
         Discover discover = new Discover(this.discoverHandler, this.eventAPI);
+
+        int userId = this.userManager.getId();
         int threadId = this.threadManager.createThread(discover);
-        BytesImage avatar = new BytesImage(path);
+
+        if (this.dataBaseAPI.userExist(userId))
+        {
+            byte[] buffer = this.dataBaseAPI.getUserAvatar(userId);
+            avatar = new BytesImage(buffer);
+        }
+        else
+        {
+            avatar = new BytesImage(Resources.IMG.USER_1);
+        }
 
         this.userManager.setUser(pseudo, avatar.getBytes());
         this.threadManager.startThread(threadId);
@@ -199,13 +212,15 @@ public class ClavarChatAPI
         this.networkAPI.sendMessage(dstId, sharedId, message);
     }
 
-    public void updateUser(int userId,String pseudo)
+    public void updatePseudo(int userId,String pseudo)
     {
-        this.dataBaseAPI.updatePseudo(userId,pseudo);
+        this.userManager.changePseudo(userId, pseudo);
+        this.dataBaseAPI.updatePseudo(userId, pseudo);
     }
 
     public void updateAvatar(int userId, byte[] avatar)
     {
+        this.userManager.changeAvatar(userId, avatar);
         this.dataBaseAPI.updateAvatar(userId, avatar);
     }
 

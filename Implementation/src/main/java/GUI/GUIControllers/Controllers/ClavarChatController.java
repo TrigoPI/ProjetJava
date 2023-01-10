@@ -92,19 +92,40 @@ public class ClavarChatController extends ClvcController
         InputStream in = buffer.toInputStream();
         Image avatar = new Image(in);
         int id = this.api.getId();
+        this.loaded = true;
 
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
         this.chatContainer.setVisible(false);
 
         this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
-
         this.initDiscussionContainer();
         this.initMessageBox();
-
-        this.loaded = true;
-
         this.onTextMessage();
+    }
+
+    @Override
+    public void onChange()
+    {
+        String pseudo = this.api.getPseudo();
+        BytesImage buffer = this.api.getAvatar();
+        InputStream in = buffer.toInputStream();
+        Image image = new Image(in);
+        int id = this.api.getId();
+
+        this.userName.setText(pseudo);
+        this.userId.setText("#" + id);
+        this.chatContainer.setVisible(false);
+
+        this.userAvatarContainer.getChildren().remove(0);
+        this.addAvatar(this.userAvatarContainer, image, true, 50, 0);
+
+        if (this.selectedUser != null)
+        {
+            String sharedId = this.selectedUser.getSharedId();
+            MessageBox messageBox = this.messagesBoxGui.get(sharedId);
+            messageBox.updateDisplay(id, pseudo, image);
+        }
     }
 
     public void onRemoveUser(int userId)
@@ -336,9 +357,18 @@ public class ClavarChatController extends ClvcController
     {
         try
         {
-            Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.load();
-            Scene scene = this.settingButton.getScene();
-            scene.setRoot(root);
+            if (Resources.FXML.LOADER.SETTINGS_LOADER.getRoot() == null)
+            {
+                Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.load();
+                Scene scene = this.settingButton.getScene();
+                scene.setRoot(root);
+            }
+            else
+            {
+                Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.getRoot();
+                Scene scene = this.settingButton.getScene();
+                scene.setRoot(root);
+            }
         }
         catch (IOException e)
         {

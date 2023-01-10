@@ -1,41 +1,46 @@
-.clvc-buttonradius
-{
+.clvc-buttonradius {
     -fx-background-radius: 20;
 }
-.clvc-light-green
-{
+.clvc-light-green {
     -fx-background-color:#78e08f;
 }
 
-.clvc-blue-azur
-{
+.clvc-blue-azur {
     -fx-background-color: #0984e3;
 }
 
-.clvc-clear-grey
-{
+.clvc-clear-grey {
     -fx-background-color: #99AAB0;
 }
 
-.clvc-vboxradius
-{
+.clvc-vboxradius {
     -fx-background-radius: 30;
 }
 
-.clvc-input .floating-text
-{
+.clvc-input .floating-text {
     -fx-background-color: transparent;
 }
 
-.clvc-input
-{
+.clvc-input {
     -fx-border-color:none;
     -fx-border-width:0;
 }
 
-.clvc-pseudo-field
-{
+.clvc-pseudo-field {
     -fx-background-color:#78858A;
     -fx-background-radius:50px;
     -fx-text-color:#ffffff;
+}
+
+.clvc-text-field {
+    -fx-border-color: none;
+    -fx-border-width: 0px;
+}
+
+.clvc-text-field:floating .floating-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #dfe6e9;
+    -fx-background-color: #bdc3c7;
+    -fx-padding: 5px;
+    -fx-background-radius: 5px;
 }

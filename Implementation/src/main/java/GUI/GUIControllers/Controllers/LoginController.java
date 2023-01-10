@@ -66,6 +66,12 @@ public class LoginController extends ClvcController
         this.loginButton.setOnMouseExited(this::onMouseExited);
     }
 
+    @Override
+    public void onChange()
+    {
+
+    }
+
     public void onLoginFailed()
     {
         this.loginButton.setVisible(true);
@@ -135,7 +141,7 @@ public class LoginController extends ClvcController
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, Resources.IMG.LOGO);
+            this.api.login(pseudo);
         }
     }
 }

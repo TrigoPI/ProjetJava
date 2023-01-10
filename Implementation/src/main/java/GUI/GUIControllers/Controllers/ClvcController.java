@@ -15,6 +15,7 @@ public abstract class ClvcController implements Initializable
         this.api = api;
     }
 
+    public abstract void onChange();
     @Override
     public abstract void initialize(URL url, ResourceBundle resourceBundle);
 }

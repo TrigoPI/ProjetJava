@@ -205,6 +205,44 @@ public class UserManager
         userData.addresses.add(ip);
     }
 
+    public void changePseudo(int userId, String pseudo)
+    {
+        if (userId == this.user.id)
+        {
+            this.user.pseudo = pseudo;
+            return;
+        }
+
+        if (!this.idExist(userId))
+        {
+            Log.Error(this.getClass().getName() + " No user with id : " + userId);
+            return;
+        }
+
+        int index = this.idToIndex.get(userId);
+        UserData userData = this.users.get(index);
+        userData.user.pseudo = pseudo;
+    }
+
+    public void changeAvatar(int userId, byte[] avatar)
+    {
+        if (userId == this.user.id)
+        {
+            this.avatar = avatar;
+            return;
+        }
+
+        if (!this.idExist(userId))
+        {
+            Log.Error(this.getClass().getName() + " No user with id : " + userId);
+            return;
+        }
+
+        int index = this.idToIndex.get(userId);
+        UserData userData = this.users.get(index);
+        userData.avatar = avatar;
+    }
+
     public void removeUser(int userId)
     {
         if (this.idToIndex.containsKey(userId))
@@ -237,7 +275,7 @@ public class UserManager
     private static class UserData
     {
         public final User user;
-        public final byte[] avatar;
+        public byte[] avatar;
         public final ArrayList<String> addresses;
 
         public UserData(User user, byte[] avatar)

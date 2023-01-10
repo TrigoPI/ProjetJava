@@ -1,7 +1,9 @@
 package Resources;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,7 +30,7 @@ public class Resources
 
     public static class SOUND
     {
-        public static final String NOTIFICATION = getUri("SOUND/notification.wav").getPath();
+        public static final String NOTIFICATION = getUri("SOUND/notification1.wav").getPath();
         public static final String ARGH         = getUri("SOUND/notification2.wav").getPath();
     }
 
