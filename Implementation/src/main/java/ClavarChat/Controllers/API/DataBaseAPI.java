@@ -23,9 +23,9 @@ public class DataBaseAPI
     public boolean userExist(int id)
     {
         int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM User WHERE user_id = %d", id);
-        boolean isEmpty = !this.dataBaseManager.decodeAsInt(resultId, 1).isEmpty();
+        ArrayList<Integer> data = this.dataBaseManager.decodeAsInt(resultId, 1);
         this.dataBaseManager.removeResultSet(resultId);
-        return isEmpty;
+        return !data.isEmpty();
     }
 
     public String getUserPseudo(int userId)
@@ -250,6 +250,7 @@ public class DataBaseAPI
     {
         if (this.userExist(userId))
         {
+            Log.Print(this.getClass().getName() + " user : " + userId + " already in the dataBase, updating user");
             this.updateUser(userId, pseudo, avatar);
             return;
         }
