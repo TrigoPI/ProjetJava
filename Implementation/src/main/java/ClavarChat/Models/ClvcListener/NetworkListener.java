@@ -1,6 +1,6 @@
 package ClavarChat.Models.ClvcListener;
 
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 
 public interface NetworkListener
 {
@@ -8,5 +8,5 @@ public interface NetworkListener
     void onConnectionSuccess(String dstIp);
     void onConnectionFailed(int socketId, String dstIp);
     void onMessengerFinished(String dstIp);
-    void onPacket(String from, int tcpPort, ClvcMessage data);
+    void onPacket(String from, int tcpPort, ClvcNetworkMessage data);
 }

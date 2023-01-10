@@ -1,8 +1,8 @@
 package GUI.GUIControllers.Controllers;
 
+import Resources.Resources;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.GUI.Animation.FadeColor.FadeColor;
-import ClavarChat.Utils.Path.Path;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.Event;
 import ClavarChat.ClavarChatAPI;
@@ -22,10 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginController implements Initializable
+public class LoginController extends ClvcController
 {
-    private final ClavarChatAPI api;
-
     @FXML
     private VBox parentContainerLogin;
 
@@ -47,12 +45,9 @@ public class LoginController implements Initializable
     @FXML
     private MFXProgressSpinner spinnerBar;
 
-    private final FXMLLoader clavarChat;
-
-    public LoginController(ClavarChatAPI api, FXMLLoader clavarChat)
+    public LoginController(ClavarChatAPI api)
     {
-        this.api = api;
-        this.clavarChat = clavarChat;
+        super(api);
     }
 
     @Override
@@ -86,17 +81,13 @@ public class LoginController implements Initializable
     {
         try
         {
-            this.spinnerBar.setVisible(false);
-            this.spinnerBar.setManaged(false);
-
-            Parent root  = this.clavarChat.load();
+            Parent root = Resources.FXML.LOADER.CLAVARCHAT_LOADER.load();
             Scene scene = loginButton.getScene();
-
             scene.setRoot(root);
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -144,7 +135,7 @@ public class LoginController implements Initializable
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, Path.getWorkingPath() + "/src/main/resources/Application/ClavarChatGUI/IMG/user1.jpg");
+            this.api.login(pseudo, Resources.IMG.USER_1);
         }
     }
 }

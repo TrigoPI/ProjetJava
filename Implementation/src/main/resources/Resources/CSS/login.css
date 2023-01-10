@@ -1,0 +1,14 @@
+@import "color.css"
+
+.clvc-login-container {
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 20, 0.5, 2, 2);
+}
+
+.clvc-login-button {
+    -fx-cursor: hand;
+    -fx-font-size: 24px;
+    -fx-text-fill: WHITE;
+    -fx-background-color: clvc-lime-soap;
+}

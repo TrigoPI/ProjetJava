@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="987.0" prefWidth="1292.0" spacing="100.0" styleClass="clvc-dracula-orchid" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ImageView fitHeight="363.0" fitWidth="755.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../IMG/LogoText.png" />
+            </image>
+        </ImageView>
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+            <children>
+                <HBox fx:id="modifpage" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                    <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Clément #6969">
+                            <font>
+                                <Font name="Arial" size="30.0" />
+                            </font>
+                        </Text>
+                        <MFXButton prefHeight="51.0" prefWidth="222.0" text="Modifier photo de profil" textFill="WHITE">
+                            <font>
+                                <Font name="Arial Bold" size="17.0" />
+                            </font>
+                            <styleClass>
+                                <String fx:value="clvc-buttonradius" />
+                                <String fx:value="clvc-blue-azur" />
+                            </styleClass>
+                        </MFXButton>
+                    </children>
+                </HBox>
+                <VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="226.0" prefWidth="488.0" spacing="20.0">
+                    <styleClass>
+                        <String fx:value="clvc-clear-grey" />
+                        <String fx:value="clvc-vboxradius" />
+                    </styleClass>
+                    <children>
+                        <MFXTextField fx:id="pseudoField" floatMode="ABOVE" floatingText="Nouveau Pseudonyme" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" selectable="false" textLimit="500">
+                            <styleClass>
+                                <String fx:value="clvc-input" />
+                                <String fx:value="clvc-pseudo-field" />
+                            </styleClass>
+                            <textFill>
+                                <Color red="1.0" green="1.0" blue="1.0" opacity="0.8700000047683716" />
+                            </textFill>
+                        </MFXTextField>
+                        <MFXButton maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="250.0" text="Appliquer Modification">
+                            <styleClass>
+                                <String fx:value="clvc-light-green" />
+                                <String fx:value="clvc-buttonradius" />
+                            </styleClass>
+                        </MFXButton>
+                    </children>
+                </VBox>
+            </children>
+            <styleClass>
+                <String fx:value="clvc-american-river" />
+                <String fx:value="clvc-vboxradius" />
+            </styleClass>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@../CSS/utils.css" />
+        <URL value="@../CSS/settings.css" />
+    </stylesheets>
+</VBox>

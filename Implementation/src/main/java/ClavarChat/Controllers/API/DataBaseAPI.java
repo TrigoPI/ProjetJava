@@ -4,6 +4,7 @@ import ClavarChat.Controllers.Managers.DataBase.DataBaseManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.Path.Path;
+import Resources.Resources;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class DataBaseAPI
 
     public DataBaseAPI(UserManager userManager)
     {
-        this.dataBaseManager = new DataBaseManager(Path.getWorkingPath() + "/src/main/resources/BDD/ClavarDataBase.db");
+        this.dataBaseManager = new DataBaseManager(Resources.BDD.BDD_FILE);
         this.userManager = userManager;
     }
 

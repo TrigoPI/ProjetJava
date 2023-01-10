@@ -7,7 +7,7 @@ import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcEvent.NewUserEvent;
 import ClavarChat.Models.ClvcEvent.RemoveUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
-import ClavarChat.Models.ClvcMessage.*;
+import ClavarChat.Models.ClvcNetworkMessage.*;
 
 public class SessionHandler implements MessageListener
 {
@@ -25,7 +25,7 @@ public class SessionHandler implements MessageListener
     }
 
     @Override
-    public void onData(String srcIp, ClvcMessage message)
+    public void onData(String srcIp, ClvcNetworkMessage message)
     {
         switch (message.type)
         {

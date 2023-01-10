@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Runnables.Network.TCPIN;
 
 import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcListener.NetworkListener;
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
 import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
@@ -51,6 +51,6 @@ public class TCPIN implements TMRunnable
     private void notify(NetworkPaquet packet)
     {
         if (packet == null) return;
-        this.listener.onPacket(this.socket.getDistantIp(), this.socket.getDistantPort(), (ClvcMessage)packet.data);
+        this.listener.onPacket(this.socket.getDistantIp(), this.socket.getDistantPort(), (ClvcNetworkMessage)packet.data);
     }
 }

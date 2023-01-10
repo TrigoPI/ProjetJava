@@ -4,9 +4,9 @@ import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
-import ClavarChat.Models.ClvcMessage.DiscoverRequestMessage;
-import ClavarChat.Models.ClvcMessage.DiscoverResponseMessage;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
+import ClavarChat.Models.ClvcNetworkMessage.DiscoverRequestMessage;
+import ClavarChat.Models.ClvcNetworkMessage.DiscoverResponseMessage;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
@@ -56,7 +56,7 @@ public class DiscoverHandler implements MessageListener
     }
 
     @Override
-    public void onData(String srcIp, ClvcMessage message)
+    public void onData(String srcIp, ClvcNetworkMessage message)
     {
         switch (message.type)
         {

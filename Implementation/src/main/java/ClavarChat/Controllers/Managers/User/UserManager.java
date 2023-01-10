@@ -4,6 +4,7 @@ import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
 import ClavarChat.Utils.Path.Path;
+import Resources.Resources;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -11,9 +12,7 @@ import java.util.HashMap;
 
 public class UserManager
 {
-    private final String CONFIG_FILE_PATH = Path.getWorkingPath() + "/src/main/resources/Conf/Conf.json";
-
-    private User user;
+    private final User user;
     private byte[] avatar;
 
     private final PackedArray<UserData> users;
@@ -24,7 +23,7 @@ public class UserManager
 
     public UserManager()
     {
-        JSONObject jsonObject = Path.parseJSON(CONFIG_FILE_PATH);
+        JSONObject jsonObject = Path.parseJSON(Resources.CONFIG.CONF_FILE);
         String userId = (String)jsonObject.get("userId");
 
         this.user = new User("", Integer.parseInt(userId));

@@ -1,9 +1,8 @@
 package GUI.GUIControllers.Controllers;
 
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
-import ClavarChat.Models.ClvcMessage.TextMessage;
+import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
 import ClavarChat.Utils.Audio.Audio;
-import ClavarChat.Utils.Path.Path;
+import Resources.Resources;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
@@ -35,10 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-public class ClavarChatController implements Initializable
+public class ClavarChatController extends ClvcController
 {
-    private final FXMLLoader settings;
-    private final ClavarChatAPI api;
     private final HashMap<String, Discussion> usersGUI;
     private final HashMap<String, MessageBox> messagesBoxGui;
     private Discussion selectedUser;
@@ -74,15 +71,15 @@ public class ClavarChatController implements Initializable
 
     private final Audio notification;
 
-    public ClavarChatController(ClavarChatAPI api, FXMLLoader settings)
+    public ClavarChatController(ClavarChatAPI api)
     {
-        this.settings = settings;
-        this.api = api;
+        super(api);
+
         this.usersGUI = new HashMap<>();
         this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
         this.loaded = false;
-        this.notification = new Audio("file:" + Path.getWorkingPath() + "/src/main/resources/Sounds/notification2.wav");
+        this.notification = new Audio("file://" + Resources.SOUND.NOTIFICATION);
     }
 
     @Override
@@ -339,9 +336,8 @@ public class ClavarChatController implements Initializable
     {
         try
         {
-            Parent root = this.settings.load();
+            Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.load();
             Scene scene = this.settingButton.getScene();
-
             scene.setRoot(root);
         }
         catch (IOException e)

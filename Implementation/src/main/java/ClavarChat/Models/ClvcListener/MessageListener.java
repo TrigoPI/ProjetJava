@@ -1,8 +1,8 @@
 package ClavarChat.Models.ClvcListener;
 
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 
 public interface MessageListener
 {
-    void onData(String srcIp, ClvcMessage message);
+    void onData(String srcIp, ClvcNetworkMessage message);
 }

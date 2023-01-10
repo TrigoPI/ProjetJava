@@ -11,7 +11,7 @@ import ClavarChat.Controllers.Runnables.Network.Server.TcpServer;
 import ClavarChat.Controllers.Runnables.Network.Server.UdpServer;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcListener.NetworkListener;
-import ClavarChat.Models.ClvcMessage.*;
+import ClavarChat.Models.ClvcNetworkMessage.*;
 import ClavarChat.Models.ClvcMessenger.ClvcMessenger;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
 import ClavarChat.Models.User.User;
@@ -250,7 +250,7 @@ public class NetworkAPI implements NetworkListener
     }
 
     @Override
-    public void onPacket(String from, int tcpPort, ClvcMessage data)
+    public void onPacket(String from, int tcpPort, ClvcNetworkMessage data)
     {
         ArrayList<String> ips = this.networkManager.getUserIp();
 
@@ -272,12 +272,12 @@ public class NetworkAPI implements NetworkListener
 
     }
 
-    private void sendUDP(String ip, int port, ClvcMessage data)
+    private void sendUDP(String ip, int port, ClvcNetworkMessage data)
     {
         this.networkManager.udpSend(data, ip, port);
     }
 
-    private void sendTCP(String ip, int port, ClvcMessage data)
+    private void sendTCP(String ip, int port, ClvcNetworkMessage data)
     {
         Log.Print(this.getClass().getName() + " Trying to send data to : " + ip + ":" + port);
         this.createNewClient(ip, port);
@@ -293,7 +293,7 @@ public class NetworkAPI implements NetworkListener
         this.threadManager.startThread(threadId);
     }
 
-    private void putDataToSocket(String ip, ClvcMessage data)
+    private void putDataToSocket(String ip, ClvcNetworkMessage data)
     {
         Log.Print(this.getClass().getName() + " Getting client : " + ip);
         ClvcMessenger messenger = this.messengers.get(ip);

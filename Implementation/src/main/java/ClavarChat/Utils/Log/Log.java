@@ -7,24 +7,9 @@ import java.util.Date;
 
 public class Log
 {
-    private static final String path = "./src/main/java/ClavarChat/Utils/Log/log.txt";
     private static boolean active = true;
     private static boolean save = false;
-    private static final ArrayList<String> logs = new ArrayList<String>();
-
-    public static void clearLogFile()
-    {
-        try
-        {
-            PrintWriter  writer = new PrintWriter(path);
-            writer.print("");
-            writer.close();
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-    }
+    private static final ArrayList<String> logs = new ArrayList<>();
 
     public static void savingOn()
     {
@@ -77,30 +62,6 @@ public class Log
         String date = format.format(new Date());
         String msgFormat = "[" + date + "] " + a;
 
-        writeLog(msgFormat);
-
-//        if (save) logs.add(color + msgFormat + ConsoleColors.RESET);
         if (active) System.out.println(color + msgFormat + ConsoleColors.RESET);
-    }
-
-    private static void writeLog(String log)
-    {
-        try
-        {
-            FileWriter fw = new FileWriter(path, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-
-            pw.println(log);
-            pw.flush();
-
-            pw.close();
-            bw.close();
-            fw.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 }

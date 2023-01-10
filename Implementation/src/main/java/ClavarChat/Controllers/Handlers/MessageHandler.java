@@ -5,8 +5,8 @@ import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcEvent.MessageEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
-import ClavarChat.Models.ClvcMessage.ClvcMessage;
-import ClavarChat.Models.ClvcMessage.TextMessage;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
+import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -38,7 +38,7 @@ public class MessageHandler implements MessageListener
     }
 
     @Override
-    public void onData(String srcIp, ClvcMessage message)
+    public void onData(String srcIp, ClvcNetworkMessage message)
     {
         switch (message.type)
         {

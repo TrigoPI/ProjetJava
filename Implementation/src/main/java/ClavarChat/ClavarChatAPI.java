@@ -11,7 +11,7 @@ import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Controllers.Runnables.Discover.Discover;
 import ClavarChat.Models.ClvcListener.ClvcListener;
-import ClavarChat.Models.ClvcMessage.TextMessage;
+import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
 import ClavarChat.Models.User.User;
