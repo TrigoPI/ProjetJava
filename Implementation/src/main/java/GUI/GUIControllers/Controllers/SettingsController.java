@@ -105,6 +105,8 @@ public class SettingsController extends ClvcController
     @FXML
     private void retourChat()
     {
+        this.api.sendNewPseudo();
+
         Parent root = Resources.FXML.LOADER.CLAVARCHAT_LOADER.getRoot();
         Scene scene = this.returnButton.getScene();
         ClvcController clvcController = Resources.FXML.LOADER.CLAVARCHAT_LOADER.getController();

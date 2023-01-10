@@ -1,26 +1,29 @@
 package ClavarChat.Controllers.Handlers;
 
 import ClavarChat.Controllers.API.DataBaseAPI;
+import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Models.ClvcEvent.LoginEvent;
+import ClavarChat.Models.ClvcEvent.NewUserEvent;
+import ClavarChat.Models.ClvcListener.MessageListener;
+import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
+import ClavarChat.Models.ClvcNetworkMessage.LoginMessage;
 import ClavarChat.Utils.Log.Log;
 
-public class PseudoHandler
+public class PseudoHandler implements MessageListener
 {
     private final UserManager userManager;
     private final DataBaseAPI dataBaseAPI;
     private final NetworkAPI networkAPI;
+    private final EventAPI eventAPI;
 
-    public PseudoHandler(UserManager userManager, NetworkAPI networkAPI, DataBaseAPI dataBaseAPI)
+    public PseudoHandler(UserManager userManager, NetworkAPI networkAPI, DataBaseAPI dataBaseAPI, EventAPI eventAPI)
     {
         this.userManager = userManager;
         this.networkAPI = networkAPI;
         this.dataBaseAPI = dataBaseAPI;
-    }
-
-    public void changePseudo(String newPseudo)
-    {
-
+        this.eventAPI = eventAPI;
     }
 
     public boolean checkPseudo()
@@ -46,6 +49,20 @@ public class PseudoHandler
         this.sendUnsentMessages();
 
         return true;
+    }
+
+    @Override
+    public void onData(String srcIp, ClvcNetworkMessage message)
+    {
+        switch (message.type)
+        {
+            case LoginMessage.PSEUDO -> this.onNewPseudo((LoginMessage)message);
+        }
+    }
+
+    private void onNewPseudo(LoginMessage message)
+    {
+        this.eventAPI.notify(new NewUserEvent(message.id, message.pseudo));
     }
 
     private void sendUnsentMessages()

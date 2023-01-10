@@ -44,7 +44,7 @@ public class ClavarChatAPI
         this.eventAPI = new EventAPI();
 
         SessionHandler sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
-        this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI);
+        this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI, this.eventAPI);
         this.messageHandler = new MessageHandler(this.eventAPI, this.dataBaseAPI, this.userManager);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
@@ -199,9 +199,9 @@ public class ClavarChatAPI
         this.networkAPI.sendLogout();
     }
 
-    public void changePseudo(String pseudo)
+    public void sendNewPseudo()
     {
-        this.pseudoHandler.changePseudo(pseudo);
+        this.networkAPI.sendNewPseudo();
     }
 
     public void sendMessage(int srcId, int dstId, int conversationId, String message)

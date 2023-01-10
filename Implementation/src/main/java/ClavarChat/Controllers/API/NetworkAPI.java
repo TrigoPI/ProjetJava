@@ -96,6 +96,19 @@ public class NetworkAPI implements NetworkListener
         }
     }
 
+    public void sendNewPseudo()
+    {
+        User user = this.userManager.getUser();
+        byte[] avatar = this.userManager.getAvatar();
+        LoginMessage message = new LoginMessage(LoginMessage.PSEUDO, user.pseudo, user.id, avatar);
+
+        for (User other : this.userManager.getUsers())
+        {
+            String ip = this.userManager.getUserIP(other.id).get(0);
+            this.sendTCP(ip, this.tcpPort, message);
+        }
+    }
+
     public void sendMessage(int userId, String sharedId, String text)
     {
         if (this.userManager.isLogged())

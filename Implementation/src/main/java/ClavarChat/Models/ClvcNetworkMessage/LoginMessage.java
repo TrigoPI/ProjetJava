@@ -5,6 +5,8 @@ public class LoginMessage extends ClvcNetworkMessage
     public static final String LOGIN  = "LOGIN";
     public static final String LOGOUT = "LOGOUT";
 
+    public static final String PSEUDO = "PSEUDO";
+
     public final String pseudo;
     public final int id;
     public final byte[] img;
