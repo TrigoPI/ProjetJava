@@ -29,13 +29,14 @@ public class Resources
     public static class SOUND
     {
         public static final String NOTIFICATION = getUri("SOUND/notification.wav").getPath();
+        public static final String ARGH         = getUri("SOUND/notification2.wav").getPath();
     }
 
     public static class FXML
     {
         public static final String LOGIN_FXML      = getUri("FXML/LoginGUI.fxml").getPath();
         public static final String SETTINGS_FXML   = getUri("FXML/SettingsGUI.fxml").getPath();
-        public static final String CLAVARCHAT_FXML = getUri("FXML/ClavarChatGUI.fxml.").getPath();
+        public static final String CLAVARCHAT_FXML = getUri("FXML/ClavarChatGUI.fxml").getPath();
 
         public static class LOADER
         {

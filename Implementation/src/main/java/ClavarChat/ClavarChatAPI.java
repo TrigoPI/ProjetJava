@@ -199,6 +199,16 @@ public class ClavarChatAPI
         this.networkAPI.sendMessage(dstId, sharedId, message);
     }
 
+    public void updateUser(int userId,String pseudo)
+    {
+        this.dataBaseAPI.updatePseudo(userId,pseudo);
+    }
+
+    public void updateAvatar(int userId, byte[] avatar)
+    {
+        this.dataBaseAPI.updateAvatar(userId, avatar);
+    }
+
     public void addListener(ClvcListener listener, String eventName)
     {
         this.eventAPI.addListener(listener, eventName);

@@ -135,7 +135,7 @@ public class LoginController extends ClvcController
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo, Resources.IMG.USER_1);
+            this.api.login(pseudo, Resources.IMG.LOGO);
         }
     }
 }

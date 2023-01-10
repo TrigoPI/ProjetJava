@@ -79,7 +79,7 @@ public class ClavarChatController extends ClvcController
         this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
         this.loaded = false;
-        this.notification = new Audio("file://" + Resources.SOUND.NOTIFICATION);
+        this.notification = new Audio("file://" + Resources.SOUND.ARGH);
     }
 
     @Override
