@@ -24,7 +24,6 @@ public class DiscoverHandler implements MessageListener
     private final PseudoHandler pseudoHandler;
     private final UserManager userManager;
 
-
     private final int timeout;
 
     public final AtomicInteger numberOfDiscover;
@@ -42,7 +41,7 @@ public class DiscoverHandler implements MessageListener
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.numberOfDiscover = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
-        this.timeout = 2;
+        this.timeout = 5;
     }
 
     public boolean discover()

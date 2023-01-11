@@ -2,6 +2,6 @@ Implementation/.idea
 Implementation/target 
 Implementation/dist
 Implementation/build
-Implementation/build.bat
+Implementation/build.cmd
 **/.DS_Store
 Implementation/src/main/resources/BDD/Connect/ClavarDataBase.db

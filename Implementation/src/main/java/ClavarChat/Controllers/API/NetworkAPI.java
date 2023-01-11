@@ -22,8 +22,6 @@ import java.util.HashMap;
 
 public class NetworkAPI implements NetworkListener
 {
-    public enum STATUS { IDLE, CONNECTING, CONNECTED, CLOSE_WAIT, CLOSED }
-
     private final int tcpPort;
     private final int udpPort;
 

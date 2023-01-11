@@ -9,7 +9,7 @@ public class Resources
 {
     public static class BDD
     {
-        public static final String BDD_FILE = getJarPath("Resources/ClavarDataBase.db");
+        public static final String BDD_FILE = getJarPath("Resources/BDD/ClavarDataBase.db");
     }
 
     public static class IMG
