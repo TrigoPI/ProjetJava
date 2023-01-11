@@ -38,7 +38,7 @@ public class ClavarChatGUI extends Application
         Scene scene = new Scene(Resources.FXML.LOADER.LOGIN_LOADER.load(), 1080, 720);
 
         stage.setTitle("ClavaChat!");
-        stage.getIcons().add(new Image("file://" + Resources.IMG.LOGO));
+        stage.getIcons().add(new Image(Resources.IMG.LOGO));
         stage.setScene(scene);
         stage.show();
 

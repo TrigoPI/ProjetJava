@@ -1,17 +1,24 @@
 package ClavarChat.Utils.BytesImage;
 
-import ClavarChat.Utils.Path.Path;
-
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
 public class BytesImage implements Serializable
 {
     private final byte[] buffer;
-    public BytesImage(String path)
+
+    public BytesImage(InputStream in)
     {
-        this.buffer = Path.getBytes(path);
+        try
+        {
+            this.buffer = in.readAllBytes();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public BytesImage(byte[] buffer)

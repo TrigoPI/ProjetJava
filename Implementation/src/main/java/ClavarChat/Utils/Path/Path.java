@@ -7,33 +7,10 @@ import org.json.simple.parser.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Path
 {
-    public static String getWorkingPath()
-    {
-        String path = null;
-
-        try
-        {
-            path = new java.io.File(".").getCanonicalPath();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        return path;
-    }
-
-    public static String getFileExtension(String fileName)
-    {
-        return FilenameUtils.getExtension(fileName);
-    }
-
     public static byte[] getBytes(String fileName)
     {
         byte[] buffer = null;
@@ -51,15 +28,16 @@ public class Path
         return buffer;
     }
 
-    public static JSONObject parseJSON(String path)
+    public static JSONObject parseJSON(InputStream in)
     {
         JSONObject obj;
+        InputStreamReader reader = new InputStreamReader(in);
+        BufferedReader buffer = new BufferedReader(reader);
 
         try
         {
             JSONParser parser = new JSONParser();
-            FileReader fileReader = new FileReader(path);
-            obj = (JSONObject)parser.parse(fileReader);
+            obj = (JSONObject)parser.parse(buffer);
         }
         catch (IOException | ParseException e)
         {

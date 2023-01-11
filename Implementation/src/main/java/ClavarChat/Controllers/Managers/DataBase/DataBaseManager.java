@@ -168,7 +168,7 @@ public class DataBaseManager
     {
         try
         {
-            conn = DriverManager.getConnection(this.url);
+            this.conn = DriverManager.getConnection(this.url);
             Log.Info(this.getClass().getName() + " Connection to SQLite has been established.");
 
         }

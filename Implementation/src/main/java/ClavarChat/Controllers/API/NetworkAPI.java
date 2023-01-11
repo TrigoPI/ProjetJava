@@ -161,6 +161,14 @@ public class NetworkAPI implements NetworkListener
         for (String address : broadcast) this.sendUDP(address, this.udpPort, new DiscoverRequestMessage());
     }
 
+    public void sendWait(String ip)
+    {
+        if (this.userManager.isLogged()) return;
+
+        WaitMessage message = new WaitMessage();
+        this.sendTCP(ip, this.tcpPort, message);
+    }
+
     public void startServer()
     {
         int tcpThreadID = this.threadManager.createThread(new TcpServer(this.networkManager, this, this.tcpServerID, this.tcpPort));

@@ -7,6 +7,8 @@ import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcNetworkMessage.DiscoverRequestMessage;
 import ClavarChat.Models.ClvcNetworkMessage.DiscoverResponseMessage;
+import ClavarChat.Models.ClvcNetworkMessage.WaitMessage;
+import ClavarChat.Models.ClvcNetworkMessage.LoginMessage;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
@@ -25,6 +27,7 @@ public class DiscoverHandler implements MessageListener
 
     private final int timeout;
 
+    public final AtomicInteger numberOfDiscover;
     public final AtomicInteger numberOfUsers;
     public final AtomicInteger currentNumberOfUsers;
     public final AtomicBoolean finished;
@@ -37,6 +40,7 @@ public class DiscoverHandler implements MessageListener
         this.pseudoHandler = pseudoHandler;
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
+        this.numberOfDiscover = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
         this.timeout = 2;
     }
@@ -60,6 +64,8 @@ public class DiscoverHandler implements MessageListener
     {
         switch (message.type)
         {
+            case LoginMessage.LOGIN -> this.onLogin();
+            case WaitMessage.WAIT -> this.onWait();
             case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
             case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(srcIp);
         }
@@ -84,9 +90,20 @@ public class DiscoverHandler implements MessageListener
         return true;
     }
 
+    private void onLogin()
+    {
+        this.numberOfDiscover.decrementAndGet();
+    }
+
+    private void onWait()
+    {
+        this.numberOfDiscover.incrementAndGet();
+    }
+
     private void onDiscoverRequest(String dstIp)
     {
         Log.Print(this.getClass().getName() + " Discover from : " + dstIp);
+        this.networkAPI.sendWait(dstIp);
         this.networkAPI.sendDiscoverResponse(dstIp);
     }
 
@@ -121,7 +138,7 @@ public class DiscoverHandler implements MessageListener
         Log.Info(DiscoverHandler.class.getName() + " Waiting for response");
         Clock clock = new Clock();
         this.networkAPI.sendDiscoverRequest();
-        while (clock.timeSecond() < timeout && !this.finished.get());
+        while (clock.timeSecond() < timeout && this.numberOfDiscover.get() == 0 && !this.finished.get());
     }
 
     private void reset()
