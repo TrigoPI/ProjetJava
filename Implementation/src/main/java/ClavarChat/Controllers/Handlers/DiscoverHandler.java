@@ -15,9 +15,11 @@ import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DiscoverHandler implements MessageListener
 {
+
     private final NetworkAPI networkAPI;
     private final DataBaseAPI dataBaseAPI;
 
@@ -25,11 +27,13 @@ public class DiscoverHandler implements MessageListener
     private final UserManager userManager;
 
     private final int timeout;
-
-    public final AtomicInteger numberOfDiscover;
     public final AtomicInteger numberOfUsers;
     public final AtomicInteger currentNumberOfUsers;
+
+    public final AtomicBoolean running;
     public final AtomicBoolean finished;
+
+    public final AtomicReference<Clock> clock;
 
     public DiscoverHandler(NetworkAPI networkAPI, DataBaseAPI dataBaseAPI, UserManager userManager, PseudoHandler pseudoHandler)
     {
@@ -37,11 +41,12 @@ public class DiscoverHandler implements MessageListener
         this.dataBaseAPI = dataBaseAPI;
         this.userManager = userManager;
         this.pseudoHandler = pseudoHandler;
+        this.clock = new AtomicReference<>(new Clock());
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
-        this.numberOfDiscover = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
-        this.timeout = 5;
+        this.running = new AtomicBoolean(false);;
+        this.timeout = 10;
     }
 
     public boolean discover()
@@ -63,7 +68,6 @@ public class DiscoverHandler implements MessageListener
     {
         switch (message.type)
         {
-            case LoginMessage.LOGIN -> this.onLogin();
             case WaitMessage.WAIT -> this.onWait();
             case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
             case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(srcIp);
@@ -89,20 +93,15 @@ public class DiscoverHandler implements MessageListener
         return true;
     }
 
-    private void onLogin()
-    {
-        this.numberOfDiscover.decrementAndGet();
-    }
-
     private void onWait()
     {
-        this.numberOfDiscover.incrementAndGet();
+        this.clock.get().resetSecond();
     }
 
     private void onDiscoverRequest(String dstIp)
     {
         Log.Print(this.getClass().getName() + " Discover from : " + dstIp);
-        this.networkAPI.sendWait(dstIp);
+        if (this.running.get()) this.networkAPI.sendWait(dstIp);
         this.networkAPI.sendDiscoverResponse(dstIp);
     }
 
@@ -135,13 +134,15 @@ public class DiscoverHandler implements MessageListener
     private void waitResponse()
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for response");
-        Clock clock = new Clock();
+        this.running.set(true);
+        this.clock.get().resetSecond();
         this.networkAPI.sendDiscoverRequest();
-        while (clock.timeSecond() < timeout && this.numberOfDiscover.get() == 0 && !this.finished.get());
+        while (this.clock.get().timeSecond() < timeout && !this.finished.get());
     }
 
     private void reset()
     {
+        this.running.set(false);
         this.finished.set(false);
         this.numberOfUsers.set(-1);
         this.currentNumberOfUsers.set(0);
