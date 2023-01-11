@@ -163,7 +163,15 @@ public class NetworkAPI implements NetworkListener
     {
         if (!this.userManager.isLogged()) return;
 
-        WaitMessage message = new WaitMessage();
+        WaitMessage message = new WaitMessage(WaitMessage.WAIT);
+        this.sendTCP(ip, this.tcpPort, message);
+    }
+
+    public void sendWaitFinished(String ip)
+    {
+        if (!this.userManager.isLogged()) return;
+
+        WaitMessage message = new WaitMessage(WaitMessage.WAIT_FINISHED);
         this.sendTCP(ip, this.tcpPort, message);
     }
 

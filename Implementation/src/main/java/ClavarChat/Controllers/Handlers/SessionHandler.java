@@ -8,6 +8,9 @@ import ClavarChat.Models.ClvcEvent.NewUserEvent;
 import ClavarChat.Models.ClvcEvent.RemoveUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.*;
+import ClavarChat.Utils.Log.Log;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SessionHandler implements MessageListener
 {
@@ -43,6 +46,8 @@ public class SessionHandler implements MessageListener
 
     private void onLogin(LoginMessage data, String dstIp)
     {
+        Log.Info(DiscoverHandler.class.getName() + " Login : [ " + dstIp + " ] : " + data.id + " --> " + data.pseudo);
+
         this.userManager.addUser(data.pseudo, data.id, data.img);
         this.userManager.addIpToUser(data.id, dstIp);
 

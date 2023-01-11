@@ -13,6 +13,7 @@ import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,8 +33,8 @@ public class DiscoverHandler implements MessageListener
 
     public final AtomicBoolean running;
     public final AtomicBoolean finished;
-
-    public final AtomicReference<Clock> clock;
+    private final LinkedBlockingQueue<String> discoverQueue;
+    private final LinkedBlockingQueue<String> otherUserQueue;
 
     public DiscoverHandler(NetworkAPI networkAPI, DataBaseAPI dataBaseAPI, UserManager userManager, PseudoHandler pseudoHandler)
     {
@@ -41,11 +42,12 @@ public class DiscoverHandler implements MessageListener
         this.dataBaseAPI = dataBaseAPI;
         this.userManager = userManager;
         this.pseudoHandler = pseudoHandler;
-        this.clock = new AtomicReference<>(new Clock());
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
-        this.running = new AtomicBoolean(false);;
+        this.running = new AtomicBoolean(false);
+        this.discoverQueue = new LinkedBlockingQueue<>();
+        this.otherUserQueue = new LinkedBlockingQueue<>();
         this.timeout = 10;
     }
 
@@ -59,7 +61,9 @@ public class DiscoverHandler implements MessageListener
             return false;
         }
 
+        this.flushUserQueue();
         this.reset();
+
         return this.pseudoHandler.checkPseudo();
     }
 
@@ -68,7 +72,8 @@ public class DiscoverHandler implements MessageListener
     {
         switch (message.type)
         {
-            case WaitMessage.WAIT -> this.onWait();
+            case WaitMessage.WAIT -> this.onWait(srcIp);
+            case WaitMessage.WAIT_FINISHED -> this.onWaitFinished(srcIp);
             case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
             case DiscoverRequestMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(srcIp);
         }
@@ -93,16 +98,29 @@ public class DiscoverHandler implements MessageListener
         return true;
     }
 
-    private void onWait()
+    private void onWaitFinished(String srcIp)
     {
-        this.clock.get().resetSecond();
+        this.discoverQueue.remove(srcIp);
     }
 
-    private void onDiscoverRequest(String dstIp)
+    private void onWait(String srcIp)
     {
-        Log.Print(this.getClass().getName() + " Discover from : " + dstIp);
-        if (this.running.get()) this.networkAPI.sendWait(dstIp);
-        this.networkAPI.sendDiscoverResponse(dstIp);
+        Log.Info(DiscoverHandler.class.getName() + " Waiting for " + srcIp + " to finished his discovering, adding to queue");
+        this.discoverQueue.add(srcIp);
+    }
+
+    private void onDiscoverRequest(String srcIp)
+    {
+        Log.Print(this.getClass().getName() + " Discover from : " + srcIp);
+
+        if (this.running.get())
+        {
+            Log.Info(this.getClass().getName() + " Discover from : " + srcIp + ", adding to queue");
+            if (!this.discoverQueue.contains(srcIp)) this.otherUserQueue.add(srcIp);
+            this.networkAPI.sendWait(srcIp);
+        }
+
+        this.networkAPI.sendDiscoverResponse(srcIp);
     }
 
     private void onDiscoverResponse(DiscoverResponseMessage data, String dstIp)
@@ -134,10 +152,18 @@ public class DiscoverHandler implements MessageListener
     private void waitResponse()
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for response");
+        Clock clock = new Clock();
         this.running.set(true);
-        this.clock.get().resetSecond();
         this.networkAPI.sendDiscoverRequest();
-        while (this.clock.get().timeSecond() < timeout && !this.finished.get());
+        while (clock.timeSecond() < timeout && !this.finished.get())
+        {
+            if (!this.discoverQueue.isEmpty()) clock.resetSecond();
+        }
+    }
+
+    private void flushUserQueue()
+    {
+        while (!this.otherUserQueue.isEmpty()) this.networkAPI.sendWaitFinished(this.otherUserQueue.poll());
     }
 
     private void reset()
