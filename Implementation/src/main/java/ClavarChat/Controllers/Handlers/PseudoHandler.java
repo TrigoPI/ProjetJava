@@ -62,6 +62,10 @@ public class PseudoHandler implements MessageListener
 
     private void onNewPseudo(LoginMessage message)
     {
+        this.userManager.changePseudo(message.id, message.pseudo);
+        this.userManager.changeAvatar(message.id, message.img);
+        this.dataBaseAPI.updatePseudo(message.id, message.pseudo);
+        this.dataBaseAPI.updateAvatar(message.id, message.img);
         this.eventAPI.notify(new NewUserEvent(message.id, message.pseudo));
     }
 

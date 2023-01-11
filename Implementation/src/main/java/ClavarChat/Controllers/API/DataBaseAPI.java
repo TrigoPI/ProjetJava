@@ -241,6 +241,21 @@ public class DataBaseAPI
         return conversationId;
     }
 
+    public int getLastMessageId(int conversationId)
+    {
+        int resultId = this.dataBaseManager.executeQuery("SELECT message_id FROM Message WHERE conversation_id='%d' ORDER BY message_id DESC LIMIT 1", conversationId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting conversation with id : " + conversationId);
+            return -1;
+        }
+
+        ArrayList<Integer> results = this.dataBaseManager.decodeAsInt(resultId, 1);
+        if (results.isEmpty()) return -1;
+        return results.get(0);
+    }
+
     public void setToSent(int messageId)
     {
         this.dataBaseManager.execute("UPDATE Message SET sent='1' WHERE message_id='%d'", messageId);

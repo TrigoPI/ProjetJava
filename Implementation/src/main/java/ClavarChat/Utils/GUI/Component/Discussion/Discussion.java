@@ -18,6 +18,7 @@ public class Discussion extends HBox
     private final int userId;
     private final int conversationId;
     private final Label pseudoLabel;
+    private final Label displayText;
     private final Avatar avatar;
     private final String sharedId;
     private String pseudo;
@@ -33,13 +34,13 @@ public class Discussion extends HBox
         this.selected = false;
         this.avatar = new Avatar(img, 35, false);
         this.pseudoLabel = new Label(pseudo);
+        this.displayText = new Label(text);
 
         VBox vBox = new VBox();
-        Label textLabel = new Label(text);
 
         this.pseudoLabel.getStyleClass().add("clvc-font-bold");
 
-        textLabel.getStyleClass().add("clvc-font-12px");
+        this.displayText.getStyleClass().add("clvc-font-12px");
 
         vBox.setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
         vBox.setMinSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
@@ -58,7 +59,7 @@ public class Discussion extends HBox
         this.getStyleClass().add("clvc-cursor-hand");
 
         vBox.getChildren().add(pseudoLabel);
-        vBox.getChildren().add(textLabel);
+        vBox.getChildren().add(this.displayText);
 
         this.getChildren().add(this.avatar);
         this.getChildren().add(vBox);
@@ -90,6 +91,11 @@ public class Discussion extends HBox
     public void setStatus(boolean isConnected)
     {
         this.avatar.setStatus(isConnected);
+    }
+
+    public void changeDisplayText(String text)
+    {
+        this.displayText.setText(text);
     }
 
     public void select()

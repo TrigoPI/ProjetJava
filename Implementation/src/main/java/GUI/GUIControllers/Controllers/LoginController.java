@@ -1,6 +1,7 @@
 package GUI.GUIControllers.Controllers;
 
 import Resources.Resources;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.GUI.Animation.FadeColor.FadeColor;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -67,10 +68,7 @@ public class LoginController extends ClvcController
     }
 
     @Override
-    public void onChange()
-    {
-
-    }
+    public void onChange() {}
 
     public void onLoginFailed()
     {
@@ -85,16 +83,18 @@ public class LoginController extends ClvcController
 
     public void onLoginSuccess()
     {
-        try
-        {
-            Parent root = Resources.FXML.LOADER.CLAVARCHAT_LOADER.load();
-            Scene scene = loginButton.getScene();
-            scene.setRoot(root);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        Platform.runLater(() -> {
+            try
+            {
+                Parent root = Resources.FXML.LOADER.CLAVARCHAT_LOADER.load();
+                Scene scene = loginButton.getScene();
+                scene.setRoot(root);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void errorInput(Node node)

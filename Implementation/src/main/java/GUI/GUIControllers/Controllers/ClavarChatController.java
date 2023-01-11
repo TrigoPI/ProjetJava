@@ -179,6 +179,7 @@ public class ClavarChatController extends ClvcController
                         Avatar avatar = (Avatar)otherAvatarContainer.getChildren().get(0);
                         VBox vBox = (VBox)otherAvatarContainer.getChildren().get(1);
                         Label pseudoLabel = (Label)vBox.getChildren().get(0);
+                        avatar.changeImage(image);
                         avatar.setStatus(true);
                         pseudoLabel.setText(pseudo);
                     }
@@ -235,7 +236,10 @@ public class ClavarChatController extends ClvcController
         }
         else
         {
-            Discussion discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, pseudo + " : blablabla");
+            Message message = this.api.getLastMessage(conversationId);
+            String lastSenderPseudo = this.api.getPseudoFromDataBase(message.userId);
+
+            Discussion discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, lastSenderPseudo + " : " + message.text);
             discussion.setStatus(this.api.isConnected(userId));
             discussion.setOnMouseClicked(this::onMouseClick);
 
@@ -261,11 +265,16 @@ public class ClavarChatController extends ClvcController
         Platform.runLater(() -> {
             while (this.api.hasMessages())
             {
-                this.notification.play();
                 TextMessage message = this.api.getLastMessage();
+                Discussion discussion = this.usersGUI.get(message.sharedId);
+                String pseudo = this.api.getPseudo(message.id);
+
+                discussion.changeDisplayText(pseudo + " : " + message.message);
                 this.updateChatBox(message.sharedId, message.id, message.message);
-                this.messagesContainer.setVvalue(1.0);
+                this.notification.play();
             }
+
+            this.messagesContainer.setVvalue(1.0);
         });
     }
 
@@ -284,7 +293,6 @@ public class ClavarChatController extends ClvcController
         Image image = new Image(avatar.toInputStream());
         MessageBox messageBox = this.messagesBoxGui.get(sharedId);
         messageBox.addMessage(userId, pseudo, image, text, !(this.api.getId() == userId));
-        this.messagesContainer.setVvalue(1.0);
     }
 
     private void selectUser(Discussion discussion)
@@ -340,11 +348,14 @@ public class ClavarChatController extends ClvcController
         int userId  = this.api.getId();
         int otherId = this.selectedUser.getUserId();
         int conversationId = this.selectedUser.getConversationId();
+
         String sharedId = this.selectedUser.getSharedId();
         String message = this.messageInput.getText().trim();
+        Discussion discussion = this.usersGUI.get(sharedId);
 
         if (!message.isEmpty())
         {
+            discussion.changeDisplayText(this.api.getPseudo() + " : " + message);
             this.addMessage(sharedId, userId, message);
             this.api.sendMessage(userId, otherId, conversationId, message);
             this.messageInput.clear();

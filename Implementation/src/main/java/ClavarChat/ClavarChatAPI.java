@@ -48,6 +48,7 @@ public class ClavarChatAPI
         this.messageHandler = new MessageHandler(this.eventAPI, this.dataBaseAPI, this.userManager);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
+        this.networkAPI.addListener(this.pseudoHandler);
         this.networkAPI.addListener(this.discoverHandler);
         this.networkAPI.addListener(this.messageHandler);
         this.networkAPI.addListener(sessionHandler);
@@ -151,6 +152,15 @@ public class ClavarChatAPI
     public Message getMessageInDataBase(int messageId)
     {
         int userId  = this.dataBaseAPI.getMessageUserId(messageId);
+        String text = this.dataBaseAPI.getMessageText(messageId);
+        return new Message(userId, text);
+    }
+
+    public Message getLastMessage(int conversationId)
+    {
+        int messageId = this.dataBaseAPI.getLastMessageId(conversationId);
+        if (messageId == -1) return null;
+        int userId = this.dataBaseAPI.getMessageUserId(messageId);
         String text = this.dataBaseAPI.getMessageText(messageId);
         return new Message(userId, text);
     }
