@@ -100,9 +100,15 @@ public class DiscoverHandler implements MessageListener
 
     private void onWaitFinished(String srcIp)
     {
-        Log.Info(DiscoverHandler.class.getName() + srcIp + " finished his discovering, removing to queue");
+        Log.Info(DiscoverHandler.class.getName() + " " + srcIp + " finished his discovering, removing to queue");
         this.discoverQueue.remove(srcIp);
-        if (this.discoverQueue.isEmpty()) this.networkAPI.sendDiscoverRequest();
+
+        if (this.discoverQueue.isEmpty())
+        {
+            this.numberOfUsers.set(-1);
+            this.currentNumberOfUsers.set(0);
+            this.networkAPI.sendDiscoverRequest();
+        }
     }
 
     private void onWait(String srcIp)
