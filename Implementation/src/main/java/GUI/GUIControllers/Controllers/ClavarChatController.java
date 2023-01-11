@@ -237,9 +237,18 @@ public class ClavarChatController extends ClvcController
         else
         {
             Message message = this.api.getLastMessage(conversationId);
-            String lastSenderPseudo = this.api.getPseudoFromDataBase(message.userId);
+            Discussion discussion;
 
-            Discussion discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, lastSenderPseudo + " : " + message.text);
+            if (message != null)
+            {
+                String lastSenderPseudo = this.api.getPseudoFromDataBase(message.userId);
+                discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, lastSenderPseudo + " : " + message.text);
+            }
+            else
+            {
+                discussion = new Discussion(conversationId, sharedId, userId, avatar, pseudo, "");
+            }
+
             discussion.setStatus(this.api.isConnected(userId));
             discussion.setOnMouseClicked(this::onMouseClick);
 
