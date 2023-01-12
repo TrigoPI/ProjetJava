@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class UserManager
 {
+    private final String password;
     private final User user;
     private byte[] avatar;
 
@@ -27,6 +28,7 @@ public class UserManager
         String userId = (String)jsonObject.get("userId");
 
         this.user = new User("", Integer.parseInt(userId));
+        this.password = (String)jsonObject.get("password");
         this.avatar = null;
         this.users = new PackedArray<>();
         this.idToIndex = new HashMap<>();
@@ -112,6 +114,11 @@ public class UserManager
         int index = this.idToIndex.get(userId);
 
         return this.users.get(index).user;
+    }
+
+    public String getPasswordHash()
+    {
+        return this.password;
     }
 
     public String getPseudo()

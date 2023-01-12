@@ -54,8 +54,34 @@ public class ClavarChatAPI
         this.networkAPI.addListener(sessionHandler);
 
         this.networkAPI.startServer();
+    }
 
-//        this.dataBaseAPI.clear();
+    public boolean login(String pseudo, String password)
+    {
+        Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo);
+
+        BytesImage avatar;
+        Discover discover = new Discover(this.discoverHandler, this.eventAPI);
+
+        int userId = this.userManager.getId();
+        int threadId = this.threadManager.createThread(discover);
+
+        if (!this.userManager.getPasswordHash().equals(password)) return false;
+
+        if (this.dataBaseAPI.userExist(userId))
+        {
+            byte[] buffer = this.dataBaseAPI.getUserAvatar(userId);
+            avatar = new BytesImage(buffer);
+        }
+        else
+        {
+            avatar = new BytesImage(Resources.IMG.USER_1);
+        }
+
+        this.userManager.setUser(pseudo, avatar.getBytes());
+        this.threadManager.startThread(threadId);
+
+        return true;
     }
 
     public boolean hasMessages()
@@ -178,30 +204,6 @@ public class ClavarChatAPI
     public BytesImage getAvatar(int userId)
     {
         return new BytesImage(this.userManager.getAvatar(userId));
-    }
-
-    public void login(String pseudo)
-    {
-        Log.Print(this.getClass().getName() + " Trying to login with : " + pseudo);
-
-        BytesImage avatar;
-        Discover discover = new Discover(this.discoverHandler, this.eventAPI);
-
-        int userId = this.userManager.getId();
-        int threadId = this.threadManager.createThread(discover);
-
-        if (this.dataBaseAPI.userExist(userId))
-        {
-            byte[] buffer = this.dataBaseAPI.getUserAvatar(userId);
-            avatar = new BytesImage(buffer);
-        }
-        else
-        {
-            avatar = new BytesImage(Resources.IMG.USER_1);
-        }
-
-        this.userManager.setUser(pseudo, avatar.getBytes());
-        this.threadManager.startThread(threadId);
     }
 
     public void logout()

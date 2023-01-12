@@ -1,6 +1,7 @@
 package GUI.GUIControllers.Controllers;
 
 import Resources.Resources;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import ClavarChat.Utils.GUI.Animation.FadeColor.FadeColor;
@@ -8,8 +9,6 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.Event;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.scene.Node;
@@ -35,10 +34,7 @@ public class LoginController extends ClvcController
     private MFXTextField usernameTextField;
 
     @FXML
-    private MFXTextField idTextField;
-
-    @FXML
-    private MFXTextField passwordTextField;
+    private MFXPasswordField passwordTextField;
 
     @FXML
     private MFXButton loginButton;
@@ -55,10 +51,6 @@ public class LoginController extends ClvcController
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         Log.Print(this.getClass().getName() + " Initialized");
-
-        this.usernameTextField.setText("Alexis");
-        this.passwordTextField.setText("qsdfjsdfji");
-        this.idTextField.setText("" + this.api.getId());
 
         this.spinnerBar.setVisible(false);
         this.spinnerBar.setManaged(false);
@@ -79,6 +71,17 @@ public class LoginController extends ClvcController
         this.spinnerBar.setManaged(false);
 
         this.errorInput(this.usernameTextField);
+    }
+
+    public void onPasswordFaild()
+    {
+        this.loginButton.setVisible(true);
+        this.loginButton.setManaged(true);
+
+        this.spinnerBar.setVisible(false);
+        this.spinnerBar.setManaged(false);
+
+        this.errorInput(this.passwordTextField);
     }
 
     public void onLoginSuccess()
@@ -141,7 +144,7 @@ public class LoginController extends ClvcController
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            this.api.login(pseudo);
+            if (!this.api.login(pseudo, password)) this.onLoginFailed();
         }
     }
 }

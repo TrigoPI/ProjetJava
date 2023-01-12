@@ -8,7 +8,6 @@ import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcNetworkMessage.DiscoverRequestMessage;
 import ClavarChat.Models.ClvcNetworkMessage.DiscoverResponseMessage;
 import ClavarChat.Models.ClvcNetworkMessage.WaitMessage;
-import ClavarChat.Models.ClvcNetworkMessage.LoginMessage;
 import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
@@ -16,7 +15,6 @@ import ClavarChat.Utils.Log.Log;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DiscoverHandler implements MessageListener
 {
@@ -151,10 +149,7 @@ public class DiscoverHandler implements MessageListener
             this.numberOfUsers.set(data.count);
         }
 
-        if (this.currentNumberOfUsers.get() == this.numberOfUsers.get())
-        {
-            this.finished.set(true);
-        }
+        if (this.currentNumberOfUsers.get() == this.numberOfUsers.get()) this.finished.set(true);
     }
 
     private void waitResponse()
