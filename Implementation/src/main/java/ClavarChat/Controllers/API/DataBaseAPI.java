@@ -16,6 +16,8 @@ public class DataBaseAPI
 
     public DataBaseAPI(UserManager userManager)
     {
+        System.out.println(Resources.BDD.BDD_FILE);
+
         this.dataBaseManager = new DataBaseManager(Resources.BDD.BDD_FILE);
         this.userManager = userManager;
     }

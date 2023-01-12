@@ -63,11 +63,11 @@ public class Resources
 
         if (lastElement.contains(".jar"))
         {
-            for (int i = 1; i < filesName.length - 1; i++) finalPath.append(filesName[i]).append("/");
+            for (int i = 0; i < filesName.length - 1; i++) finalPath.append(filesName[i]).append("/");
         }
         else
         {
-            for (int i = 1; i < filesName.length; i++) finalPath.append(filesName[i]).append("/");
+            for (int i = 0; i < filesName.length; i++) finalPath.append(filesName[i]).append("/");
         }
 
         return finalPath.toString() + filePath;

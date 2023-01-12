@@ -56,8 +56,8 @@ public class LoginController extends ClvcController
     {
         Log.Print(this.getClass().getName() + " Initialized");
 
-        this.usernameTextField.setText("Alexis");
-        this.passwordTextField.setText("qsdfjsdfji");
+        this.usernameTextField.setText("Clément");
+        this.passwordTextField.setText("motdepasse");
         this.idTextField.setText("" + this.api.getId());
 
         this.spinnerBar.setVisible(false);
