@@ -9,9 +9,11 @@ import javafx.scene.layout.VBox;
 public class MessageBox extends VBox
 {
     private TextMessage last;
+    private boolean typing;
 
     public MessageBox()
     {
+        this.typing = false;
         this.last = null;
 
         this.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -30,11 +32,21 @@ public class MessageBox extends VBox
         }
     }
 
+    public void removeTyping()
+    {
+        if (this.last == null) return;
+        this.last.removeLast();
+        this.typing = false;
+    }
+
     public void addTyping(int userId, String pseudo, Image image)
     {
+        if (typing) return;
+
         if (this.last == null)
         {
             this.createTyping(userId, pseudo, image);
+            this.typing = true;
             return;
         }
 
@@ -46,6 +58,8 @@ public class MessageBox extends VBox
         {
             this.createTyping(userId, pseudo, image);
         }
+
+        this.typing = true;
     }
 
     public void addMessage(int userId, String pseudo, Image image, String text, boolean reverse)
@@ -76,7 +90,9 @@ public class MessageBox extends VBox
     }
     private void createTyping(int userId, String pseudo, Image image)
     {
-        TextMessage textMessage = new TextMessage(userId, pseudo, image, false);
+        TextMessage textMessage = new TextMessage(userId, pseudo, image, true);
+        textMessage.addTyping();
+
         this.getChildren().add(textMessage);
         this.last = textMessage;
     }

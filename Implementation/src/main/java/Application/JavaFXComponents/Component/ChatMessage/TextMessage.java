@@ -96,13 +96,9 @@ public class TextMessage extends HBox
         Circle circle2 = new Circle(5);
         Circle circle3 = new Circle(5);
 
-//        messageLable.setMaxSize(644, Region.USE_COMPUTED_SIZE);
-//        messageLable.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-//        messageLable.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-//        messageLable.setWrapText(true);
-
         hBox.getStyleClass().add(this.styleClass);
         hBox.getStyleClass().add("clvc-chat-bubble");
+        hBox.setSpacing(5);
 
         hBox.getChildren().add(circle1);
         hBox.getChildren().add(circle2);
@@ -114,5 +110,11 @@ public class TextMessage extends HBox
     {
         this.pseudoLabel.setText(pseudo);
         this.avatar.changeImage(image);
+    }
+
+    public void removeLast()
+    {
+        int lastIndex = this.messageContainer.getChildren().size() - 1;
+        this.messageContainer.getChildren().remove(lastIndex);
     }
 }

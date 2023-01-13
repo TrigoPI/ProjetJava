@@ -211,17 +211,25 @@ public class ClavarChatController extends ClvcController
     {
         if (this.selectedUser == null) return;
 
-        if (this.selectedUser.getSharedId().equals(sharedId))
-        {
-            if (isTyping)
+        Platform.runLater(() -> {
+            if (this.selectedUser.getSharedId().equals(sharedId))
             {
-                String pseudo = this.api.getPseudo(userId);
-                BytesImage bytesImage = this.api.getAvatar(userId);
-                Image image = new Image(bytesImage.toInputStream());
                 MessageBox messageBox = this.messagesBoxGui.get(sharedId);
-                messageBox.addTyping(userId, pseudo, image);
+
+                if (isTyping)
+                {
+                    String pseudo = this.api.getPseudo(userId);
+                    BytesImage bytesImage = this.api.getAvatar(userId);
+                    Image image = new Image(bytesImage.toInputStream());
+                    messageBox.addTyping(userId, pseudo, image);
+                }
+                else
+                {
+                    messageBox.removeTyping();
+                }
             }
-        }
+        });
+
     }
 
     private void initDiscussionContainer()
@@ -424,12 +432,12 @@ public class ClavarChatController extends ClvcController
     @FXML
     private void onKeyPressed(KeyEvent event)
     {
-        int userId = this.selectedUser.getUserId();
+        int userId = this.api.getId();
 
-        if (this.api.isConnected(userId))
-        {
-            String sharedId = this.selectedUser.getSharedId();
-            this.api.sendTyping(userId, sharedId, true);
-        }
+        if (!this.api.isConnected(userId)) return;
+
+        String text = this.messageInput.getText();
+        String sharedId = this.selectedUser.getSharedId();
+        this.api.sendTyping(userId, sharedId, !text.isEmpty());
     }
 }

@@ -44,7 +44,7 @@ public class DiscoverHandler implements MessageListener
         this.running = new AtomicBoolean(false);
         this.discoverQueue = new LinkedBlockingQueue<>();
         this.otherUserQueue = new LinkedBlockingQueue<>();
-        this.timeout = 10;
+        this.timeout = 5;
     }
 
     public boolean discover()
