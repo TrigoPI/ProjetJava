@@ -1,20 +1,18 @@
 package Application.ClavarChatGUI;
 
 import ClavarChat.Utils.Audio.Audio;
-import GUI.GUIControllers.Controllers.ClavarChatController;
-import GUI.GUIControllers.Controllers.LoginController;
-import GUI.GUIControllers.Controllers.SettingsController;
-import GUI.GUIControllers.GUIControllers;
-import Resources.Resources;
+import Application.FXMLControllers.Controllers.ClavarChatController;
+import Application.FXMLControllers.Controllers.LoginController;
+import Application.FXMLControllers.Controllers.SettingsController;
+import Application.FXMLControllers.GUIControllers;
+import ClavarChat.Resources.Resources;
 import javafx.application.Application;
 import ClavarChat.ClavarChatAPI;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class ClavarChatGUI extends Application
 {

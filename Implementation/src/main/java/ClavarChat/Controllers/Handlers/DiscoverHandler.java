@@ -6,7 +6,7 @@ import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcNetworkMessage.DiscoverResponseMessage;
-import ClavarChat.Models.User.User;
+import ClavarChat.Controllers.Managers.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 

@@ -4,7 +4,7 @@ import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
-import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -4,9 +4,11 @@ import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Models.ClvcEvent.MessageEvent;
+import ClavarChat.Models.ClvcEvent.TypingEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
+import ClavarChat.Models.ClvcNetworkMessage.TypingMessage;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -43,13 +45,19 @@ public class MessageHandler implements MessageListener
         switch (message.type)
         {
             case TextMessage.TEXT_MESSAGE -> this.onTextMessage((TextMessage)message);
-            case ClvcNetworkMessage.TYPING_START -> this.onTypingStart();
+            case TypingMessage.TYPING_START -> this.onTypingStart((TypingMessage)message);
+            case TypingMessage.TYPING_END -> this.onTypingEnd((TypingMessage)message);
         }
     }
 
-    private void onTypingStart()
+    private void onTypingEnd(TypingMessage message)
     {
-        System.out.println("typing...");
+        this.eventAPI.notify(new TypingEvent(message.sharedId, false));
+    }
+
+    private void onTypingStart(TypingMessage message)
+    {
+        this.eventAPI.notify(new TypingEvent(message.sharedId, true));
     }
 
     private void onTextMessage(TextMessage data)

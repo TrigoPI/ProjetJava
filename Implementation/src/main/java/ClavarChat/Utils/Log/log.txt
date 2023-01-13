@@ -7,7 +7,7 @@
 [16:52:26] ClavarChat.Controllers.Managers.Thread.ThreadManager starting thread : 2
 [16:52:26] ClavarChat.Controllers.Managers.Network.NetworkManager Start TCP server on port : 8080
 [16:52:26] ClavarChat.Controllers.Managers.Network.NetworkManager Start UDP server on port : 7070
-[16:52:26] GUI.GUIControllers.Controllers.LoginController Initialized
+[16:52:26] Application.FXMLControllers.Controllers.LoginController Initialized
 [16:52:48] ClavarChat.Controllers.API.NetworkAPI Cannot Logout, user not logged
 [16:52:48] ClavarChat.Controllers.Managers.Network.NetworkManager Closing UDP server with id : 0 --> 7070
 [16:52:48] ClavarChat.Controllers.Managers.Network.NetworkManager ERROR UDP server closed

@@ -3,8 +3,7 @@ package ClavarChat.Controllers.API;
 import ClavarChat.Controllers.Managers.DataBase.DataBaseManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
 import ClavarChat.Utils.Log.Log;
-import ClavarChat.Utils.Path.Path;
-import Resources.Resources;
+import ClavarChat.Resources.Resources;
 
 import java.util.ArrayList;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package ClavarChat.Models.ClvcSocket;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
-import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.Serializable;

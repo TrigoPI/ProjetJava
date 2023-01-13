@@ -14,9 +14,9 @@ import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
 import ClavarChat.Utils.BytesImage.BytesImage;
 import ClavarChat.Models.Message.Message;
-import ClavarChat.Models.User.User;
+import ClavarChat.Controllers.Managers.User.User;
 import ClavarChat.Utils.Log.Log;
-import Resources.Resources;
+import ClavarChat.Resources.Resources;
 
 import java.util.ArrayList;
 
@@ -219,9 +219,9 @@ public class ClavarChatAPI
         this.networkAPI.sendLogout();
     }
 
-    public void sendTyping(int userId, boolean isTyping)
+    public void sendTyping(int userId, String sharedId, boolean isTyping)
     {
-        this.networkAPI.sendTyping(userId, isTyping);
+        this.networkAPI.sendTyping(userId, sharedId, isTyping);
     }
 
     public void sendNewPseudo()

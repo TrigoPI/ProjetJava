@@ -3,7 +3,7 @@ package ClavarChat.Controllers.Runnables.Network.Server;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
-import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
 
 public class UdpServer extends Server
 {

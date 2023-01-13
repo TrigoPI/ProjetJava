@@ -1,6 +1,5 @@
 package ClavarChat.Controllers.Managers.Network;
 
-import ClavarChat.Models.NetworkPaquet.NetworkPaquet;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.NetworkUtils.NetworkUtils;
 import ClavarChat.Utils.PackedArray.PackedArray;

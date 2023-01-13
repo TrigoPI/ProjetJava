@@ -1,10 +1,9 @@
 package ClavarChat.Controllers.Managers.User;
 
-import ClavarChat.Models.User.User;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Utils.PackedArray.PackedArray;
 import ClavarChat.Utils.Path.Path;
-import Resources.Resources;
+import ClavarChat.Resources.Resources;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;

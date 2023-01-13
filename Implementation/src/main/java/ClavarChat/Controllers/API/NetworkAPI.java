@@ -14,7 +14,7 @@ import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcNetworkMessage.*;
 import ClavarChat.Models.ClvcMessenger.ClvcMessenger;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
-import ClavarChat.Models.User.User;
+import ClavarChat.Controllers.Managers.User.User;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.ArrayList;
@@ -133,7 +133,7 @@ public class NetworkAPI implements NetworkListener
         int id = this.userManager.getId();
         String pseudo = this.userManager.getPseudo();
         String ip = this.userManager.getUserIP(userId).get(0);
-        SharedIdMessage msg = new SharedIdMessage(sharedId, id, pseudo);
+        SharedIDMessage msg = new SharedIDMessage(sharedId, id, pseudo);
         this.sendTCP(ip, this.tcpPort, msg);
     }
 
@@ -159,11 +159,11 @@ public class NetworkAPI implements NetworkListener
         for (String address : broadcast) this.sendUDP(address, this.udpPort, new ClvcNetworkMessage(ClvcNetworkMessage.DISCOVER_REQUEST));
     }
 
-    public void sendTyping(int userId, boolean isTyping)
+    public void sendTyping(int userId, String shareId, boolean isTyping)
     {
         String ip = this.userManager.getUserIP(userId).get(0);
         if (ip == null) return;
-        this.sendTCP(ip, this.tcpPort, new ClvcNetworkMessage((isTyping)?ClvcNetworkMessage.TYPING_START:ClvcNetworkMessage.TYPING_END));
+        this.sendTCP(ip, this.tcpPort, new TypingMessage((isTyping)?TypingMessage.TYPING_START:TypingMessage.TYPING_END, shareId));
     }
 
     public void sendWait(String ip)

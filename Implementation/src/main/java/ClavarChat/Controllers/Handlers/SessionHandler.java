@@ -30,13 +30,13 @@ public class SessionHandler implements MessageListener
     {
         switch (message.type)
         {
-            case SharedIdMessage.SHARED_ID -> this.onSharedId((SharedIdMessage)message);
+            case SharedIDMessage.SHARED_ID -> this.onSharedId((SharedIDMessage)message);
             case SessionMessage.LOGIN -> this.onLogin((SessionMessage)message, srcIp);
             case SessionMessage.LOGOUT -> this.onLogout((SessionMessage)message);
         }
     }
 
-    private void onSharedId(SharedIdMessage data)
+    private void onSharedId(SharedIDMessage data)
     {
         if (!this.dataBaseAPI.conversationExist(data.sharedId)) this.dataBaseAPI.createConversation(data.pseudo, data.sharedId, data.id);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
