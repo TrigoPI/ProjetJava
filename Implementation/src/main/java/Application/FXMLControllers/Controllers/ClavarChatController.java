@@ -407,13 +407,14 @@ public class ClavarChatController extends ClvcController
             discussion.changeDisplayText(this.api.getPseudo() + " : " + message);
             this.addMessage(sharedId, userId, message);
 
+            this.api.sendTyping(otherId, sharedId, false);
+            this.api.sendMessage(userId, otherId, conversationId, message);
+
             this.messageInput.clear();
             this.messagesContainer.applyCss();
             this.messagesContainer.layout();
             this.messagesContainer.setVvalue(1.0);
 
-            this.api.sendTyping(otherId, sharedId, false);
-            this.api.sendMessage(userId, otherId, conversationId, message);
         }
     }
 
@@ -447,7 +448,6 @@ public class ClavarChatController extends ClvcController
         int userId = this.selectedUser.getUserId();
 
         if (!this.api.isConnected(userId)) return;
-
         String text = this.messageInput.getText();
         String sharedId = this.selectedUser.getSharedId();
         this.api.sendTyping(userId, sharedId, !text.isEmpty());
