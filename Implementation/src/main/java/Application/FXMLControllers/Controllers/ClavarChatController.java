@@ -399,6 +399,7 @@ public class ClavarChatController extends ClvcController
         {
             discussion.changeDisplayText(this.api.getPseudo() + " : " + message);
             this.addMessage(sharedId, userId, message);
+            this.api.sendTyping(otherId, sharedId, false);
             this.api.sendMessage(userId, otherId, conversationId, message);
             this.messageInput.clear();
             this.messagesContainer.setVvalue(1.0);

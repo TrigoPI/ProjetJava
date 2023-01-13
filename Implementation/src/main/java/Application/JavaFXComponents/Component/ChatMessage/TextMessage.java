@@ -119,6 +119,8 @@ public class TextMessage extends HBox
 
     public void removeLast()
     {
+        if (this.messageContainer.getChildren().isEmpty()) return;
+
         int lastIndex = this.messageContainer.getChildren().size() - 1;
         this.messageContainer.getChildren().remove(lastIndex);
     }
