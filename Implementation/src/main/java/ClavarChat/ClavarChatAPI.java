@@ -29,7 +29,6 @@ public class ClavarChatAPI
     private final NetworkAPI networkAPI;
     private final DiscoverHandler discoverHandler;
     private final MessageHandler messageHandler;
-
     private final ThreadManager threadManager;
 
     public ClavarChatAPI(int tcpPort, int udpPort)
@@ -218,6 +217,11 @@ public class ClavarChatAPI
     public void logout()
     {
         this.networkAPI.sendLogout();
+    }
+
+    public void sendTyping(int userId, boolean isTyping)
+    {
+        this.networkAPI.sendTyping(userId, isTyping);
     }
 
     public void sendNewPseudo()

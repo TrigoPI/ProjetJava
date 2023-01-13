@@ -73,7 +73,7 @@ public class NetworkAPI implements NetworkListener
         for (User other : users)
         {
             ArrayList<String> dst = this.userManager.getUserIP(other.id);
-            this.sendTCP(dst.get(0), this.tcpPort, new LoginMessage(LoginMessage.LOGIN, user.pseudo, user.id, avatar));
+            this.sendTCP(dst.get(0), this.tcpPort, new SessionMessage(SessionMessage.LOGIN, user.pseudo, user.id, avatar));
         }
     }
 
@@ -89,7 +89,7 @@ public class NetworkAPI implements NetworkListener
 
         for (User other : this.userManager.getUsers())
         {
-            LoginMessage message = new LoginMessage(LoginMessage.LOGOUT, user.pseudo, user.id);
+            SessionMessage message = new SessionMessage(SessionMessage.LOGOUT, user.pseudo, user.id);
             this.sendTCP(this.userManager.getUserIP(other.id).get(0), this.tcpPort, message);
         }
     }
@@ -98,7 +98,7 @@ public class NetworkAPI implements NetworkListener
     {
         User user = this.userManager.getUser();
         byte[] avatar = this.userManager.getAvatar();
-        LoginMessage message = new LoginMessage(LoginMessage.PSEUDO, user.pseudo, user.id, avatar);
+        SessionMessage message = new SessionMessage(SessionMessage.PSEUDO, user.pseudo, user.id, avatar);
 
         for (User other : this.userManager.getUsers())
         {
@@ -156,23 +156,27 @@ public class NetworkAPI implements NetworkListener
     public void sendDiscoverRequest()
     {
         ArrayList<String> broadcast = this.getBroadcastAddresses();
-        for (String address : broadcast) this.sendUDP(address, this.udpPort, new DiscoverRequestMessage());
+        for (String address : broadcast) this.sendUDP(address, this.udpPort, new ClvcNetworkMessage(ClvcNetworkMessage.DISCOVER_REQUEST));
+    }
+
+    public void sendTyping(int userId, boolean isTyping)
+    {
+        String ip = this.userManager.getUserIP(userId).get(0);
+        if (ip == null) return;
+        this.sendTCP(ip, this.tcpPort, new ClvcNetworkMessage((isTyping)?ClvcNetworkMessage.TYPING_START:ClvcNetworkMessage.TYPING_END));
     }
 
     public void sendWait(String ip)
     {
         if (!this.userManager.isLogged()) return;
 
-        WaitMessage message = new WaitMessage(WaitMessage.WAIT);
-        this.sendTCP(ip, this.tcpPort, message);
+        this.sendTCP(ip, this.tcpPort, new ClvcNetworkMessage(ClvcNetworkMessage.WAIT));
     }
 
     public void sendWaitFinished(String ip)
     {
         if (!this.userManager.isLogged()) return;
-
-        WaitMessage message = new WaitMessage(WaitMessage.WAIT_FINISHED);
-        this.sendTCP(ip, this.tcpPort, message);
+        this.sendTCP(ip, this.tcpPort, new ClvcNetworkMessage(ClvcNetworkMessage.WAIT_FINISHED));
     }
 
     public void startServer()

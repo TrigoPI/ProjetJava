@@ -419,6 +419,7 @@ public class ClavarChatController extends ClvcController
     @FXML
     private void onKeyPressed(KeyEvent event)
     {
-        System.out.println("OK");
+        int userId = this.selectedUser.getUserId();
+        this.api.sendTyping(userId, true);
     }
 }

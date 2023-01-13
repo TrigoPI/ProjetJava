@@ -4,11 +4,10 @@ import ClavarChat.Controllers.API.DataBaseAPI;
 import ClavarChat.Controllers.API.EventAPI;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.User.UserManager;
-import ClavarChat.Models.ClvcEvent.LoginEvent;
 import ClavarChat.Models.ClvcEvent.NewUserEvent;
 import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
-import ClavarChat.Models.ClvcNetworkMessage.LoginMessage;
+import ClavarChat.Models.ClvcNetworkMessage.SessionMessage;
 import ClavarChat.Utils.Log.Log;
 
 public class PseudoHandler implements MessageListener
@@ -56,11 +55,11 @@ public class PseudoHandler implements MessageListener
     {
         switch (message.type)
         {
-            case LoginMessage.PSEUDO -> this.onNewPseudo((LoginMessage)message);
+            case SessionMessage.PSEUDO -> this.onNewPseudo((SessionMessage)message);
         }
     }
 
-    private void onNewPseudo(LoginMessage message)
+    private void onNewPseudo(SessionMessage message)
     {
         this.userManager.changePseudo(message.id, message.pseudo);
         this.userManager.changeAvatar(message.id, message.img);

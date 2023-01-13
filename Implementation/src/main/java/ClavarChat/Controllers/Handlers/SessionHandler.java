@@ -10,8 +10,6 @@ import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.*;
 import ClavarChat.Utils.Log.Log;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 public class SessionHandler implements MessageListener
 {
     private final NetworkAPI networkAPI;
@@ -33,8 +31,8 @@ public class SessionHandler implements MessageListener
         switch (message.type)
         {
             case SharedIdMessage.SHARED_ID -> this.onSharedId((SharedIdMessage)message);
-            case LoginMessage.LOGIN -> this.onLogin((LoginMessage)message, srcIp);
-            case LoginMessage.LOGOUT -> this.onLogout((LoginMessage)message);
+            case SessionMessage.LOGIN -> this.onLogin((SessionMessage)message, srcIp);
+            case SessionMessage.LOGOUT -> this.onLogout((SessionMessage)message);
         }
     }
 
@@ -44,7 +42,7 @@ public class SessionHandler implements MessageListener
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
-    private void onLogin(LoginMessage data, String dstIp)
+    private void onLogin(SessionMessage data, String dstIp)
     {
         Log.Info(DiscoverHandler.class.getName() + " Login : [ " + dstIp + " ] : " + data.id + " --> " + data.pseudo);
 
@@ -58,7 +56,7 @@ public class SessionHandler implements MessageListener
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
-    private void onLogout(LoginMessage data)
+    private void onLogout(SessionMessage data)
     {
         this.userManager.removeUser(data.id);
         this.eventAPI.notify(new RemoveUserEvent(data.pseudo, data.id));

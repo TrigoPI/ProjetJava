@@ -1,6 +1,6 @@
 package ClavarChat.Models.ClvcNetworkMessage;
 
-public class LoginMessage extends ClvcNetworkMessage
+public class SessionMessage extends ClvcNetworkMessage
 {
     public static final String LOGIN  = "LOGIN";
     public static final String LOGOUT = "LOGOUT";
@@ -11,7 +11,7 @@ public class LoginMessage extends ClvcNetworkMessage
     public final int id;
     public final byte[] img;
 
-    public LoginMessage(String type, String pseudo, int id, byte[] img)
+    public SessionMessage(String type, String pseudo, int id, byte[] img)
     {
         super(type);
         this.pseudo = pseudo;
@@ -19,7 +19,7 @@ public class LoginMessage extends ClvcNetworkMessage
         this.img = img;
     }
 
-    public LoginMessage(String type, String pseudo, int id)
+    public SessionMessage(String type, String pseudo, int id)
     {
         super(type);
         this.pseudo = pseudo;

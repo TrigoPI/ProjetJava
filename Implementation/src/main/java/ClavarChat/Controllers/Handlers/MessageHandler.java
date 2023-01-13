@@ -43,7 +43,13 @@ public class MessageHandler implements MessageListener
         switch (message.type)
         {
             case TextMessage.TEXT_MESSAGE -> this.onTextMessage((TextMessage)message);
+            case ClvcNetworkMessage.TYPING_START -> this.onTypingStart();
         }
+    }
+
+    private void onTypingStart()
+    {
+        System.out.println("typing...");
     }
 
     private void onTextMessage(TextMessage data)
