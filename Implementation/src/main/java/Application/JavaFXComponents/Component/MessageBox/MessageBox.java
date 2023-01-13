@@ -34,6 +34,7 @@ public class MessageBox extends VBox
 
     public void removeTyping()
     {
+        if (!this.typing) return;
         if (this.last == null) return;
         if (this.getChildren().isEmpty()) return;
 
@@ -43,10 +44,6 @@ public class MessageBox extends VBox
         {
             int index = this.getChildren().size() - 1;
             this.getChildren().remove(index);
-        }
-
-        if (this.getChildren().isEmpty())
-        {
             this.last = null;
         }
         else

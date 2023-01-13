@@ -94,6 +94,7 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR in TCP receive ");
             Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
             this.sockets.remove(socketId);
+            this.closeTcpSocket(socketId);
         }
 
         return data;
@@ -260,6 +261,7 @@ public class NetworkManager
             Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
 
             this.sockets.remove(socketId);
+            this.closeTcpSocket(socketId);
 
             e.printStackTrace();
 
@@ -473,7 +475,7 @@ public class NetworkManager
         }
         catch (IOException e)
         {
-            Log.Error(this.getClass().getName() + " ERROR closeTcpSocket ");
+            Log.Error(this.getClass().getName() + " ERROR Socket already closed");
         }
     }
 }
