@@ -203,8 +203,11 @@ public class ClavarChatController extends ClvcController
                 this.notification.play();
             }
 
+            this.messagesContainer.applyCss();
+            this.messagesContainer.layout();
             this.messagesContainer.setVvalue(1.0);
         });
+
     }
 
     public void onTyping(int userId, String sharedId, boolean isTyping)
@@ -222,6 +225,10 @@ public class ClavarChatController extends ClvcController
                     BytesImage bytesImage = this.api.getAvatar(userId);
                     Image image = new Image(bytesImage.toInputStream());
                     messageBox.addTyping(userId, pseudo, image);
+
+                    this.messagesContainer.applyCss();
+                    this.messagesContainer.layout();
+                    this.messagesContainer.setVvalue(1.0);
                 }
                 else
                 {
@@ -399,10 +406,14 @@ public class ClavarChatController extends ClvcController
         {
             discussion.changeDisplayText(this.api.getPseudo() + " : " + message);
             this.addMessage(sharedId, userId, message);
+
+            this.messageInput.clear();
+            this.messagesContainer.applyCss();
+            this.messagesContainer.layout();
+            this.messagesContainer.setVvalue(1.0);
+
             this.api.sendTyping(otherId, sharedId, false);
             this.api.sendMessage(userId, otherId, conversationId, message);
-            this.messageInput.clear();
-            this.messagesContainer.setVvalue(1.0);
         }
     }
 

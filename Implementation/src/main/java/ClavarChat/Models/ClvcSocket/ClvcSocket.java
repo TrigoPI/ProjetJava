@@ -1,7 +1,7 @@
 package ClavarChat.Models.ClvcSocket;
 
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
-import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPacket;
 import ClavarChat.Utils.Log.Log;
 
 import java.io.Serializable;
@@ -123,7 +123,7 @@ public class ClvcSocket
         return code;
     }
 
-    public NetworkPaquet receive()
+    public NetworkPacket receive()
     {
         if (this.state.get() == SOCKET_STATE.IDLE)
         {
@@ -150,7 +150,7 @@ public class ClvcSocket
         }
 
         Log.Info(this.getClass().getName() + "[ socket : " + this.socketId + " ] " + " Waiting for data : " + this.srcIp + ":" + this.srcPort + " <-- " + this.dstIp + ":" + this.dstPort);
-        NetworkPaquet data = this.networkManager.tcpReceive(this.socketId);
+        NetworkPacket data = this.networkManager.tcpReceive(this.socketId);
 
         if (data == null)
         {

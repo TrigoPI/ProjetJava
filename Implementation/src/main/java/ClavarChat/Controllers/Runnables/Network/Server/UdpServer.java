@@ -3,7 +3,7 @@ package ClavarChat.Controllers.Runnables.Network.Server;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
-import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPacket;
 
 public class UdpServer extends Server
 {
@@ -22,7 +22,7 @@ public class UdpServer extends Server
 
         while (running)
         {
-            NetworkPaquet paquet = this.networkManager.udpReceive(this.serverId);
+            NetworkPacket paquet = this.networkManager.udpReceive(this.serverId);
 
             if (paquet != null)
             {

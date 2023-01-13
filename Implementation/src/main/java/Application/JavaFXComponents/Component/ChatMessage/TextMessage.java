@@ -1,5 +1,6 @@
 package Application.JavaFXComponents.Component.ChatMessage;
 
+import Application.JavaFXComponents.Animation.Floating.Floating;
 import Application.JavaFXComponents.Component.Avatar.Avatar;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -7,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class TextMessage extends HBox
@@ -97,9 +99,21 @@ public class TextMessage extends HBox
     public void addTyping()
     {
         HBox hBox = new HBox();
-        Circle circle1 = new Circle(5);
-        Circle circle2 = new Circle(5);
-        Circle circle3 = new Circle(5);
+        Circle circle1 = new Circle(3);
+        Circle circle2 = new Circle(3);
+        Circle circle3 = new Circle(3);
+
+        circle1.setFill(new Color(1, 1, 1, 1));
+        circle2.setFill(new Color(1, 1, 1, 1));
+        circle3.setFill(new Color(1, 1, 1, 1));
+
+        Floating floating1 = new Floating(circle1, 2, 0, 1000);
+        Floating floating2 = new Floating(circle2, 2, 0.1, 1000);
+        Floating floating3 = new Floating(circle3, 2, 0.2, 1000);
+
+        floating1.playFromStart();
+        floating2.playFromStart();
+        floating3.playFromStart();
 
         hBox.getStyleClass().add(this.styleClass);
         hBox.getStyleClass().add("clvc-chat-bubble");
@@ -108,7 +122,9 @@ public class TextMessage extends HBox
         hBox.getChildren().add(circle1);
         hBox.getChildren().add(circle2);
         hBox.getChildren().add(circle3);
+
         this.messageContainer.getChildren().add(hBox);
+
     }
 
     public void update(String pseudo, Image image)

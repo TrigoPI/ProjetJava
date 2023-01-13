@@ -4,7 +4,7 @@ import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcListener.NetworkListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcSocket.ClvcSocket;
-import ClavarChat.Controllers.Managers.Network.NetworkPaquet;
+import ClavarChat.Controllers.Managers.Network.NetworkPacket;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,7 +48,7 @@ public class TCPIN implements TMRunnable
         return this.socket.getState() == ClvcSocket.SOCKET_STATE.CLOSE_WAIT;
     }
 
-    private void notify(NetworkPaquet packet)
+    private void notify(NetworkPacket packet)
     {
         if (packet == null) return;
         this.listener.onPacket(this.socket.getDistantIp(), this.socket.getDistantPort(), (ClvcNetworkMessage)packet.data);

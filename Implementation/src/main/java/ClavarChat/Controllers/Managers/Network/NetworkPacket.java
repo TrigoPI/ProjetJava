@@ -2,7 +2,7 @@ package ClavarChat.Controllers.Managers.Network;
 
 import java.io.Serializable;
 
-public class NetworkPaquet implements Serializable
+public class NetworkPacket implements Serializable
 {
     public String srcIp;
     public String dstIp;
@@ -12,7 +12,7 @@ public class NetworkPaquet implements Serializable
 
     public Serializable data;
 
-    public NetworkPaquet(String srcIp, int srcPort, String dstIp, int dstPort, Serializable data)
+    public NetworkPacket(String srcIp, int srcPort, String dstIp, int dstPort, Serializable data)
     {
         this.srcIp = srcIp;
         this.dstIp = dstIp;

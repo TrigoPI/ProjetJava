@@ -70,10 +70,10 @@ public class NetworkManager
         return broadcast;
     }
 
-    public NetworkPaquet tcpReceive(int socketId)
+    public NetworkPacket tcpReceive(int socketId)
     {
         Socket socket = this.sockets.get(socketId);
-        NetworkPaquet data = null;
+        NetworkPacket data = null;
 
         if (socket == null)
         {
@@ -85,7 +85,7 @@ public class NetworkManager
         {
             InputStream in = socket.getInputStream();
             ObjectInputStream iin = new ObjectInputStream(in);
-            data = (NetworkPaquet)iin.readObject();
+            data = (NetworkPacket)iin.readObject();
 
             Log.Print(this.getClass().getName() + " data from " + data.dstIp + ":" + data.dstPort + " <-- " + data.srcIp + ":" + data.srcPort);
         }
@@ -100,12 +100,12 @@ public class NetworkManager
         return data;
     }
 
-    public NetworkPaquet udpReceive(int serverId)
+    public NetworkPacket udpReceive(int serverId)
     {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
-        NetworkPaquet data = null;
+        NetworkPacket data = null;
         DatagramSocket server = this.udpServers.get(serverId);
 
         if (server == null)
@@ -132,7 +132,7 @@ public class NetworkManager
             server.receive(datagramPacket);
 
             ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-            data = (NetworkPaquet)iStream.readObject();
+            data = (NetworkPacket)iStream.readObject();
 
             Log.Print(this.getClass().getName() + " Paquet from UDP " + data.srcIp + ":" + data.srcPort);
         }
@@ -207,7 +207,7 @@ public class NetworkManager
             String srcIp = NetworkUtils.inetAddressToString(datagramSocket.getLocalAddress());
             int srcPort = datagramSocket.getLocalPort();
 
-            NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dst, port, data);
+            NetworkPacket paquet = new NetworkPacket(srcIp, srcPort, dst, port, data);
 
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -247,13 +247,13 @@ public class NetworkManager
             int srcPort = NetworkUtils.getSocketLocalPort(socket);
             int dstPort = NetworkUtils.getSocketDistantPort(socket);
 
-            NetworkPaquet paquet = new NetworkPaquet(srcIp, srcPort, dstIp, dstPort, data);
+            NetworkPacket packet = new NetworkPacket(srcIp, srcPort, dstIp, dstPort, data);
 
             Log.Print(this.getClass().getName() + " Send data : " + srcIp + ":" + srcPort + " --> " + dstIp + ":" + dstPort);
 
             OutputStream out = socket.getOutputStream();
             ObjectOutputStream oout = new ObjectOutputStream(out);
-            oout.writeObject(paquet);
+            oout.writeObject(packet);
         }
         catch (IOException e)
         {
