@@ -8,7 +8,6 @@ import Resources.Resources;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,6 +24,9 @@ import java.util.ResourceBundle;
 
 public class SettingsController extends ClvcController
 {
+    @FXML
+    private HBox pseudoInput;
+
     @FXML
     private HBox modifpage;
     @FXML
@@ -76,7 +78,12 @@ public class SettingsController extends ClvcController
 
         if (newPseudo.isEmpty()) return;
 
-        this.api.updatePseudo(userID, newPseudo);
+        if (!this.api.updatePseudo(userID, newPseudo))
+        {
+            this.pseudoInput.getStyleClass().add("clvc-input-field-error");
+            return;
+        }
+
         this.pseudoLABEL.setText(newPseudo);
         this.pseudoField.setText("");
     }

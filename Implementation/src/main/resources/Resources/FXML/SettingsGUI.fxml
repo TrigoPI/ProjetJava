@@ -9,7 +9,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="clvc-dracula-orchid" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
@@ -44,22 +43,16 @@
                               <String fx:value="clvc-vboxradius" />
                           </styleClass>
                           <children>
-                              <HBox styleClass="clvc-pseudo-field">
-                                  <children>
-                                      <MFXTextField fx:id="pseudoField" floatMode="BORDER" floatingText="Nouveau Pseudonyme" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" selectable="false" textLimit="500">
-                                          <textFill>
-                                              <Color red="1.0" green="1.0" blue="1.0" opacity="0.8700000047683716" />
-                                          </textFill>
-                                 <styleClass>
-                                    <String fx:value="clvc-transparent-background" />
-                                    <String fx:value="clvc-text-field" />
-                                 </styleClass>
-                                      </MFXTextField>
-                                  </children>
-                                  <padding>
-                                      <Insets left="20.0" />
-                                  </padding>
-                              </HBox>
+                        <HBox fx:id="pseudoInput" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="370.0" styleClass="clvc-input-field">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Button disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="clvc-user-icon" />
+                                 </children>
+                              </VBox>
+                              <MFXTextField fx:id="pseudoField" floatMode="BORDER" floatingText="Pseudo" floatingTextGap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="300.0" />
+                           </children>
+                        </HBox>
                               <MFXButton maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#pseudoModifyer" prefHeight="55.0" prefWidth="250.0" text="Appliquer Modification">
                                   <styleClass>
                                       <String fx:value="clvc-light-green" />

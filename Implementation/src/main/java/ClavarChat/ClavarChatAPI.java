@@ -29,7 +29,6 @@ public class ClavarChatAPI
     private final NetworkAPI networkAPI;
     private final DiscoverHandler discoverHandler;
     private final MessageHandler messageHandler;
-    private final PseudoHandler pseudoHandler;
 
     private final ThreadManager threadManager;
 
@@ -44,11 +43,11 @@ public class ClavarChatAPI
         this.eventAPI = new EventAPI();
 
         SessionHandler sessionHandler = new SessionHandler(this.networkAPI, this.eventAPI, this.dataBaseAPI, this.userManager);
-        this.pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI, this.eventAPI);
+        PseudoHandler pseudoHandler = new PseudoHandler(this.userManager, this.networkAPI, this.dataBaseAPI, this.eventAPI);
         this.messageHandler = new MessageHandler(this.eventAPI, this.dataBaseAPI, this.userManager);
         this.discoverHandler = new DiscoverHandler(this.networkAPI, this.dataBaseAPI, this.userManager, pseudoHandler);
 
-        this.networkAPI.addListener(this.pseudoHandler);
+        this.networkAPI.addListener(pseudoHandler);
         this.networkAPI.addListener(this.discoverHandler);
         this.networkAPI.addListener(this.messageHandler);
         this.networkAPI.addListener(sessionHandler);
@@ -80,6 +79,16 @@ public class ClavarChatAPI
 
         this.userManager.setUser(pseudo, avatar.getBytes());
         this.threadManager.startThread(threadId);
+
+        return true;
+    }
+
+    public boolean updatePseudo(int userId, String pseudo)
+    {
+        if (this.userManager.pseudoExist(pseudo)) return false;
+
+        this.userManager.changePseudo(userId, pseudo);
+        this.dataBaseAPI.updatePseudo(userId, pseudo);
 
         return true;
     }
@@ -222,12 +231,6 @@ public class ClavarChatAPI
         String sharedId = this.getConversationSharedId(conversationId);
         this.dataBaseAPI.addMessage(conversationId, srcId, dstId, message);
         this.networkAPI.sendMessage(dstId, sharedId, message);
-    }
-
-    public void updatePseudo(int userId,String pseudo)
-    {
-        this.userManager.changePseudo(userId, pseudo);
-        this.dataBaseAPI.updatePseudo(userId, pseudo);
     }
 
     public void updateAvatar(int userId, byte[] avatar)

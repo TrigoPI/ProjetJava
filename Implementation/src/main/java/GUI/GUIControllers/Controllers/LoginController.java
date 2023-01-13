@@ -73,7 +73,7 @@ public class LoginController extends ClvcController
         this.errorInput(this.usernameTextField);
     }
 
-    public void onPasswordFaild()
+    public void onPasswordFailed()
     {
         this.loginButton.setVisible(true);
         this.loginButton.setManaged(true);
@@ -144,7 +144,7 @@ public class LoginController extends ClvcController
             this.spinnerBar.setVisible(true);
             this.spinnerBar.setManaged(true);
 
-            if (!this.api.login(pseudo, password)) this.onLoginFailed();
+            if (!this.api.login(pseudo, password)) this.onPasswordFailed();
         }
     }
 }
