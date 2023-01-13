@@ -89,6 +89,11 @@ public class TextMessage extends HBox
         this.messageContainer.getChildren().add(hBox);
     }
 
+    public boolean isEmpty()
+    {
+        return this.messageContainer.getChildren().isEmpty();
+    }
+
     public void addTyping()
     {
         HBox hBox = new HBox();

@@ -35,7 +35,15 @@ public class MessageBox extends VBox
     public void removeTyping()
     {
         if (this.last == null) return;
+
         this.last.removeLast();
+
+        if (this.last.isEmpty())
+        {
+            int index = this.getChildren().size() - 1;
+            this.getChildren().remove(index);
+        }
+
         this.typing = false;
     }
 
