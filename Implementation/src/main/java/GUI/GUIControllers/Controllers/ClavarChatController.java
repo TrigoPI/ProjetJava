@@ -420,6 +420,7 @@ public class ClavarChatController extends ClvcController
     private void onKeyPressed(KeyEvent event)
     {
         int userId = this.selectedUser.getUserId();
-        this.api.sendTyping(userId, true);
+
+        if (this.api.isConnected(userId)) this.api.sendTyping(userId, true);
     }
 }
