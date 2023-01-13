@@ -20,6 +20,13 @@ public class DataBaseAPI
         this.userManager = userManager;
     }
 
+    public boolean conversationExist(String sharedId)
+    {
+        int id =  this.dataBaseManager.executeQuery("SELECT shared_id FROM Conversation WHERE shared_id='%s'", sharedId);
+        ArrayList<String> result = this.dataBaseManager.decodeAsString(id, 1);
+        return !result.isEmpty();
+    }
+
     public boolean userExist(int id)
     {
         int resultId = this.dataBaseManager.executeQuery("SELECT user_id FROM User WHERE user_id = %d", id);
@@ -198,6 +205,13 @@ public class DataBaseAPI
         {
             Log.Error(this.getClass().getName() + " Cannot create conversation user is not logged");
             return -1;
+        }
+
+        if (this.userExist(userId))
+        {
+            int resultId = this.dataBaseManager.executeQuery("SELECT conversation_id FROM Read WHERE user_id='%d'", userId);
+            ArrayList<Integer> shared_id = this.dataBaseManager.decodeAsInt(resultId, 1);
+            return shared_id.get(0);
         }
 
         String sharedId = UUID.randomUUID().toString();

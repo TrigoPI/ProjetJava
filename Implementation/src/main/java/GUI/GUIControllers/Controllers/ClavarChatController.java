@@ -14,8 +14,6 @@ import ClavarChat.Utils.GUI.Component.Discussion.Discussion;
 import ClavarChat.ClavarChatAPI;
 import ClavarChat.Utils.Log.Log;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -327,12 +325,11 @@ public class ClavarChatController extends ClvcController
 
     private void selectUser(Discussion discussion)
     {
-        if (this.selectedUser == discussion) return;
         if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
         if (this.selectedUser != null) this.selectedUser.deselect();
 
         this.selectedUser = discussion;
-        this.selectedUser.select();
+        this.selectedUser.select();;
 
         this.fillMessageBox(discussion.getConversationId(), discussion.getSharedId());
         this.updateChatContainer(discussion.getUserId());

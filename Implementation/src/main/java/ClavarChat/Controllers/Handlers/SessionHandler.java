@@ -40,7 +40,7 @@ public class SessionHandler implements MessageListener
 
     private void onSharedId(SharedIdMessage data)
     {
-        this.dataBaseAPI.createConversation(data.pseudo, data.sharedId, data.id);
+        if (!this.dataBaseAPI.conversationExist(data.sharedId)) this.dataBaseAPI.createConversation(data.pseudo, data.sharedId, data.id);
         this.eventAPI.notify(new NewUserEvent(data.id, data.pseudo));
     }
 
@@ -66,8 +66,6 @@ public class SessionHandler implements MessageListener
 
     private void createSharedConversation(int userId, String pseudo)
     {
-        if (this.dataBaseAPI.userExist(userId)) return;
-
         int id = this.dataBaseAPI.createConversation(pseudo, userId);
         String sharedId = this.dataBaseAPI.getConversationSharedId(id);
 
