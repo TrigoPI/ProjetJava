@@ -52,12 +52,12 @@ public class MessageHandler implements MessageListener
 
     private void onTypingEnd(TypingMessage message)
     {
-        this.eventAPI.notify(new TypingEvent(message.sharedId, false));
+        this.eventAPI.notify(new TypingEvent(message.userId, message.sharedId, false));
     }
 
     private void onTypingStart(TypingMessage message)
     {
-        this.eventAPI.notify(new TypingEvent(message.sharedId, true));
+        this.eventAPI.notify(new TypingEvent(message.userId, message.sharedId, true));
     }
 
     private void onTextMessage(TextMessage data)

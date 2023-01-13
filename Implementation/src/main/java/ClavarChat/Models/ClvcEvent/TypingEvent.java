@@ -6,11 +6,13 @@ public class TypingEvent extends ClvcEvent
 
     public final boolean isTyping;
     public final String sharedId;
+    public final int userId;
 
-    public TypingEvent(String sharedId, boolean isTyping)
+    public TypingEvent(int userId , String sharedId, boolean isTyping)
     {
         super(TYPING);
 
+        this.userId   = userId;
         this.sharedId = sharedId;
         this.isTyping = isTyping;
     }

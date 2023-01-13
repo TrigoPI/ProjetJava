@@ -163,7 +163,7 @@ public class NetworkAPI implements NetworkListener
     {
         String ip = this.userManager.getUserIP(userId).get(0);
         if (ip == null) return;
-        this.sendTCP(ip, this.tcpPort, new TypingMessage((isTyping)?TypingMessage.TYPING_START:TypingMessage.TYPING_END, shareId));
+        this.sendTCP(ip, this.tcpPort, new TypingMessage((isTyping)?TypingMessage.TYPING_START:TypingMessage.TYPING_END, userId, shareId));
     }
 
     public void sendWait(String ip)

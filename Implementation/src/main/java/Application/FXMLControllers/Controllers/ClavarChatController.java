@@ -207,13 +207,20 @@ public class ClavarChatController extends ClvcController
         });
     }
 
-    public void onTyping(String sharedId, boolean isTyping)
+    public void onTyping(int userId, String sharedId, boolean isTyping)
     {
         if (this.selectedUser == null) return;
 
         if (this.selectedUser.getSharedId().equals(sharedId))
         {
-            System.out.println("Typing from : " + sharedId);
+            if (isTyping)
+            {
+                String pseudo = this.api.getPseudo(userId);
+                BytesImage bytesImage = this.api.getAvatar(userId);
+                Image image = new Image(bytesImage.toInputStream());
+                MessageBox messageBox = this.messagesBoxGui.get(sharedId);
+                messageBox.addTyping(userId, pseudo, image);
+            }
         }
     }
 

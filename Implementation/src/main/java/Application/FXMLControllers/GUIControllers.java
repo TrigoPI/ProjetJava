@@ -71,6 +71,6 @@ public class GUIControllers implements ClvcListener
 
     private void onTyping(TypingEvent event)
     {
-        this.clavarChatController.onTyping(event.sharedId, event.isTyping);
+        this.clavarChatController.onTyping(event.userId, event.sharedId, event.isTyping);
     }
 }

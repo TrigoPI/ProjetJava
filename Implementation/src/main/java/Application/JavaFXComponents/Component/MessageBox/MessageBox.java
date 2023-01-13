@@ -21,15 +21,6 @@ public class MessageBox extends VBox
         this.setFillWidth(true);
     }
 
-    public void createMessage(int userId, String pseudo, Image image, String text, boolean reverse)
-    {
-        TextMessage textMessage = new TextMessage(userId, pseudo, image, reverse);
-        textMessage.addMessage(text);
-
-        this.getChildren().add(textMessage);
-        this.last = textMessage;
-    }
-
     public void updateDisplay(int userId, String pseudo, Image image)
     {
         for (Node node : this.getChildren())
@@ -39,22 +30,54 @@ public class MessageBox extends VBox
         }
     }
 
+    public void addTyping(int userId, String pseudo, Image image)
+    {
+        if (this.last == null)
+        {
+            this.createTyping(userId, pseudo, image);
+            return;
+        }
+
+        if (this.last.getUserId() == userId)
+        {
+            this.last.addTyping();
+        }
+        else
+        {
+            this.createTyping(userId, pseudo, image);
+        }
+    }
+
     public void addMessage(int userId, String pseudo, Image image, String text, boolean reverse)
     {
-        if (last != null)
+        if (this.last == null)
         {
-            if (this.last.getUserId() == userId)
-            {
-                this.last.addMessage(text);
-            }
-            else
-            {
-                this.createMessage(userId, pseudo, image, text, reverse);
-            }
+            this.createMessage(userId, pseudo, image, text, reverse);
+            return;
+        }
+
+        if (this.last.getUserId() == userId)
+        {
+            this.last.addMessage(text);
         }
         else
         {
             this.createMessage(userId, pseudo, image, text, reverse);
         }
+    }
+
+    private void createMessage(int userId, String pseudo, Image image, String text, boolean reverse)
+    {
+        TextMessage textMessage = new TextMessage(userId, pseudo, image, reverse);
+        textMessage.addMessage(text);
+
+        this.getChildren().add(textMessage);
+        this.last = textMessage;
+    }
+    private void createTyping(int userId, String pseudo, Image image)
+    {
+        TextMessage textMessage = new TextMessage(userId, pseudo, image, false);
+        this.getChildren().add(textMessage);
+        this.last = textMessage;
     }
 }
