@@ -93,8 +93,8 @@ public class NetworkManager
         {
             Log.Error(this.getClass().getName() + " ERROR in TCP receive ");
             Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
-            this.sockets.remove(socketId);
             this.closeTcpSocket(socketId);
+            this.sockets.remove(socketId);
         }
 
         return data;
@@ -260,8 +260,8 @@ public class NetworkManager
             Log.Error(this.getClass().getName() + " ERROR in TCP Send");
             Log.Print(this.getClass().getName() + " Removing socket : " + socketId);
 
-            this.sockets.remove(socketId);
             this.closeTcpSocket(socketId);
+            this.sockets.remove(socketId);
 
             e.printStackTrace();
 

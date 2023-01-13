@@ -1,38 +1,44 @@
 package ClavarChat.Controllers.Managers.Thread;
 
 import ClavarChat.Utils.Log.Log;
+import ClavarChat.Utils.PackedArray.PackedArray;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadManager
 {
-    private final HashMap<Integer, TMThread> threads;
-    private int currentID;
-
+    private final PackedArray<TMThread> threads;
     public ThreadManager()
     {
-        this.currentID = 0;
-        this.threads = new HashMap<>();
+        this.threads = new PackedArray<>();
     }
 
     public int createThread()
     {
-        Log.Print(this.getClass().getName() + " creating thread : " + this.currentID);
-        this.threads.put(this.currentID, new TMThread(this, this.currentID));
-        return currentID++;
+        TMThread thread = new TMThread(this);
+        int threadId = this.threads.add(thread);
+
+        thread.setId(threadId);
+        Log.Print(this.getClass().getName() + " creating thread : " + threadId);
+
+        return threadId;
     }
 
     public int createThread(TMRunnable runnable)
     {
-        Log.Print(this.getClass().getName() + " creating thread : " + this.currentID + " --> " + runnable.getClass().getName());
-        this.threads.put(this.currentID, new TMThread(this, runnable, this.currentID));
-        return currentID++;
+        TMThread thread = new TMThread(this, runnable);
+        int threadId = this.threads.add(thread);
+
+        Log.Print(this.getClass().getName() + " creating thread : " + threadId + " --> " + runnable.getClass().getName());
+        thread.setId(threadId);
+
+        return threadId;
     }
 
     public void setRunnable(int threadId, TMRunnable runnable)
     {
-        if (!this.threads.containsKey(threadId))
+        if (this.threads.get(threadId) == null)
         {
             Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
             return;
@@ -42,21 +48,9 @@ public class ThreadManager
         tmThread.setRunnable(runnable);
     }
 
-    public void removeThread(int threadId)
-    {
-        if (!this.threads.containsKey(threadId))
-        {
-            Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
-            return;
-        }
-
-        Log.Print(this.getClass().getName() + " removing thread : " + threadId);
-        this.threads.remove(threadId);
-    }
-
     public void startThread(int threadId)
     {
-        if (!this.threads.containsKey(threadId))
+        if (this.threads.get(threadId) == null)
         {
             Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
             return;
@@ -69,25 +63,37 @@ public class ThreadManager
 
     public void onFinished(int threadId)
     {
-        this.removeThread(threadId);
+        if (this.threads.get(threadId) == null)
+        {
+            Log.Error(this.getClass().getName() + " no thread with id : " + threadId);
+            return;
+        }
+
+        Log.Print(this.getClass().getName() + " removing thread : " + threadId);
+        this.threads.remove(threadId);
     }
 
     private static class TMThread extends Thread
     {
-        private final int id;
+        private int id;
         private final ThreadManager threadManager;
         private TMRunnable runnable;
-        public TMThread(ThreadManager threadManager, TMRunnable runnable, int id)
+        public TMThread(ThreadManager threadManager, TMRunnable runnable)
         {
-            this.id = id;
+            this.id = -1;
             this.threadManager = threadManager;
             this.runnable = runnable;
         }
-        public TMThread(ThreadManager threadManager, int id)
+        public TMThread(ThreadManager threadManager)
         {
-            this.id = id;
+            this.id = -1;
             this.threadManager = threadManager;
             this.runnable = null;
+        }
+
+        public void setId(int id)
+        {
+            this.id = id;
         }
 
         public void setRunnable(TMRunnable runnable)
