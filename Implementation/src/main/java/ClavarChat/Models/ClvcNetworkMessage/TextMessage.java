@@ -2,19 +2,17 @@ package ClavarChat.Models.ClvcNetworkMessage;
 
 public class TextMessage extends ClvcNetworkMessage
 {
-    public static final String TEXT_MESSAGE = "TEXT_MESSAGE";
+    public static final String TEXT_NETWORK_MESSAGE  = "TEXT_NETWORK_MESSAGE";
 
     public final String sharedId;
-    public final String pseudo;
     public final String message;
-    public final int id;
+    public final int userId;
 
-    public TextMessage(int id, String sharedId, String pseudo, String message)
+    public TextMessage(int userId, String sharedId, String message)
     {
-        super(TEXT_MESSAGE);
+        super(TEXT_NETWORK_MESSAGE);
+        this.userId = userId;
         this.sharedId = sharedId;
-        this.pseudo = pseudo;
         this.message = message;
-        this.id = id;
     }
 }

@@ -9,13 +9,14 @@ import ClavarChat.Models.ClvcListener.MessageListener;
 import ClavarChat.Models.ClvcNetworkMessage.ClvcNetworkMessage;
 import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
 import ClavarChat.Models.ClvcNetworkMessage.TypingMessage;
+import ClavarChat.Models.Message.Message;
 import ClavarChat.Utils.Log.Log;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageHandler implements MessageListener
 {
-    private final LinkedBlockingQueue<TextMessage> buffer;
+    private final LinkedBlockingQueue<Message> buffer;
     private final EventAPI eventAPI;
     private final DataBaseAPI dataBaseAPI;
     private final UserManager userManager;
@@ -34,9 +35,36 @@ public class MessageHandler implements MessageListener
         return !this.buffer.isEmpty();
     }
 
-    public TextMessage getLastMessage()
+    public Message getLastMessage()
     {
         return this.buffer.poll();
+    }
+
+    public void asynchronousGetMessage(int conversationId, int fromMessageId, int n)
+    {
+        for (int messageId : this.dataBaseAPI.getMessagesId(conversationId, fromMessageId, n))
+        {
+            int userId = this.dataBaseAPI.getMessageUserId(messageId);
+            String message = this.dataBaseAPI.getMessageText(messageId);
+            String sharedId = this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
+            this.buffer.add(new Message(userId, messageId, sharedId, message));
+        }
+
+        this.eventAPI.notify(new MessageEvent());
+    }
+
+
+    public void asynchronousGetMessage(int conversationId)
+    {
+        for (int messageId : this.dataBaseAPI.getMessagesId(conversationId))
+        {
+            int userId = this.dataBaseAPI.getMessageUserId(messageId);
+            String message = this.dataBaseAPI.getMessageText(messageId);
+            String sharedId = this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
+            this.buffer.add(new Message(userId, messageId, sharedId, message));
+        }
+
+        this.eventAPI.notify(new MessageEvent());
     }
 
     @Override
@@ -44,7 +72,7 @@ public class MessageHandler implements MessageListener
     {
         switch (message.type)
         {
-            case TextMessage.TEXT_MESSAGE -> this.onTextMessage((TextMessage)message);
+            case TextMessage.TEXT_NETWORK_MESSAGE -> this.onTextNetworkMessage((TextMessage)message);
             case TypingMessage.TYPING_START -> this.onTypingStart((TypingMessage)message);
             case TypingMessage.TYPING_END -> this.onTypingEnd((TypingMessage)message);
         }
@@ -60,13 +88,14 @@ public class MessageHandler implements MessageListener
         this.eventAPI.notify(new TypingEvent(message.userId, message.sharedId, true));
     }
 
-    private void onTextMessage(TextMessage data)
+    private void onTextNetworkMessage(TextMessage data)
     {
-        Log.Info("New Message from : [ " + data.pseudo + " / " + data.sharedId + " ] --> " + data.message);
-        int conversationId = this.dataBaseAPI.getConversationId(data.sharedId);
+        Log.Info("New Message from : [ " + data.userId + " / " + data.sharedId + " ] --> " + data.message);
 
-        this.buffer.add(data);
-        this.dataBaseAPI.addMessage(conversationId, data.id, this.userManager.getId(), data.message);
+        int conversationId = this.dataBaseAPI.getConversationId(data.sharedId);
+        int messageId = this.dataBaseAPI.addMessage(conversationId, data.userId, this.userManager.getId(), data.message);
+
+        this.buffer.add(new Message(data.userId, messageId, data.sharedId, data.message));
         this.eventAPI.notify(new MessageEvent());
     }
 }

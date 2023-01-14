@@ -74,7 +74,7 @@
          <children>
             <VBox fx:id="otherAvatarContainer" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" spacing="10.0" styleClass="clvc-user-chat-avatar-container" />
             <VBox fx:id="otherAvatarContainer1" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1.0" prefWidth="500.0" spacing="10.0" styleClass="clvc-user-line-seperator" />
-            <MFXScrollPane fx:id="messagesContainer" fitToWidth="true" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS" />
+            <MFXScrollPane fx:id="messagesContainer" fitToWidth="true" onScroll="#onScroll" styleClass="clvc-dracula-orchid" VBox.vgrow="ALWAYS" />
             <VBox alignment="CENTER" styleClass="clvc-message-input">
                <children>
                   <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="710.0" styleClass="clvc-input-field">

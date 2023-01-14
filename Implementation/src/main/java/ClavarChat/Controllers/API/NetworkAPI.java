@@ -124,7 +124,7 @@ public class NetworkAPI implements NetworkListener
         User user = this.userManager.getUser();
         String ip = this.userManager.getUserIP(userId).get(0);
 
-        TextMessage mgs = new TextMessage(user.id, sharedId, user.pseudo, text);
+        TextMessage mgs = new TextMessage(user.id, sharedId, text);
         this.sendTCP(ip, this.tcpPort, mgs);
     }
 
@@ -300,7 +300,6 @@ public class NetworkAPI implements NetworkListener
         {
             listener.onData(from, data);
         }
-
     }
 
     private void sendUDP(String ip, int port, ClvcNetworkMessage data)

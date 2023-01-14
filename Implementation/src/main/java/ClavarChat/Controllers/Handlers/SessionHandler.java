@@ -65,7 +65,7 @@ public class SessionHandler implements MessageListener
     private void createSharedConversation(int userId, String pseudo)
     {
         int id = this.dataBaseAPI.createConversation(pseudo, userId);
-        String sharedId = this.dataBaseAPI.getConversationSharedId(id);
+        String sharedId = this.dataBaseAPI.getSharedIdFromConversationId(id);
 
         this.networkAPI.sendSharedConversationId(userId, sharedId);
     }
@@ -74,7 +74,7 @@ public class SessionHandler implements MessageListener
     {
         for (int conversationId : this.dataBaseAPI.getConversationWith(userId))
         {
-            String shared_id = this.dataBaseAPI.getConversationSharedId(conversationId);
+            String shared_id = this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
 
             for (int messageId : this.dataBaseAPI.getUnsentMessage(conversationId))
             {

@@ -9,6 +9,7 @@ import ClavarChat.Controllers.Handlers.SessionHandler;
 import ClavarChat.Controllers.API.NetworkAPI;
 import ClavarChat.Controllers.Managers.Thread.ThreadManager;
 import ClavarChat.Controllers.Managers.User.UserManager;
+import ClavarChat.Controllers.Runnables.DataBase.MessageGetter;
 import ClavarChat.Controllers.Runnables.Discover.Discover;
 import ClavarChat.Models.ClvcListener.ClvcListener;
 import ClavarChat.Models.ClvcNetworkMessage.TextMessage;
@@ -112,7 +113,7 @@ public class ClavarChatAPI
         return this.userManager.getId(pseudo);
     }
 
-    public TextMessage getLastMessage()
+    public Message getLastMessage()
     {
         return this.messageHandler.getLastMessage();
     }
@@ -142,11 +143,6 @@ public class ClavarChatAPI
         return this.dataBaseAPI.getUsersInConversation(conversationId);
     }
 
-    public ArrayList<Integer> getMessagesIdInDataBase(int conversationId)
-    {
-        return this.dataBaseAPI.getMessagesId(conversationId);
-    }
-
     public String getPseudoFromDataBase(int userId)
     {
         return this.dataBaseAPI.getUserPseudo(userId);
@@ -162,9 +158,9 @@ public class ClavarChatAPI
         return this.userManager.getPseudo(id);
     }
 
-    public String getConversationSharedId(int conversationId)
+    public String getSharedIdFromConversationId(int conversationId)
     {
-        return this.dataBaseAPI.getConversationSharedId(conversationId);
+        return this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
     }
 
     public User getUserInDataBase(int userId)
@@ -186,17 +182,22 @@ public class ClavarChatAPI
     public Message getMessageInDataBase(int messageId)
     {
         int userId  = this.dataBaseAPI.getMessageUserId(messageId);
+        String shareId = this.dataBaseAPI.getSharedIdFromMessageId(messageId);
         String text = this.dataBaseAPI.getMessageText(messageId);
-        return new Message(userId, text);
+        return new Message(userId, messageId, shareId,text);
     }
 
     public Message getLastMessage(int conversationId)
     {
         int messageId = this.dataBaseAPI.getLastMessageId(conversationId);
+
         if (messageId == -1) return null;
+
         int userId = this.dataBaseAPI.getMessageUserId(messageId);
+        String shareId = this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
         String text = this.dataBaseAPI.getMessageText(messageId);
-        return new Message(userId, text);
+
+        return new Message(userId, messageId, shareId, text);
     }
 
     public BytesImage getAvatar()
@@ -212,6 +213,20 @@ public class ClavarChatAPI
     public BytesImage getAvatar(int userId)
     {
         return new BytesImage(this.userManager.getAvatar(userId));
+    }
+
+    public void getMessageInDataBase(int conversationId, int fromMessageId, int n)
+    {
+        MessageGetter messageGetter = new MessageGetter(this.messageHandler, conversationId, fromMessageId, n);
+        int threadId = this.threadManager.createThread(messageGetter);
+        this.threadManager.startThread(threadId);
+    }
+
+    public void getMessagesInDataBase(int conversationId)
+    {
+        MessageGetter messageGetter = new MessageGetter(this.messageHandler, conversationId);
+        int threadId = this.threadManager.createThread(messageGetter);
+        this.threadManager.startThread(threadId);
     }
 
     public void logout()
@@ -232,7 +247,7 @@ public class ClavarChatAPI
     public void sendMessage(int srcId, int dstId, int conversationId, String message)
     {
         Log.Print(this.getClass().getName() + " Saving message : [" + srcId + "] " + srcId + " --> " + dstId + " : " + message);
-        String sharedId = this.getConversationSharedId(conversationId);
+        String sharedId = this.getSharedIdFromConversationId(conversationId);
         this.dataBaseAPI.addMessage(conversationId, srcId, dstId, message);
         this.networkAPI.sendMessage(dstId, sharedId, message);
     }

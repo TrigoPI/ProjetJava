@@ -91,6 +91,27 @@ public class DataBaseAPI
         return conversationsId;
     }
 
+    public ArrayList<Integer> getMessagesId(int conversationId, int fromMessageId, int n)
+    {
+        String request = "SELECT message_id " +
+                "FROM Message " +
+                "WHERE conversation_id = '%d' AND " +
+                "message_id <= '%d' AND " +
+                "message_id > '%d'";
+
+        int resultId = this.dataBaseManager.executeQuery(request, conversationId, fromMessageId, fromMessageId + n);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting messages in conversation : " + conversationId);
+            return null;
+        }
+
+        ArrayList<Integer> messagesId = this.dataBaseManager.decodeAsInt(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+        return messagesId;
+    }
+
     public ArrayList<Integer> getMessagesId(int conversationId)
     {
         int resultId = this.dataBaseManager.executeQuery("SELECT message_id FROM Message WHERE conversation_id = %d", conversationId);
@@ -152,13 +173,34 @@ public class DataBaseAPI
         return messages.get(0);
     }
 
-    public String getConversationSharedId(int conversationId)
+    public String getSharedIdFromConversationId(int conversationId)
     {
         int resultId = this.dataBaseManager.executeQuery("SELECT shared_id FROM Conversation WHERE conversation_id = %d", conversationId);
 
         if (resultId == -1)
         {
             Log.Error(this.getClass().getName() + " ERROR getting conversation with id : " + conversationId);
+            return null;
+        }
+
+        ArrayList<String> sharedIds = this.dataBaseManager.decodeAsString(resultId, 1);
+        this.dataBaseManager.removeResultSet(resultId);
+
+        return sharedIds.get(0);
+    }
+
+    public String getSharedIdFromMessageId(int messageId)
+    {
+        String request = "SELECT shared_id " +
+                "FROM Message " +
+                "INNER JOIN Conversation C on C.conversation_id = Message.conversation_id " +
+                "WHERE Message.message_id = '%d' ";
+
+        int resultId = this.dataBaseManager.executeQuery(request, messageId);
+
+        if (resultId == -1)
+        {
+            Log.Error(this.getClass().getName() + " ERROR getting conversation with id : " + messageId);
             return null;
         }
 
@@ -291,10 +333,21 @@ public class DataBaseAPI
         this.dataBaseManager.removePreparedStatement(preparedStatementId);
     }
 
-    public void addMessage(int conversationId, int from, int to, String message)
+    public int addMessage(int conversationId, int from, int to, String message)
     {
         int sent = this.userManager.isConnected(to)?1:0;
-        this.dataBaseManager.execute("INSERT INTO Message(date, text, sent, conversation_id, user_id) VALUES('ok', '%s', '%d', '%d', '%d')", message, sent, conversationId, from);
+        int preparedStatementId = this.dataBaseManager.createPreparedStatement("INSERT INTO Message(date, text, sent, conversation_id, user_id) VALUES('ok', ?, ?, ?, ?)");
+
+        this.dataBaseManager.setString(preparedStatementId, 1, message);
+        this.dataBaseManager.setInt(preparedStatementId, 2, sent);
+        this.dataBaseManager.setInt(preparedStatementId, 3, conversationId);
+        this.dataBaseManager.setInt(preparedStatementId, 4, from);
+
+        this.dataBaseManager.executePreparedStatement(preparedStatementId);
+        int id = this.dataBaseManager.getIdGenerated(preparedStatementId);
+        this.dataBaseManager.removePreparedStatement(preparedStatementId);
+
+        return id;
     }
 
     public void updatePseudo(int userId,String pseudo)

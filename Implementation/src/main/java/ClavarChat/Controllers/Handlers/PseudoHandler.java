@@ -72,7 +72,7 @@ public class PseudoHandler implements MessageListener
     {
         for (int conversationId : this.dataBaseAPI.getConversationsId())
         {
-            String shared_id = this.dataBaseAPI.getConversationSharedId(conversationId);
+            String shared_id = this.dataBaseAPI.getSharedIdFromConversationId(conversationId);
 
             for (int userId : this.dataBaseAPI.getUsersInConversation(conversationId))
             {
