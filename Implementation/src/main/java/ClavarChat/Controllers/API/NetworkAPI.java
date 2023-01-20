@@ -161,6 +161,8 @@ public class NetworkAPI implements NetworkListener
 
     public void sendTyping(int userId, String shareId, boolean isTyping)
     {
+        if (!this.userManager.isConnected(userId)) return;
+
         String ip = this.userManager.getUserIP(userId).get(0);
         if (ip == null) return;
         this.sendTCP(ip, this.tcpPort, new TypingMessage((isTyping)?TypingMessage.TYPING_START:TypingMessage.TYPING_END, this.userManager.getId(), shareId));

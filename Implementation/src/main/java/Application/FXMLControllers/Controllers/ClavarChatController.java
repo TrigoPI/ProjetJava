@@ -92,7 +92,6 @@ public class ClavarChatController extends ClvcController
         InputStream in = buffer.toInputStream();
         Image avatar = new Image(in);
         int id = this.api.getId();
-        this.loaded = true;
 
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
@@ -101,6 +100,8 @@ public class ClavarChatController extends ClvcController
         this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
         this.initDiscussionContainer();
         this.initMessageBox();
+
+        this.loaded = true;
         this.onTextMessage();
     }
 
