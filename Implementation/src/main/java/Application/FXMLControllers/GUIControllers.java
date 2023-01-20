@@ -35,12 +35,24 @@ public class GUIControllers implements ClvcListener
         Log.Info(this.getClass().getName() + " ---> " + event.type);
 
         switch (event.type) {
-            case NewUserEvent.NEW_USER -> this.onNewUser((NewUserEvent)event);
-            case RemoveUserEvent.REMOVE_USER -> this.onRemoveUser((RemoveUserEvent)event);
-            case TypingEvent.TYPING -> this.onTyping((TypingEvent)event);
-            case LoginEvent.LOGIN_SUCCESS -> this.onLoginSuccess();
-            case LoginEvent.LOGIN_FAILED -> this.onLoginFailed();
-            case MessageEvent.MESSAGE_EVENT -> this.onTextMessage();
+            case NewUserEvent.NEW_USER :
+                this.onNewUser((NewUserEvent)event);
+                break;
+            case RemoveUserEvent.REMOVE_USER :
+                this.onRemoveUser((RemoveUserEvent)event);
+                break;
+            case TypingEvent.TYPING :
+                this.onTyping((TypingEvent)event);
+                break;
+            case LoginEvent.LOGIN_SUCCESS :
+                this.onLoginSuccess();
+                break;
+            case LoginEvent.LOGIN_FAILED :
+                this.onLoginFailed();
+                break;
+            case MessageEvent.MESSAGE_EVENT :
+                this.onTextMessage();
+                break;
         }
     }
 

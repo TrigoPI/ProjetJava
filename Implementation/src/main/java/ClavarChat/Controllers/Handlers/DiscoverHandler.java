@@ -68,10 +68,18 @@ public class DiscoverHandler implements MessageListener
     {
         switch (message.type)
         {
-            case ClvcNetworkMessage.WAIT -> this.onWait(srcIp);
-            case ClvcNetworkMessage.WAIT_FINISHED -> this.onWaitFinished(srcIp);
-            case DiscoverResponseMessage.DISCOVER_RESPONSE -> this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
-            case ClvcNetworkMessage.DISCOVER_REQUEST -> this.onDiscoverRequest(srcIp);
+            case ClvcNetworkMessage.WAIT :
+                this.onWait(srcIp);
+                break;
+            case ClvcNetworkMessage.WAIT_FINISHED :
+                this.onWaitFinished(srcIp);
+                break;
+            case DiscoverResponseMessage.DISCOVER_RESPONSE :
+                this.onDiscoverResponse((DiscoverResponseMessage)message, srcIp);
+                break;
+            case ClvcNetworkMessage.DISCOVER_REQUEST :
+                this.onDiscoverRequest(srcIp);
+                break;
         }
     }
 

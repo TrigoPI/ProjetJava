@@ -53,9 +53,9 @@ public class PseudoHandler implements MessageListener
     @Override
     public void onData(String srcIp, ClvcNetworkMessage message)
     {
-        switch (message.type)
+        if (message.type.equals(SessionMessage.PSEUDO))
         {
-            case SessionMessage.PSEUDO -> this.onNewPseudo((SessionMessage)message);
+            this.onNewPseudo((SessionMessage) message);
         }
     }
 

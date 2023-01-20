@@ -406,7 +406,6 @@ public class ClavarChatController extends ClvcController
             this.messagesContainer.applyCss();
             this.messagesContainer.layout();
             this.messagesContainer.setVvalue(1.0);
-
         }
     }
 

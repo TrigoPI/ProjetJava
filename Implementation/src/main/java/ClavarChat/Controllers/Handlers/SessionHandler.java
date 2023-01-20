@@ -30,9 +30,15 @@ public class SessionHandler implements MessageListener
     {
         switch (message.type)
         {
-            case SharedIDMessage.SHARED_ID -> this.onSharedId((SharedIDMessage)message);
-            case SessionMessage.LOGIN -> this.onLogin((SessionMessage)message, srcIp);
-            case SessionMessage.LOGOUT -> this.onLogout((SessionMessage)message);
+            case SharedIDMessage.SHARED_ID :
+                this.onSharedId((SharedIDMessage)message);
+                break;
+            case SessionMessage.LOGIN :
+                this.onLogin((SessionMessage)message, srcIp);
+                break;
+            case SessionMessage.LOGOUT :
+                this.onLogout((SessionMessage)message);
+            break;
         }
     }
 

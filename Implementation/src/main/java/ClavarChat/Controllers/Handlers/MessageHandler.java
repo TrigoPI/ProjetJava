@@ -72,9 +72,15 @@ public class MessageHandler implements MessageListener
     {
         switch (message.type)
         {
-            case TextMessage.TEXT_NETWORK_MESSAGE -> this.onTextNetworkMessage((TextMessage)message);
-            case TypingMessage.TYPING_START -> this.onTypingStart((TypingMessage)message);
-            case TypingMessage.TYPING_END -> this.onTypingEnd((TypingMessage)message);
+            case TextMessage.TEXT_NETWORK_MESSAGE :
+                this.onTextNetworkMessage((TextMessage)message);
+                break;
+            case TypingMessage.TYPING_START :
+                this.onTypingStart((TypingMessage)message);
+                break;
+            case TypingMessage.TYPING_END :
+                this.onTypingEnd((TypingMessage)message);
+                break;
         }
     }
 
