@@ -79,7 +79,7 @@ public class ClavarChatController extends ClvcController
         this.messagesBoxGui = new HashMap<>();
         this.selectedUser = null;
         this.loaded = false;
-        this.notification = new Audio(Resources.SOUND.ARGH);
+        this.notification = new Audio(Resources.SOUND.NOTIFICATION);
     }
 
     @Override
@@ -96,12 +96,11 @@ public class ClavarChatController extends ClvcController
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
         this.chatContainer.setVisible(false);
+        this.loaded = true;
 
         this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
         this.initDiscussionContainer();
         this.initMessageBox();
-
-        this.loaded = true;
         this.onTextMessage();
     }
 
@@ -204,8 +203,9 @@ public class ClavarChatController extends ClvcController
                 discussion.changeDisplayText(pseudo + " : " + message.text);
                 this.updateChatBox(message.sharedId, message.userId, message.text);
 
-                if (this.selectedUser != null && !this.selectedUser.getSharedId().equals(message.sharedId)) this.notification.play();
             }
+
+            this.notification.play();
 
             this.messagesContainer.applyCss();
             this.messagesContainer.layout();
