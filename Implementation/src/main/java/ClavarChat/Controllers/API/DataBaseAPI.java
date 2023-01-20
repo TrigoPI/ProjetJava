@@ -99,7 +99,7 @@ public class DataBaseAPI
                 "message_id <= '%d' AND " +
                 "message_id > '%d'";
 
-        int resultId = this.dataBaseManager.executeQuery(request, conversationId, fromMessageId, fromMessageId + n);
+        int resultId = this.dataBaseManager.executeQuery(request, conversationId, fromMessageId, fromMessageId - n);
 
         if (resultId == -1)
         {
