@@ -266,10 +266,8 @@ public class ClavarChatController extends ClvcController
         MessageBox messageBox = this.messagesBoxGui.get(shareId);
         Message lastMessage = this.api.getLastMessage(conversationId);
 
-        if (messageBox != null) return;
-
-        this.messagesBoxGui.put(shareId, new MessageBox());
-        this.api.getMessageInDataBase(conversationId, lastMessage.messageId, 10);
+        if (messageBox == null) this.messagesBoxGui.put(shareId, new MessageBox());
+        if (lastMessage == null) this.api.getMessageInDataBase(conversationId, lastMessage.messageId, 10);
     }
 
     private void createUserDiscussion(int userId, int conversationId, String sharedId)
