@@ -35,12 +35,14 @@ public class Resources
         private static final URL LOGIN_FXML      = getUrl("FXML/LoginGUI.fxml");
         private static final URL CLAVARCHAT_FXML = getUrl("FXML/ClavarChatGUI.fxml");
         private static final URL SETTINGS_FXML   = getUrl("FXML/SettingsGUI.fxml");
+        private static final URL PASSWORD_FXML = getUrl("FXML/PasswordGUI.fxml");
 
         public static class LOADER
         {
             public static FXMLLoader LOGIN_LOADER      = new FXMLLoader(LOGIN_FXML);
             public static FXMLLoader CLAVARCHAT_LOADER = new FXMLLoader(CLAVARCHAT_FXML);
             public static FXMLLoader SETTINGS_LOADER   = new FXMLLoader(SETTINGS_FXML);
+            public static FXMLLoader PASSWORD_LOADER = new FXMLLoader(PASSWORD_FXML);
         }
     }
 

@@ -39,6 +39,8 @@ public class SettingsController extends ClvcController
     private MFXButton avatarButton;
     @FXML
     private Button returnButton;
+    @FXML
+    private MFXButton passwordButton;
 
     public SettingsController(ClavarChatAPI api)
     {
@@ -120,5 +122,28 @@ public class SettingsController extends ClvcController
 
         clvcController.onChange();
         scene.setRoot(root);
+    }
+    @FXML
+    private void passwordPage()
+    {
+        try
+        {
+            if (Resources.FXML.LOADER.SETTINGS_LOADER.getRoot() == null)
+            {
+                Parent root = Resources.FXML.LOADER.PASSWORD_LOADER.load();
+                Scene scene = this.passwordButton.getScene();
+                scene.setRoot(root);
+            }
+            else
+            {
+                Parent root = Resources.FXML.LOADER.PASSWORD_LOADER.getRoot();
+                Scene scene = this.passwordButton.getScene();
+                scene.setRoot(root);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

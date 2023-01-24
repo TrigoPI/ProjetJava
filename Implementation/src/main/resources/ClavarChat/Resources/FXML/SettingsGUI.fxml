@@ -62,6 +62,16 @@
                               </MFXButton>
                           </children>
                       </VBox>
+                  <MFXButton fx:id="passwordButton" onAction="#passwordPage" prefHeight="50.0" prefWidth="225.0" text="Changer le mdp" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="17.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="clvc-buttonradius" />
+                        <String fx:value="clvc-dark-blue" />
+                        <String fx:value="clvc-cursor-hand" />
+                     </styleClass>
+                  </MFXButton>
                </children>
                <styleClass>
                   <String fx:value="clvc-american-river" />
