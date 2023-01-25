@@ -1,25 +1,11 @@
 package ClavarChat.Utils.Log;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Log
 {
     private static boolean active = true;
-    private static boolean save = false;
-    private static final ArrayList<String> logs = new ArrayList<>();
-
-    public static void savingOn()
-    {
-        save = true;
-    }
-
-    public static void savingOff()
-    {
-        save = false;
-    }
 
     public static void on()
     {
@@ -49,11 +35,6 @@ public class Log
     public static void Error(String a)
     {
         Log.format(ConsoleColors.RED, a);
-    }
-
-    public static void displayLogs()
-    {
-        for (String log : logs) System.out.println(log);
     }
 
     private static void format(String color, String a)

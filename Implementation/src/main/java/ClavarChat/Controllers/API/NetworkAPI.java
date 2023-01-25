@@ -1,6 +1,6 @@
 package ClavarChat.Controllers.API;
 
-import ClavarChat.Controllers.Runnables.Network.SocketObserver.SocketObserver;
+import ClavarChat.Controllers.Runnables.Network.SocketWatchdog.SocketWatchdog;
 import ClavarChat.Controllers.Runnables.Network.TCPIN.TCPIN;
 import ClavarChat.Controllers.Runnables.Network.TCPOUT.TCPOUT;
 import ClavarChat.Controllers.Managers.Network.NetworkManager;
@@ -32,7 +32,7 @@ public class NetworkAPI implements NetworkListener
     private final HashMap<String, ClvcMessenger> messengers;
     private final ArrayList<MessageListener> listeners;
 
-    private final SocketObserver socketObserver;
+    private final SocketWatchdog socketWatchdog;
 
     private final int tcpServerID;
     private final int udpServerID;
@@ -53,9 +53,9 @@ public class NetworkAPI implements NetworkListener
         this.messengers = new HashMap<>();
         this.listeners = new ArrayList<>();
 
-        this.socketObserver = new SocketObserver();
+        this.socketWatchdog = new SocketWatchdog();
 
-        int threadId = this.threadManager.createThread(this.socketObserver);
+        int threadId = this.threadManager.createThread(this.socketWatchdog);
         this.threadManager.startThread(threadId);
     }
 
@@ -192,7 +192,7 @@ public class NetworkAPI implements NetworkListener
 
     public void closeSocketObserver()
     {
-        this.socketObserver.stop();
+        this.socketWatchdog.stop();
     }
 
     public void closeServer()
@@ -262,7 +262,7 @@ public class NetworkAPI implements NetworkListener
         this.runMessenger(messenger);
 
         this.messengers.put(srcIp, messenger);
-        this.socketObserver.addMessenger(messenger);
+        this.socketWatchdog.addMessenger(messenger);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class NetworkAPI implements NetworkListener
         TCPOUT out = new TCPOUT(socket, this);
         ClvcMessenger messenger = new ClvcMessenger(socket, in, out);
 
-        this.socketObserver.addMessenger(messenger);
+        this.socketWatchdog.addMessenger(messenger);
         this.messengers.put(ip, messenger);
 
         this.threadManager.setRunnable(threadId, new TcpConnection(socket, this));

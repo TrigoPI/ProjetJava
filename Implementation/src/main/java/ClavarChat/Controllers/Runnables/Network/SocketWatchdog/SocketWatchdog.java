@@ -1,4 +1,4 @@
-package ClavarChat.Controllers.Runnables.Network.SocketObserver;
+package ClavarChat.Controllers.Runnables.Network.SocketWatchdog;
 
 import ClavarChat.Controllers.Managers.Thread.TMRunnable;
 import ClavarChat.Models.ClvcMessenger.ClvcMessenger;
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SocketObserver implements TMRunnable
+public class SocketWatchdog implements TMRunnable
 {
     private final List<ClvcMessenger> messengers;
     private final AtomicBoolean running;
 
-    public SocketObserver()
+    public SocketWatchdog()
     {
         this.messengers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         this.running = new AtomicBoolean(true);

@@ -10,6 +10,7 @@ import ClavarChat.Controllers.Managers.User.User;
 import ClavarChat.Utils.Clock.Clock;
 import ClavarChat.Utils.Log.Log;
 
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +28,8 @@ public class DiscoverHandler implements MessageListener
     public final AtomicInteger numberOfUsers;
     public final AtomicInteger currentNumberOfUsers;
 
+    public final AtomicInteger randomWait;
+
     public final AtomicBoolean running;
     public final AtomicBoolean finished;
     private final LinkedBlockingQueue<String> discoverQueue;
@@ -38,6 +41,7 @@ public class DiscoverHandler implements MessageListener
         this.dataBaseAPI = dataBaseAPI;
         this.userManager = userManager;
         this.pseudoHandler = pseudoHandler;
+        this.randomWait = new AtomicInteger(0);
         this.numberOfUsers = new AtomicInteger(-1);
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
@@ -119,6 +123,7 @@ public class DiscoverHandler implements MessageListener
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for " + srcIp + " to finished his discovering, adding to queue");
         this.discoverQueue.add(srcIp);
+        this.randomWait.set((int)(Math.random() * 10));
     }
 
     private void onDiscoverRequest(String srcIp)
@@ -161,12 +166,27 @@ public class DiscoverHandler implements MessageListener
     private void waitResponse()
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for response");
-        Clock clock = new Clock();
+        Clock clock1 = new Clock();
+        Clock clock2 = new Clock();
+
         this.running.set(true);
         this.networkAPI.sendDiscoverRequest();
-        while (clock.timeSecond() < timeout && !this.finished.get())
+
+        while (clock1.timeSecond() < timeout && !this.finished.get())
         {
-            if (!this.discoverQueue.isEmpty()) clock.resetSecond();
+            if (!this.discoverQueue.isEmpty())
+            {
+                clock1.resetSecond();
+
+                if (clock2.timeSecond() > 10.0 + this.randomWait.get())
+                {
+                    Log.Info(DiscoverHandler.class.getName() + " No response in " + 10.0 + this.randomWait.get() + ", reset timer");
+                }
+            }
+            else
+            {
+                clock2.resetSecond();
+            }
         }
     }
 
