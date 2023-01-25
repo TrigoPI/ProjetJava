@@ -181,6 +181,11 @@ public class DiscoverHandler implements MessageListener
                 if (clock2.timeSecond() > 10.0 + this.randomWait.get())
                 {
                     Log.Info(DiscoverHandler.class.getName() + " No response in " + 10.0 + this.randomWait.get() + ", reset timer");
+
+                    this.discoverQueue.clear();
+                    this.otherUserQueue.clear();
+                    this.numberOfUsers.set((-1));
+                    this.currentNumberOfUsers.set(0);
                 }
             }
             else
