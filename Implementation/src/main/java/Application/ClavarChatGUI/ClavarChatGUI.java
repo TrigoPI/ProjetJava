@@ -1,5 +1,6 @@
 package Application.ClavarChatGUI;
 
+import Application.FXMLControllers.Controllers.PasswordController;
 import ClavarChat.Utils.Audio.Audio;
 import Application.FXMLControllers.Controllers.ClavarChatController;
 import Application.FXMLControllers.Controllers.LoginController;
@@ -28,10 +29,12 @@ public class ClavarChatGUI extends Application
         LoginController loginController           = new LoginController(this.clavarChatAPI);
         ClavarChatController clavarChatController = new ClavarChatController(this.clavarChatAPI);
         SettingsController settingsController     = new SettingsController(this.clavarChatAPI);
+        PasswordController passwordController     = new PasswordController(this.clavarChatAPI);
 
         Resources.FXML.LOADER.LOGIN_LOADER.setController(loginController);
         Resources.FXML.LOADER.CLAVARCHAT_LOADER.setController(clavarChatController);
         Resources.FXML.LOADER.SETTINGS_LOADER.setController(settingsController);
+        Resources.FXML.LOADER.PASSWORD_LOADER.setController(passwordController);
 
         Scene scene = new Scene(Resources.FXML.LOADER.LOGIN_LOADER.load(), 1080, 720);
 

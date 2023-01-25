@@ -40,16 +40,20 @@ public class PasswordController extends ClvcController {
     @FXML
     private Button returnButton;
 
-    public PasswordController(ClavarChatAPI api) {super(api);}
+    public PasswordController(ClavarChatAPI api)
+    {
+        super(api);
+    }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
         Log.Print(this.getClass().getName() + " Initialized");
     }
 
     @Override
-    public void onChange() {
-    }
+    public void onChange() {}
+
     public void onConfFailed()
     {
         Color c = Color.web("#FE003E");
@@ -64,13 +68,13 @@ public class PasswordController extends ClvcController {
     }
 
     @FXML
-    private void returnHandler() throws IOException {
-        Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.load();
+    private void returnHandler() throws IOException
+    {
+        Parent root = Resources.FXML.LOADER.SETTINGS_LOADER.getRoot();
         Scene scene = this.returnButton.getScene();
-        ClvcController clvcController = Resources.FXML.LOADER.CLAVARCHAT_LOADER.getController();
-        clvcController.onChange();
         scene.setRoot(root);
     }
+
     @FXML
     private void validation()
     {
@@ -79,18 +83,23 @@ public class PasswordController extends ClvcController {
         String actualPassword = this.oldPassword.getText().trim();
         String newPassword = this.newPassword.getText().trim();
         String confPassword = this.confPassword.getText().trim();
-        if (actualPassword==password)
+
+        if (actualPassword.equals(password))
         {
-            if(newPassword==confPassword)
+            if(newPassword.equals(confPassword))
             {
-                jsonObject.put("password",newPassword);
+                jsonObject.put("password", newPassword);
             }
-            else{this.onConfFailed();}
+            else
+            {
+                this.onConfFailed();
+            }
         }
-        else {this.onPasswordFailed();}
+        else
+        {
+            this.onPasswordFailed();
+        }
     }
-
-
 }
 
 

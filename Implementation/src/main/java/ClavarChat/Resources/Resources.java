@@ -27,7 +27,6 @@ public class Resources
     public static class SOUND
     {
         public static final URL NOTIFICATION = getUrl("SOUND/notification1.wav");
-        public static final URL ARGH         = getUrl("SOUND/notification2.wav");
     }
 
     public static class FXML
@@ -42,7 +41,7 @@ public class Resources
             public static FXMLLoader LOGIN_LOADER      = new FXMLLoader(LOGIN_FXML);
             public static FXMLLoader CLAVARCHAT_LOADER = new FXMLLoader(CLAVARCHAT_FXML);
             public static FXMLLoader SETTINGS_LOADER   = new FXMLLoader(SETTINGS_FXML);
-            public static FXMLLoader PASSWORD_LOADER = new FXMLLoader(PASSWORD_FXML);
+            public static FXMLLoader PASSWORD_LOADER   = new FXMLLoader(PASSWORD_FXML);
         }
     }
 

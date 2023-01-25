@@ -112,7 +112,7 @@ public class SettingsController extends ClvcController
         this.modifpage.getChildren().add(0, avatar);
     }
     @FXML
-    private void retourChat()
+    private void returnChat()
     {
         this.api.sendNewPseudo();
 
@@ -123,12 +123,13 @@ public class SettingsController extends ClvcController
         clvcController.onChange();
         scene.setRoot(root);
     }
+
     @FXML
     private void passwordPage()
     {
         try
         {
-            if (Resources.FXML.LOADER.SETTINGS_LOADER.getRoot() == null)
+            if (Resources.FXML.LOADER.PASSWORD_LOADER.getRoot() == null)
             {
                 Parent root = Resources.FXML.LOADER.PASSWORD_LOADER.load();
                 Scene scene = this.passwordButton.getScene();

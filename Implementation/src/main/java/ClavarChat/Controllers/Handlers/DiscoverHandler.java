@@ -195,7 +195,7 @@ public class DiscoverHandler implements MessageListener
 
                     if (clock3.timeSecond() > this.randomWait.get())
                     {
-                        Log.Warning(DiscoverHandler.class.getName() + " No response in " + (10 + this.randomWait.get()) + ", reset timer");
+                        Log.Warning(DiscoverHandler.class.getName() + " No response in 10s, reset timer");
 
                         this.standby.set(false);
                         this.discoverQueue.clear();

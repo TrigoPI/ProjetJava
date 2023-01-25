@@ -96,12 +96,12 @@ public class ClavarChatController extends ClvcController
         this.userName.setText(pseudo);
         this.userId.setText("#" + id);
         this.chatContainer.setVisible(false);
-        this.loaded = true;
 
         this.addAvatar(this.userAvatarContainer, avatar, true, 50, 0);
         this.initDiscussionContainer();
         this.initMessageBox();
-        this.onTextMessage();
+
+        this.loaded = true;
     }
 
     @Override
@@ -257,7 +257,7 @@ public class ClavarChatController extends ClvcController
         for (int conversationId : this.api.getConversationsIdInDataBase())
         {
             String sharedId = this.api.getSharedIdFromConversationId(conversationId);
-            this.messagesBoxGui.put(sharedId, null);
+            this.messagesBoxGui.put(sharedId, new MessageBox());
         }
     }
 
@@ -266,8 +266,8 @@ public class ClavarChatController extends ClvcController
         MessageBox messageBox = this.messagesBoxGui.get(shareId);
         Message lastMessage = this.api.getLastMessage(conversationId);
 
-        if (messageBox == null) this.messagesBoxGui.put(shareId, new MessageBox());
-        if (lastMessage == null) this.api.getMessageInDataBase(conversationId, lastMessage.messageId, 10);
+        if (!messageBox.getChildren().isEmpty()) return;
+        if (lastMessage != null) this.api.getMessageInDataBase(conversationId, lastMessage.messageId, 10);
     }
 
     private void createUserDiscussion(int userId, int conversationId, String sharedId)
@@ -338,6 +338,7 @@ public class ClavarChatController extends ClvcController
     {
         if (!this.chatContainer.isVisible()) this.chatContainer.setVisible(true);
         if (this.selectedUser != null) this.selectedUser.deselect();
+
 
         this.selectedUser = discussion;
         this.selectedUser.select();;
@@ -446,6 +447,6 @@ public class ClavarChatController extends ClvcController
     @FXML
     private void onScroll(ScrollEvent event)
     {
-        System.out.println(event.getDeltaY());
+        System.out.println(event.getY());
     }
 }
