@@ -32,6 +32,7 @@ public class DiscoverHandler implements MessageListener
 
     public final AtomicBoolean running;
     public final AtomicBoolean finished;
+    public final AtomicBoolean standby;
     private final LinkedBlockingQueue<String> discoverQueue;
     private final LinkedBlockingQueue<String> otherUserQueue;
 
@@ -46,6 +47,7 @@ public class DiscoverHandler implements MessageListener
         this.currentNumberOfUsers = new AtomicInteger(0);
         this.finished = new AtomicBoolean(false);
         this.running = new AtomicBoolean(false);
+        this.standby = new AtomicBoolean(false);
         this.discoverQueue = new LinkedBlockingQueue<>();
         this.otherUserQueue = new LinkedBlockingQueue<>();
         this.timeout = 5;
@@ -135,11 +137,14 @@ public class DiscoverHandler implements MessageListener
     {
         Log.Print(this.getClass().getName() + " Discover from : " + srcIp);
 
-        if (this.running.get())
+        if (!this.standby.get())
         {
-            Log.Info(this.getClass().getName() + " Discover from : " + srcIp + ", adding to queue");
-            if (!this.discoverQueue.contains(srcIp)) this.otherUserQueue.add(srcIp);
-            this.networkAPI.sendWait(srcIp);
+            if (this.running.get())
+            {
+                Log.Info(this.getClass().getName() + " Discover from : " + srcIp + ", adding to queue");
+                if (!this.discoverQueue.contains(srcIp)) this.otherUserQueue.add(srcIp);
+                this.networkAPI.sendWait(srcIp);
+            }
         }
 
         this.networkAPI.sendDiscoverResponse(srcIp);
@@ -173,6 +178,7 @@ public class DiscoverHandler implements MessageListener
         Log.Info(DiscoverHandler.class.getName() + " Waiting for response");
         Clock clock1 = new Clock();
         Clock clock2 = new Clock();
+        Clock clock3 = new Clock();
 
         this.running.set(true);
         this.networkAPI.sendDiscoverRequest();
@@ -183,15 +189,29 @@ public class DiscoverHandler implements MessageListener
             {
                 clock1.resetSecond();
 
-                if (clock2.timeSecond() > 10 + this.randomWait.get())
+                if (clock2.timeSecond() > 10)
                 {
-                    Log.Warning(DiscoverHandler.class.getName() + " No response in " + (10 + this.randomWait.get()) + ", reset timer");
+                    this.standby.set(true);
 
-                    this.discoverQueue.clear();
-                    this.otherUserQueue.clear();
-                    this.numberOfUsers.set((-1));
-                    this.currentNumberOfUsers.set(0);
-                    this.networkAPI.sendDiscoverRequest();
+                    if (clock3.timeSecond() > this.randomWait.get())
+                    {
+                        Log.Warning(DiscoverHandler.class.getName() + " No response in " + (10 + this.randomWait.get()) + ", reset timer");
+
+                        this.standby.set(false);
+                        this.discoverQueue.clear();
+                        this.otherUserQueue.clear();
+                        this.numberOfUsers.set((-1));
+                        this.currentNumberOfUsers.set(0);
+                        this.networkAPI.sendDiscoverRequest();
+
+                        clock1.resetSecond();
+                        clock2.resetSecond();
+                        clock3.resetSecond();
+                    }
+                }
+                else
+                {
+                    clock3.resetSecond();
                 }
             }
             else
