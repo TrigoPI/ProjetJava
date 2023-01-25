@@ -5,7 +5,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 
@@ -45,5 +44,21 @@ public class Path
         }
 
         return obj;
+    }
+
+    public static InputStream getFileInputStream(String path)
+    {
+        InputStream in;
+        File file = new File(path);
+        try
+        {
+            in = new FileInputStream(file);
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return in;
     }
 }

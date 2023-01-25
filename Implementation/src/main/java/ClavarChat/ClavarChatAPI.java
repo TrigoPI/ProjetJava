@@ -18,6 +18,7 @@ import ClavarChat.Models.Message.Message;
 import ClavarChat.Controllers.Managers.User.User;
 import ClavarChat.Utils.Log.Log;
 import ClavarChat.Resources.Resources;
+import ClavarChat.Utils.Path.Path;
 
 import java.util.ArrayList;
 
@@ -34,8 +35,7 @@ public class ClavarChatAPI
 
     public ClavarChatAPI(int tcpPort, int udpPort)
     {
-
-        this.userManager = new UserManager();
+        this.userManager = new UserManager(Path.getFileInputStream(Resources.CONFIG.CONF_FILE));
         this.threadManager = new ThreadManager();
 
         this.networkAPI = new NetworkAPI(this.userManager, tcpPort, udpPort);

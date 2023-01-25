@@ -1,6 +1,6 @@
 Implementation/.idea
 Implementation/target 
-Implementation/build
+# Implementation/build
 Implementation/dist
 Implementation/build.cmd
 **/.DS_Store

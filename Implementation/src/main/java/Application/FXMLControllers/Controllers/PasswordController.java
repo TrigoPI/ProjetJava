@@ -78,27 +78,27 @@ public class PasswordController extends ClvcController {
     @FXML
     private void validation()
     {
-        JSONObject jsonObject = Path.parseJSON(Resources.CONFIG.CONF_FILE);
-        String password = (String)jsonObject.get("password");
-        String actualPassword = this.oldPassword.getText().trim();
-        String newPassword = this.newPassword.getText().trim();
-        String confPassword = this.confPassword.getText().trim();
-
-        if (actualPassword.equals(password))
-        {
-            if(newPassword.equals(confPassword))
-            {
-                jsonObject.put("password", newPassword);
-            }
-            else
-            {
-                this.onConfFailed();
-            }
-        }
-        else
-        {
-            this.onPasswordFailed();
-        }
+//        JSONObject jsonObject = Path.parseJSON(Resources.CONFIG.CONF_FILE);
+//        String password = (String)jsonObject.get("password");
+//        String actualPassword = this.oldPassword.getText().trim();
+//        String newPassword = this.newPassword.getText().trim();
+//        String confPassword = this.confPassword.getText().trim();
+//
+//        if (actualPassword.equals(password))
+//        {
+//            if(newPassword.equals(confPassword))
+//            {
+//                jsonObject.put("password", newPassword);
+//            }
+//            else
+//            {
+//                this.onConfFailed();
+//            }
+//        }
+//        else
+//        {
+//            this.onPasswordFailed();
+//        }
     }
 }
 

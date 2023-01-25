@@ -20,8 +20,7 @@ public class Resources
     }
     public static class CONFIG
     {
-        public static final InputStream CONF_FILE = getFileAsStream("CONFIG/Conf.json");
-
+        public static final String CONF_FILE = getJarPath("ClavarChat/Resources/CONFIG/Conf.json");
     }
 
     public static class SOUND

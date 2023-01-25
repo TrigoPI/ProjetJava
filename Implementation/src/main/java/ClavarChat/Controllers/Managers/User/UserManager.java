@@ -6,6 +6,7 @@ import ClavarChat.Utils.Path.Path;
 import ClavarChat.Resources.Resources;
 import org.json.simple.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,9 +22,9 @@ public class UserManager
 
     private boolean logged;
 
-    public UserManager()
+    public UserManager(InputStream configPath)
     {
-        JSONObject jsonObject = Path.parseJSON(Resources.CONFIG.CONF_FILE);
+        JSONObject jsonObject = Path.parseJSON(configPath);
         String userId = (String)jsonObject.get("userId");
 
         this.user = new User("", Integer.parseInt(userId));
