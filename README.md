@@ -10,7 +10,7 @@
 - **Une phase de découverte** des utilisateur sur le réseau
 - Possibilité de plusieurs phases de découverte simultanée sur le réseau (ne fonctionne pas à tous  les coups)
 - Utilisation d'une **base de données décentralisée**
-- Possibilité de **changer son pseudo** et son image de profil à tout moment
+- Possibilité de **changer son pseudo**, son image de profil et son mot de passe à tout moment
 - Garder un **historique des conversations** (limité à seulement les 10 derniers  messages pour des raisons de performance)
 - Affiche en **temps réel** si un utilisateur  est connecté
 - Affiche si un utilisateur est en train **d'écrire dans le chat**
