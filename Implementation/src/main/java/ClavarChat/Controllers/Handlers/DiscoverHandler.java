@@ -122,8 +122,13 @@ public class DiscoverHandler implements MessageListener
     private void onWait(String srcIp)
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for " + srcIp + " to finished his discovering, adding to queue");
+        if (this.discoverQueue.contains(srcIp)) return;
+
         this.discoverQueue.add(srcIp);
-        this.randomWait.set(new Random().nextInt(5, 15));
+
+        int t = new Random().nextInt(5, 15);
+        this.randomWait.set(t);
+        System.out.println("eziezojirtzj --> " + t);
     }
 
     private void onDiscoverRequest(String srcIp)
@@ -180,7 +185,7 @@ public class DiscoverHandler implements MessageListener
 
                 if (clock2.timeSecond() > 10 + this.randomWait.get())
                 {
-                    Log.Info(DiscoverHandler.class.getName() + " No response in " + 10.0 + this.randomWait.get() + ", reset timer");
+                    Log.Warning(DiscoverHandler.class.getName() + " No response in " + (10 + this.randomWait.get()) + ", reset timer");
 
                     this.discoverQueue.clear();
                     this.otherUserQueue.clear();
