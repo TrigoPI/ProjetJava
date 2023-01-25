@@ -186,6 +186,7 @@ public class DiscoverHandler implements MessageListener
                     this.otherUserQueue.clear();
                     this.numberOfUsers.set((-1));
                     this.currentNumberOfUsers.set(0);
+                    this.networkAPI.sendDiscoverRequest();
                 }
             }
             else
