@@ -123,7 +123,7 @@ public class DiscoverHandler implements MessageListener
     {
         Log.Info(DiscoverHandler.class.getName() + " Waiting for " + srcIp + " to finished his discovering, adding to queue");
         this.discoverQueue.add(srcIp);
-        this.randomWait.set((int)(Math.random() * 10));
+        this.randomWait.set(new Random().nextInt(5, 15));
     }
 
     private void onDiscoverRequest(String srcIp)
