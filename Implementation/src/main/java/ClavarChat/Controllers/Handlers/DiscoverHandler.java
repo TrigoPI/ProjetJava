@@ -178,7 +178,7 @@ public class DiscoverHandler implements MessageListener
             {
                 clock1.resetSecond();
 
-                if (clock2.timeSecond() > 10.0 + this.randomWait.get())
+                if (clock2.timeSecond() > 10 + this.randomWait.get())
                 {
                     Log.Info(DiscoverHandler.class.getName() + " No response in " + 10.0 + this.randomWait.get() + ", reset timer");
 
