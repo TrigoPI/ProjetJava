@@ -22,7 +22,6 @@ Le projet et compilable avec Maven en utilisant **Java 11** et le **.jar** et di
 Avant de lancer le projet il faut **changer l'ID** utilisateur, qui se trouve dans le fichier [Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json) **(🚨 L'ID doit être unique pour chaque utilisateur)**
 
 ```json
-#conf.json
 {
   "userId" : "id_user",
   "password" : "password_user"
