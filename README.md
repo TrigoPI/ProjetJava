@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/Mockups/ChatGUI.png">
+<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/Mockups/Logo.png">
 </p>
 
 # Clavarchat 
