@@ -96,3 +96,10 @@ Plusieurs améliorations sont possibles :
 - Nous avons, à partir du cahier des charges, vérifié que les demandes clients primordiales fonctionnaient bien sur notre application en prenant en compte le maximum de cas de figure qui peuvent arriver avec son utilisation, dans le but que l'expérience client soit le plus agréable.
 - Nous avons aussi réalisé des tests unitaires sous JUnit 5. Ils ont pour but de vérifier le bon fonctionnement de la base de donnée tout au long de l'implémentation, en vérifiant qu'elle soit toujours opérationnelle après chaque push sur le git.
 - Les tests unitaires se trouvent sur la branche habilement nommée test. 
+
+### Parti du code dont nous sommes le plus fier : 
+
+- Si vous ne deviez regarder une seule partie du code, nous pensons que la partie sur la base de donnée est assez ingénieuse, surtout avec le stockage des avatars des utilisateurs. 
+- Vous pourrez les retrouver ici : https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/java/ClavarChat/Controllers/API/DataBaseAPI.java L'API
+
+https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/java/ClavarChat/Controllers/Managers/DataBase/DataBaseManager.java Le Manager
