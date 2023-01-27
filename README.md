@@ -19,7 +19,7 @@
 
 Le projet et compilable avec Maven en utilisant **Java 11** et le **.jar** et disponible dans [Implementation/build](https://github.com/TrigoPI/ProjetJava/tree/main/Implementation/build) (executable à partir de Java 11)
 
-Avant de lancer le projet il faut **changer l'ID** utilisateur, qui se trouve dans le fichier [Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json) ou celuit de [Implementation/build/ClavarChat/Resources/CONFIG/Conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/build/ClavarChat/Resources/CONFIG/Conf.json) si le projet est lancé depuis le .jar **(🚨 L'ID doit être unique pour chaque utilisateur)**
+Avant de lancer le projet il faut **changer l'ID** utilisateur, qui se trouve dans le fichier [Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json) ou celui de [Implementation/build/ClavarChat/Resources/CONFIG/Conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/build/ClavarChat/Resources/CONFIG/Conf.json) si le projet est lancé depuis le .jar **(🚨 L'ID doit être unique pour chaque utilisateur)**
 
 ```json
 {
