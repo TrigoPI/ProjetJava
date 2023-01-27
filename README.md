@@ -48,7 +48,8 @@ Une fois ClavarChat lancer, vous serez sur l'écran de login  :
 **mettre image**
 
 Le pseudo utilisateur est libre de choix et le mot de passe est celui que vous avez rentré dans le [conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json).
-Une fois les information rentré, cliquez sur le bouton **LOGIN**. 
+Une fois les informations rentrées, cliquez sur le bouton **LOGIN**. 
+
 La phase de découverte des utilisateurs sur le réseau peut prendre plus ou moins de temps si plusieurs découvertes réseaux sont faites au même moment.
 
 Vous serez ensuite sur la page principal de ClavarChat :
@@ -56,7 +57,7 @@ Vous serez ensuite sur la page principal de ClavarChat :
 **mettre image**
 
 Les utilisateurs sont sur la gauche et le chat à droite.
-Pour clavarder avec un utilisateur, il suffit de cliquer sur cet utilisateur pour ouvrir une conversation avec lui.
+Pour clavarder avec un utilisateur, il suffit de cliquer sur lui pour ouvrir une conversation avec lui.
 
 Pour accéder à la page de configuration, il suffit de cliquer sur ⚙️ en bas à gauche 
 
