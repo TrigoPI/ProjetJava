@@ -45,7 +45,9 @@ Le .jar se trouve dans **target** sous le nom de **ClavarChat-1.0-SNAPSHOT-jar-w
 
 Une fois ClavarChat lancer, vous serez sur l'écran de login  :
 
-**mettre image**
+<p align="center">
+<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/ImgPourGit/Login.png">
+</p>
 
 Le pseudo utilisateur est libre de choix et le mot de passe est celui que vous avez rentré dans le [conf.json](https://github.com/TrigoPI/ProjetJava/blob/main/Implementation/src/main/resources/ClavarChat/Resources/CONFIG/Conf.json).
 Une fois les informations rentrées, cliquez sur le bouton **LOGIN**. 
@@ -54,14 +56,18 @@ La phase de découverte des utilisateurs sur le réseau peut prendre plus ou moi
 
 Vous serez ensuite sur la page principal de ClavarChat :
 
-**mettre image**
+<p align="center">
+<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/ImgPourGit/chat.png">
+</p>
 
 Les utilisateurs sont sur la gauche et le chat à droite.
 Pour clavarder avec un utilisateur, il suffit de cliquer sur lui pour ouvrir une conversation avec lui.
 
 Pour accéder à la page de configuration, il suffit de cliquer sur ⚙️ en bas à gauche 
 
-**mettre image**
+<p align="center">
+<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/ImgPourGit/Capture d'écran_20230127_184133.png.png">
+</p>
 
 Sur cette page, vous pouvez modifer votre photo de profile, ainsi que votre pseudo **(🚨 ne fonctionne pas si le pseudo est déjà  utilisé)**.
 Vous pouvez après retourner sur la page principal en cliquant sur la flèche en bas à gauche.
