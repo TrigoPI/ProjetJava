@@ -89,3 +89,9 @@ Plusieurs améliorations sont possibles :
 - Les utilisateurs ne s'affichent pas (problème lié à la base de données): 
 	- Si le projet est lancer depuis Maven, il suffit de clean le projet avec Maven ```mvn clean:clean```
 	- Si le projet est lancer depuis le .jar, il faut recopier le dossier [Implementation/src/main/resources/ClavarChat](https://github.com/TrigoPI/ProjetJava/tree/main/Implementation/src/main/resources/ClavarChat/Resources) ou se trouve le .jar
+
+### Procédure de test ⚙️
+
+- Nous avons durant le développement testé toutes les différentes fonctionnalités visuelles, de réseaux et de bases de donnée sur les 3 OS principaux : Windows 10, MacOs Ventura et Linux Unbuntu avec succés.
+- Nous avons aussi réalisé des tests unitaires sous JUnit 5. Ils ont pour but de vérifier le bon fonctionnement de la base de donnée tout au long de l'implémentation, en vérifiant qu'elle soit toujours opérationnelle après chaque push sur le git.
+- Les tests unitaires se trouvent sur la branche habilement nommée test. 
