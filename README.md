@@ -66,7 +66,7 @@ Pour clavarder avec un utilisateur, il suffit de cliquer sur lui pour ouvrir une
 Pour accéder à la page de configuration, il suffit de cliquer sur ⚙️ en bas à gauche 
 
 <p align="center">
-<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/ImgPourGit/Capture d'écran_20230127_184133.png.png">
+<img src="https://github.com/TrigoPI/ProjetJava/raw/main/Conception/ImgPourGit/setting.png">
 </p>
 
 Sur cette page, vous pouvez modifer votre photo de profile, ainsi que votre pseudo **(🚨 ne fonctionne pas si le pseudo est déjà  utilisé)**.
