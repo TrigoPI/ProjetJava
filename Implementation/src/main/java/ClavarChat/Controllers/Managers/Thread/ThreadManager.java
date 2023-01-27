@@ -58,7 +58,6 @@ public class ThreadManager
 
         Log.Print(this.getClass().getName() + " starting thread : " + threadId);
         this.threads.get(threadId).start();
-
     }
 
     public void onFinished(int threadId)
